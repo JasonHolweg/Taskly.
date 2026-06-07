@@ -298,6 +298,8 @@ textarea{resize:vertical;line-height:1.5}
 .add-friend{display:flex;gap:var(--space-2)}
 .add-friend input{text-transform:uppercase;letter-spacing:.1em;font-weight:600}
 .add-friend .btn{flex:0 0 auto}
+.windows{display:flex;gap:8px;flex-wrap:wrap}
+.windows .pill{min-height:38px;padding:0 var(--space-4)}
 .req-row{display:flex;align-items:center;justify-content:space-between;gap:var(--space-2);background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:8px 12px;margin-bottom:8px}
 .req-actions{display:flex;gap:6px}
 .req-actions .btn{min-height:36px;padding:0 var(--space-3);font-size:14px}

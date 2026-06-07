@@ -179,6 +179,27 @@
     <h2 class="h3 garderobe-title">Leaderboard</h2>
     <section id="leaderboard" class="leaderboard"></section>
 
+    <h2 class="h3 garderobe-title">Erinnerungen</h2>
+    <section class="card">
+      <p class="muted small">Web-Push für „Was jetzt?", Termine & Streak-Rettung. <b>iPhone:</b> erst die App über „Teilen → Zum Home-Bildschirm" installieren, dann hier aktivieren.</p>
+      <button class="btn btn-primary btn-block" id="push-enable">Erinnerungen aktivieren</button>
+      <div id="push-settings" class="hidden">
+        <p class="muted small" style="margin-top:var(--space-3)">Wann sollen wir dich anstupsen?</p>
+        <div class="windows" id="push-windows">
+          <button class="pill" data-win="09:00">09:00</button>
+          <button class="pill" data-win="12:00">12:00</button>
+          <button class="pill" data-win="15:00">15:00</button>
+          <button class="pill" data-win="18:00">18:00</button>
+          <button class="pill" data-win="21:00">21:00</button>
+        </div>
+        <div class="braindump-actions" style="margin-top:var(--space-3)">
+          <button class="btn btn-ghost" id="push-test">Test-Push</button>
+          <button class="btn btn-primary" id="push-save">Speichern</button>
+        </div>
+      </div>
+      <p class="muted small" id="push-msg"></p>
+    </section>
+
     <button class="btn btn-ghost btn-block" id="btn-logout">Abmelden</button>
   </main>
 

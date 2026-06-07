@@ -185,6 +185,13 @@ function send_rescue(int $userId, int $toUser): array
         return ['error' => 'Diese Streak ist gar nicht auf Eis.'];
     }
     db()->prepare('INSERT INTO rescues (to_user, from_user) VALUES (?, ?)')->execute([$toUser, $userId]);
+
+    // Push an den eingefrorenen Freund (architecture.md §5)
+    $n = db()->prepare('SELECT name FROM users WHERE id = ?');
+    $n->execute([$userId]);
+    $from = (string) ($n->fetchColumn() ?: 'Ein Freund');
+    send_push($toUser, 'Streak-Rettung 💛', "$from feuert dich an — eine Sache rettet deine Streak!", '/');
+
     return ['ok' => true];
 }
 

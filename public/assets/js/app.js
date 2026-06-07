@@ -282,6 +282,7 @@ async function loadMore() {
     const ov = await api('friends.php');
     renderFriends(ov);
     renderLeaderboard((await api('leaderboard.php')).rows);
+    loadPush();
   } catch (e) { alert(e.message); }
 }
 
@@ -560,6 +561,60 @@ function lbConfetti(rarity) {
   }
 }
 
+/* ---------- Web Push ---------- */
+function urlB64ToUint8Array(base64) {
+  const pad = '='.repeat((4 - base64.length % 4) % 4);
+  const b64 = (base64 + pad).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = atob(b64); const arr = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+  return arr;
+}
+let PUSH = null;
+async function loadPush() {
+  try { PUSH = await api('push.php'); } catch (_) { return; }
+  const supported = ('serviceWorker' in navigator) && ('PushManager' in window);
+  const enableBtn = $('#push-enable'), settings = $('#push-settings'), msg = $('#push-msg');
+  if (!supported) {
+    enableBtn.classList.add('hidden'); settings.classList.add('hidden');
+    msg.textContent = 'Web-Push wird hier nicht unterstützt. Auf dem iPhone die App zum Home-Bildschirm hinzufügen und dort aktivieren.';
+    return;
+  }
+  msg.textContent = '';
+  const wins = (PUSH.prefs && PUSH.prefs.windows) || [];
+  $$('#push-windows .pill').forEach(p => p.classList.toggle('is-active', wins.includes(p.dataset.win)));
+  enableBtn.classList.toggle('hidden', PUSH.subscribed);
+  settings.classList.toggle('hidden', !PUSH.subscribed);
+}
+async function enablePush() {
+  const msg = $('#push-msg');
+  try {
+    if (Notification.permission === 'denied') { msg.textContent = 'Benachrichtigungen sind blockiert — in den Einstellungen erlauben.'; return; }
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') { msg.textContent = 'Ohne Erlaubnis keine Erinnerungen.'; return; }
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlB64ToUint8Array(PUSH.public_key) });
+    await api('push.php', 'POST', { action: 'subscribe', subscription: sub.toJSON() });
+    PUSH.subscribed = true;
+    $('#push-enable').classList.add('hidden'); $('#push-settings').classList.remove('hidden');
+    msg.textContent = 'Aktiviert! ✅';
+  } catch (e) { msg.textContent = 'Konnte nicht aktivieren: ' + e.message; }
+}
+async function savePush() {
+  const windows = $$('#push-windows .pill.is-active').map(p => p.dataset.win);
+  try { await api('push.php', 'POST', { action: 'prefs', enabled: true, windows }); $('#push-msg').textContent = 'Gespeichert. ⏰'; }
+  catch (e) { $('#push-msg').textContent = e.message; }
+}
+function initPush() {
+  $('#push-enable').addEventListener('click', enablePush);
+  $('#push-save').addEventListener('click', savePush);
+  $('#push-test').addEventListener('click', async () => {
+    try { const r = await api('push.php', 'POST', { action: 'test' }); $('#push-msg').textContent = r.ok ? 'Test gesendet 📨' : 'Kein Versand — Subscription aktiv?'; }
+    catch (e) { $('#push-msg').textContent = e.message; }
+  });
+  $$('#push-windows .pill').forEach(p => p.addEventListener('click', () => p.classList.toggle('is-active')));
+}
+
 /* ---------- Boot ---------- */
 async function boot() {
   try {
@@ -573,7 +628,7 @@ async function boot() {
   } catch (_) { showAuth(); }
 }
 
-initTheme(); initAuth(); initDump(); initQuick(); initHero(); initMore(); initNav(); initLootbox(); initPlan();
+initTheme(); initAuth(); initDump(); initQuick(); initHero(); initMore(); initNav(); initLootbox(); initPlan(); initPush();
 boot();
 
 if ('serviceWorker' in navigator) {
