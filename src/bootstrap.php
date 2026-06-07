@@ -35,6 +35,7 @@ require __DIR__ . '/lib/gacha.php';
 require __DIR__ . '/lib/claude.php';
 require __DIR__ . '/lib/recurrence.php';
 require __DIR__ . '/lib/planner.php';
+require __DIR__ . '/lib/social.php';
 
 // Session (für simple Familien-Auth, architecture.md §6) — im CLI/Cron nicht nötig.
 if (PHP_SAPI !== 'cli' && session_status() === PHP_SESSION_NONE) {

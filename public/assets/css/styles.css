@@ -290,4 +290,25 @@ textarea{resize:vertical;line-height:1.5}
 .plan-title{font-size:14px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .plan-meta{font-size:11px;color:var(--color-text-tertiary);flex:0 0 auto}
 
+/* ===== Streak-Eis-Banner ===== */
+.ice-banner{background:color-mix(in srgb,var(--rar-selten) 14%,var(--color-surface));border:1px solid color-mix(in srgb,var(--rar-selten) 40%,transparent);color:var(--color-text);border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);font-size:14px;line-height:1.45}
+
+/* ===== Freunde + Leaderboard ===== */
+.friend-code{font-family:var(--font-display);font-weight:800;font-size:30px;letter-spacing:.12em;color:var(--color-primary);text-align:center;background:var(--color-primary-subtle);border-radius:var(--radius-md);padding:var(--space-3);user-select:all}
+.add-friend{display:flex;gap:var(--space-2)}
+.add-friend input{text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.add-friend .btn{flex:0 0 auto}
+.req-row{display:flex;align-items:center;justify-content:space-between;gap:var(--space-2);background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:8px 12px;margin-bottom:8px}
+.req-actions{display:flex;gap:6px}
+.req-actions .btn{min-height:36px;padding:0 var(--space-3);font-size:14px}
+.leaderboard{display:flex;flex-direction:column;gap:8px}
+.lb-row{display:flex;align-items:center;gap:var(--space-3);background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:10px 12px}
+.lb-row.me{border-color:var(--color-primary);background:var(--color-primary-subtle)}
+.lb-rank{font-family:var(--font-display);font-weight:800;width:28px;flex:0 0 auto;text-align:center}
+.lb-name{flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-streak{font-size:13px;font-weight:700;flex:0 0 auto}
+.lb-lvl{font-size:12px;color:var(--color-text-secondary);flex:0 0 auto}
+.lb-xp{font-size:12px;color:var(--color-text-tertiary);flex:0 0 auto;min-width:54px;text-align:right}
+.lb-rescue{min-height:34px;padding:0 var(--space-3);font-size:13px;color:var(--color-celebrate);flex:0 0 auto}
+
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition-duration:.01ms !important}}

@@ -43,6 +43,24 @@ function renderProgress(p) {
   $('#xp-ring').style.setProperty('--p', pct);
   $('#spark-count').textContent = p.sparks;
   $('#streak-count').textContent = p.streak;
+  const flame = $('.streak-flame'); if (flame) flame.textContent = p.frozen ? '🧊' : '🔥';
+}
+
+function showIce(s) {
+  const b = $('#ice-banner'); const p = s.progress;
+  if (p && p.frozen) {
+    let hrs = '';
+    if (p.frozen_until) {
+      const ms = new Date(p.frozen_until.replace(' ', 'T')) - new Date();
+      if (ms > 0) hrs = ` Noch ~${Math.ceil(ms / 3.6e6)} h.`;
+    }
+    const r = s.rescues || [];
+    const cheer = r.length ? ` 💛 ${r.join(', ')} ${r.length > 1 ? 'feuern' : 'feuert'} dich an!` : '';
+    b.innerHTML = `🧊 Deine Streak (${p.streak}) ist auf Eis — mach <b>eine Sache</b>, dann läuft sie weiter.${hrs}${cheer}`;
+    b.classList.remove('hidden');
+  } else {
+    b.classList.add('hidden');
+  }
 }
 
 /* ---------- Auth ---------- */
@@ -182,6 +200,7 @@ function initHero() {
     try {
       const r = await api('complete.php', 'POST', { occ_id: occ });
       renderProgress(r.progress);
+      $('#ice-banner').classList.add('hidden');
       showReward(r.rewards);
     } catch (err) { alert(err.message); }
   });
@@ -202,6 +221,11 @@ function showReward(rw) {
   $('#reward-xp').textContent = `+${rw.xp} XP`;
   $('#reward-msg').textContent = rw.message || '';
   const extra = $('#reward-extra'); extra.innerHTML = '';
+  if (rw.thawed) {
+    const d = document.createElement('div');
+    d.className = 'reward-badge'; d.textContent = 'Streak gerettet! 🔥 Weiter geht’s.';
+    extra.appendChild(d);
+  }
   if (rw.leveled_up) {
     const d = document.createElement('div');
     d.className = 'reward-badge'; d.textContent = rw.level_message || `Level ${rw.level}! 🎉`;
@@ -244,12 +268,78 @@ function confetti() {
   }
 }
 
-/* ---------- More ---------- */
+/* ---------- Mehr: Freunde + Leaderboard ---------- */
 function initMore() {
-  $('#nav-more').addEventListener('click', async () => {
-    if (confirm('Abmelden?')) { await api('auth/logout.php', 'POST').catch(() => {}); showAuth(); }
+  $('#btn-logout').addEventListener('click', async () => {
+    if (confirm('Abmelden?')) { await api('auth/logout.php', 'POST').catch(() => {}); location.reload(); }
   });
-  $$('[data-soon]').forEach(b => b.addEventListener('click', () => alert('Kommt bald ✨')));
+  $('#friend-add').addEventListener('click', addFriend);
+  $('#friend-input').addEventListener('keydown', e => { if (e.key === 'Enter') addFriend(); });
+}
+
+async function loadMore() {
+  try {
+    const ov = await api('friends.php');
+    renderFriends(ov);
+    renderLeaderboard((await api('leaderboard.php')).rows);
+  } catch (e) { alert(e.message); }
+}
+
+function renderFriends(ov) {
+  $('#friend-code').textContent = ov.code;
+  const req = $('#friend-requests');
+  if (!ov.incoming.length) { req.innerHTML = ''; }
+  else {
+    req.innerHTML = '<h2 class="h3 garderobe-title">Anfragen</h2>' + ov.incoming.map(r =>
+      `<div class="req-row"><span>${r.name}</span><span class="req-actions">
+         <button class="btn btn-primary" data-acc="${r.user_id}">Annehmen</button>
+         <button class="btn btn-ghost" data-dec="${r.user_id}">Ablehnen</button></span></div>`).join('');
+    req.querySelectorAll('[data-acc]').forEach(b => b.addEventListener('click',
+      () => friendAction('accept', { user_id: +b.dataset.acc })));
+    req.querySelectorAll('[data-dec]').forEach(b => b.addEventListener('click',
+      () => friendAction('decline', { user_id: +b.dataset.dec })));
+  }
+}
+
+function renderLeaderboard(rows) {
+  const lb = $('#leaderboard');
+  if (!rows.length) { lb.innerHTML = '<p class="muted small">Noch keine Freunde — füg welche per Code hinzu.</p>'; return; }
+  lb.innerHTML = rows.map(r => {
+    const medal = r.rank === 1 ? '🥇' : r.rank === 2 ? '🥈' : r.rank === 3 ? '🥉' : `${r.rank}.`;
+    const streak = r.frozen ? `🧊 ${r.streak}` : (r.streak > 0 ? `🔥 ${r.streak}` : '–');
+    const rescue = (r.frozen && !r.is_me)
+      ? `<button class="btn btn-ghost lb-rescue" data-rescue="${r.user_id}">retten 💛</button>` : '';
+    return `<div class="lb-row${r.is_me ? ' me' : ''}">
+        <span class="lb-rank">${medal}</span>
+        <span class="lb-name">${r.name}${r.is_me ? ' (du)' : ''}</span>
+        <span class="lb-streak">${streak}</span>
+        <span class="lb-lvl">Lvl ${r.level}</span>
+        <span class="lb-xp">${r.xp} XP</span>
+        ${rescue}
+      </div>`;
+  }).join('');
+  lb.querySelectorAll('[data-rescue]').forEach(b => b.addEventListener('click', async () => {
+    b.disabled = true;
+    try { await api('rescue.php', 'POST', { user_id: +b.dataset.rescue }); b.textContent = 'gesendet ✓'; }
+    catch (e) { alert(e.message); b.disabled = false; }
+  }));
+}
+
+async function addFriend() {
+  const code = $('#friend-input').value.trim().toUpperCase();
+  if (!code) return;
+  await friendAction('add', { code });
+}
+async function friendAction(action, extra) {
+  const msg = $('#friend-msg');
+  try {
+    const r = await api('friends.php', 'POST', { action, ...extra });
+    $('#friend-input').value = '';
+    msg.textContent = r.accepted ? 'Freund hinzugefügt! 🎉'
+      : r.requested ? 'Anfrage gesendet.' : '';
+    if (r.overview) renderFriends(r.overview);
+    renderLeaderboard((await api('leaderboard.php')).rows);
+  } catch (e) { msg.textContent = e.message; }
 }
 
 /* ---------- Tanuki (equipped Outfit) ---------- */
@@ -276,17 +366,17 @@ function applyTanuki() {
 
 /* ---------- Views / Nav ---------- */
 function showView(which) {
-  ['today', 'plan', 'shop'].forEach(v => {
+  ['today', 'plan', 'shop', 'more'].forEach(v => {
     $('#view-' + v).classList.toggle('hidden', which !== v);
     $('#nav-' + v).classList.toggle('is-active', which === v);
   });
   if (which === 'shop') loadShop();
   if (which === 'plan') loadWeek();
+  if (which === 'more') loadMore();
 }
 function initNav() {
-  $('#nav-today').addEventListener('click', () => showView('today'));
-  $('#nav-plan').addEventListener('click', () => showView('plan'));
-  $('#nav-shop').addEventListener('click', () => showView('shop'));
+  ['today', 'plan', 'shop', 'more'].forEach(v =>
+    $('#nav-' + v).addEventListener('click', () => showView(v)));
 }
 
 /* ---------- Wochen-Plan ---------- */
@@ -476,6 +566,7 @@ async function boot() {
     const s = await api('state.php');
     if (s.logged_in) {
       renderProgress(s.progress);
+      showIce(s);
       EQUIPPED = s.equipped || null; applyTanuki();
       showApp(); resetHero(); showView('today');
     } else showAuth();

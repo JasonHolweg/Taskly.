@@ -13,6 +13,7 @@ if (!$u) {
     json_out(['logged_in' => false]);
 }
 
+reconcile_streak($uid);          // Eis/Bruch beim App-Start aktuell halten
 $p   = get_progress($uid);
 $lvl = level_from_xp((int) $p['xp_total']);
 
@@ -27,6 +28,9 @@ json_out([
         'sparks'         => (int) $p['sparks'],
         'streak'         => (int) $p['streak_count'],
         'longest_streak' => (int) $p['longest_streak'],
+        'frozen'         => $p['streak_state'] === 'frozen',
+        'frozen_until'   => $p['streak_frozen_until'],
     ],
     'equipped'  => get_equipped($uid),
+    'rescues'   => $p['streak_state'] === 'frozen' ? pending_rescues($uid) : (clear_rescues($uid) ?? []),
 ]);

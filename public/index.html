@@ -72,6 +72,9 @@
 
   <main class="content" id="view-today">
 
+    <!-- Streak auf Eis / Rettung -->
+    <div class="ice-banner hidden" id="ice-banner"></div>
+
     <!-- Brain-Dump -->
     <section class="card braindump">
       <h2 class="h3">Kopf leeren</h2>
@@ -154,6 +157,29 @@
     </div>
     <p class="muted small">Taskly verteilt deine Aufgaben über die Woche. Kein Muss — „Was jetzt?" zieht trotzdem aus allem.</p>
     <section id="week" class="week"></section>
+  </main>
+
+  <!-- ===== MEHR (Freunde + Leaderboard) ===== -->
+  <main class="content hidden" id="view-more">
+    <h1 class="h1-shop">Freunde</h1>
+
+    <section class="card">
+      <h2 class="h3">Dein Freundes-Code</h2>
+      <div class="friend-code" id="friend-code">––––––––</div>
+      <p class="muted small">Teile ihn, damit Freunde dich adden — oder gib hier ihren Code ein.</p>
+      <div class="add-friend">
+        <input type="text" id="friend-input" placeholder="CODE" maxlength="8" autocapitalize="characters" autocomplete="off">
+        <button class="btn btn-primary" id="friend-add">Adden</button>
+      </div>
+      <p class="muted small" id="friend-msg"></p>
+    </section>
+
+    <section id="friend-requests"></section>
+
+    <h2 class="h3 garderobe-title">Leaderboard</h2>
+    <section id="leaderboard" class="leaderboard"></section>
+
+    <button class="btn btn-ghost btn-block" id="btn-logout">Abmelden</button>
   </main>
 
   <!-- ===== Lootbox-Reveal ===== -->

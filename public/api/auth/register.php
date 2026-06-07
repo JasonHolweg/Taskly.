@@ -47,6 +47,7 @@ $userId = (int) $pdo->lastInsertId();
 // Gamification-Anker
 $pdo->prepare('INSERT INTO user_progress (user_id) VALUES (?)')->execute([$userId]);
 $pdo->prepare('INSERT INTO tanuki_profile (user_id) VALUES (?)')->execute([$userId]);
+ensure_friend_code($userId);
 
 $_SESSION['uid'] = $userId;
 
