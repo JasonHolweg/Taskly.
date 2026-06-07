@@ -78,9 +78,16 @@ function parse_braindump(string $input): array
         return [];
     }
 
+    $wdays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+    $now   = $wdays[(int) date('w')] . ', ' . date('Y-m-d H:i') . ' (Europe/Berlin)';
+
     $system = <<<SYS
 Du bist der Parser von Taskly, einer ADHS-Aufgaben-App. Wandle den Brain-Dump des Users
 in strukturierte Aufgaben um. Antworte mit STRIKTEM JSON, KEIN Prosa-Text, KEINE Code-Fences.
+
+JETZT ist es: {$now}. Rechne relative Zeitangaben („heute", „morgen", „bis Freitag",
+„Montag 15 Uhr", „nächste Woche") IMMER auf konkrete Datumswerte ab JETZT um — wähle stets
+den nächsten zukünftigen Zeitpunkt. Nutze niemals ein Jahr aus der Vergangenheit.
 
 Format:
 { "tasks": [
