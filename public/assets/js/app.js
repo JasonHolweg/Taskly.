@@ -232,16 +232,180 @@ function initMore() {
   $$('[data-soon]').forEach(b => b.addEventListener('click', () => alert('Kommt bald ✨')));
 }
 
+/* ---------- Tanuki (equipped Outfit) ---------- */
+const BASE_TANUKI = {
+  neutral: '/assets/img/tanuki/base-neutral.png',
+  happy: '/assets/img/tanuki/base-happy.png',
+  celebrate: '/assets/img/tanuki/base-celebrate.png',
+  tired: '/assets/img/tanuki/base-tired.png',
+  sad: '/assets/img/tanuki/base-sad.png',
+};
+let EQUIPPED = null;
+function tanukiFor(emotion) {
+  if (EQUIPPED && EQUIPPED.poses) {
+    if (emotion === 'neutral' && EQUIPPED.poses.happy) return EQUIPPED.poses.happy;
+    if (EQUIPPED.poses[emotion]) return EQUIPPED.poses[emotion];
+  }
+  return BASE_TANUKI[emotion] || BASE_TANUKI.neutral;
+}
+function applyTanuki() {
+  $$('#hero-start .tanuki, #hero-pick .tanuki').forEach(i => i.src = tanukiFor('neutral'));
+  const empty = $('#hero-empty .tanuki'); if (empty) empty.src = tanukiFor('tired');
+  const rt = $('#reward-tanuki'); if (rt) rt.src = tanukiFor('celebrate');
+}
+
+/* ---------- Views / Nav ---------- */
+function showView(which) {
+  $('#view-today').classList.toggle('hidden', which !== 'today');
+  $('#view-shop').classList.toggle('hidden', which !== 'shop');
+  $('#nav-today').classList.toggle('is-active', which === 'today');
+  $('#nav-shop').classList.toggle('is-active', which === 'shop');
+  if (which === 'shop') loadShop();
+}
+function initNav() {
+  $('#nav-today').addEventListener('click', () => showView('today'));
+  $('#nav-shop').addEventListener('click', () => showView('shop'));
+}
+
+/* ---------- Shop ---------- */
+const RAR_LABEL = { gewoehnlich: 'Gewöhnlich', selten: 'Selten', episch: 'Episch', legendaer: 'Legendär' };
+const BOX_EMOJI = { japan: '🎴', kostuem: '🎁' };
+const poseImg = c => c.poses.happy || c.poses.celebrate || Object.values(c.poses)[0];
+let SHOP = null, CURRENT_BOX = null, LAST_DRAW = null;
+
+async function loadShop() {
+  try { SHOP = await api('shop.php'); renderShop(); }
+  catch (e) { alert(e.message); }
+}
+function renderShop() {
+  $('#shop-sparks').textContent = SHOP.sparks;
+  const wrap = $('#boxes'); wrap.innerHTML = '';
+  SHOP.boxes.forEach(box => {
+    const can = SHOP.sparks >= box.cost;
+    const rates = SHOP.drop_rates;
+    const rateChips = Object.keys(rates).map(r =>
+      `<span class="rate" data-rarity="${r}">${RAR_LABEL[r]} ${rates[r]}%</span>`).join('');
+    const prev = box.contents.map(c =>
+      `<div class="prev ${c.owned ? 'owned' : ''}" data-rarity="${c.rarity}"><img src="${poseImg(c)}" alt="${c.name}" title="${c.name} · ${RAR_LABEL[c.rarity]}"></div>`).join('');
+    const el = document.createElement('div'); el.className = 'box-card';
+    el.innerHTML =
+      `<div class="box-top"><span class="box-emoji">${BOX_EMOJI[box.theme] || '🎁'}</span>
+         <div><div class="box-title">${box.name}</div><div class="box-rates">${rateChips}</div></div></div>
+       <div class="box-preview">${prev}</div>
+       <div class="box-buy"><span class="box-cost">${box.cost} ✦</span>
+         <button class="btn btn-primary" ${can ? '' : 'disabled'}>Öffnen</button></div>`;
+    el.querySelector('button').addEventListener('click', () => openBox(box));
+    wrap.appendChild(el);
+  });
+  renderGarderobe();
+}
+function renderGarderobe() {
+  const g = $('#garderobe'); g.innerHTML = '';
+  $('#garderobe-empty').classList.toggle('hidden', SHOP.inventory.length > 0);
+  const base = document.createElement('div');
+  base.className = 'outfit-tile base' + (SHOP.equipped_id ? '' : ' equipped');
+  base.innerHTML = `<img src="/assets/img/tanuki/base-neutral.png" alt="Basis"><div class="ot-name">Basis</div>`
+    + (SHOP.equipped_id ? '' : '<span class="ot-eq">●</span>');
+  base.addEventListener('click', () => equip(0));
+  g.appendChild(base);
+  SHOP.inventory.forEach(it => {
+    const t = document.createElement('div');
+    t.className = 'outfit-tile' + (it.equipped ? ' equipped' : '');
+    t.dataset.rarity = it.rarity;
+    t.innerHTML = `<img src="${poseImg(it)}" alt="${it.name}"><div class="ot-name">${it.name}</div>`
+      + (it.equipped ? '<span class="ot-eq">●</span>' : '');
+    t.addEventListener('click', () => equip(it.id));
+    g.appendChild(t);
+  });
+}
+async function equip(id) {
+  try {
+    const r = await api('equip.php', 'POST', { cosmetic_id: id });
+    EQUIPPED = r.equipped; applyTanuki();
+    await loadShop();
+  } catch (e) { alert(e.message); }
+}
+
+/* ---------- Lootbox öffnen ---------- */
+function openBox(box) {
+  CURRENT_BOX = box;
+  $('#lb-boxname').textContent = box.name;
+  $('#lb-box').textContent = BOX_EMOJI[box.theme] || '🎁';
+  $('#lb-cost').textContent = box.cost;
+  $('#lb-closed').classList.remove('hidden');
+  $('#lb-reveal').classList.add('hidden');
+  $('#lootbox').classList.remove('hidden');
+}
+async function doOpen() {
+  if (!CURRENT_BOX) return;
+  $('#lb-open-btn').disabled = true;
+  try {
+    const r = await api('openbox.php', 'POST', { box_id: CURRENT_BOX.id });
+    revealItem(r);
+    $('#spark-count').textContent = r.sparks;
+    $('#shop-sparks').textContent = r.sparks;
+  } catch (e) { alert(e.message); $('#lootbox').classList.add('hidden'); }
+  finally { $('#lb-open-btn').disabled = false; }
+}
+function revealItem(r) {
+  LAST_DRAW = r;
+  const c = r.cosmetic;
+  $('#lb-closed').classList.add('hidden');
+  const rev = $('#lb-reveal'); rev.classList.remove('hidden'); rev.dataset.rarity = r.rarity;
+  $('#lb-img').src = c.poses.celebrate || c.poses.happy || Object.values(c.poses)[0];
+  $('#lb-rarity').textContent = RAR_LABEL[r.rarity];
+  $('#lb-name').textContent = c.name;
+  const dupe = $('#lb-dupe');
+  if (r.duplicate) {
+    dupe.textContent = `Schon dabei — +${r.refund} ✦ zurück`; dupe.classList.remove('hidden');
+    $('#lb-equip').disabled = true; $('#lb-equip').textContent = 'Im Inventar';
+  } else {
+    dupe.classList.add('hidden'); $('#lb-equip').disabled = false; $('#lb-equip').textContent = 'Anlegen';
+  }
+  $('#lb-again').disabled = r.sparks < CURRENT_BOX.cost;
+  lbConfetti(r.rarity);
+}
+function initLootbox() {
+  $('#lb-open-btn').addEventListener('click', doOpen);
+  $('#lb-again').addEventListener('click', doOpen);
+  $('#lb-equip').addEventListener('click', async () => {
+    if (LAST_DRAW && !LAST_DRAW.duplicate) await equip(LAST_DRAW.cosmetic.id);
+    $('#lootbox').classList.add('hidden');
+  });
+  $('#lb-close').addEventListener('click', async () => {
+    $('#lootbox').classList.add('hidden'); await loadShop();
+  });
+}
+function lbConfetti(rarity) {
+  const box = $('#lb-confetti'); box.innerHTML = '';
+  const map = {
+    gewoehnlich: ['#9AA0A6', '#C7CCD1'], selten: ['#3E9BE8', '#7FC0F0'],
+    episch: ['#5F58E0', '#FF5C8A'], legendaer: ['#F5A623', '#FFD77A', '#FF5C8A'],
+  };
+  const cols = map[rarity] || map.gewoehnlich;
+  const n = rarity === 'legendaer' ? 44 : rarity === 'episch' ? 30 : 18;
+  for (let i = 0; i < n; i++) {
+    const c = document.createElement('i');
+    c.style.left = Math.random() * 100 + '%';
+    c.style.background = cols[i % cols.length];
+    c.style.animationDelay = (Math.random() * 0.25) + 's';
+    box.appendChild(c);
+  }
+}
+
 /* ---------- Boot ---------- */
 async function boot() {
   try {
     const s = await api('state.php');
-    if (s.logged_in) { renderProgress(s.progress); showApp(); resetHero(); }
-    else showAuth();
+    if (s.logged_in) {
+      renderProgress(s.progress);
+      EQUIPPED = s.equipped || null; applyTanuki();
+      showApp(); resetHero(); showView('today');
+    } else showAuth();
   } catch (_) { showAuth(); }
 }
 
-initTheme(); initAuth(); initDump(); initQuick(); initHero(); initMore();
+initTheme(); initAuth(); initDump(); initQuick(); initHero(); initMore(); initNav(); initLootbox();
 boot();
 
 if ('serviceWorker' in navigator) {

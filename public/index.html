@@ -70,7 +70,7 @@
     </div>
   </header>
 
-  <main class="content">
+  <main class="content" id="view-today">
 
     <!-- Brain-Dump -->
     <section class="card braindump">
@@ -131,6 +131,47 @@
     </section>
   </main>
 
+  <!-- ===== SHOP ===== -->
+  <main class="content hidden" id="view-shop">
+    <div class="shop-head">
+      <h1 class="h1-shop">Shop</h1>
+      <div class="sparks sparks-big"><span class="spark-ico">✦</span><span id="shop-sparks">0</span></div>
+    </div>
+    <p class="muted small">Sparks verdienst du durchs Erledigen. Kisten geben zufällige Outfits — Duplikate gibt’s als Sparks zurück.</p>
+
+    <section id="boxes" class="boxes"></section>
+
+    <h2 class="h3 garderobe-title">Garderobe</h2>
+    <p class="muted small" id="garderobe-empty">Noch keine Outfits — öffne eine Kiste. 🎁</p>
+    <section id="garderobe" class="garderobe"></section>
+  </main>
+
+  <!-- ===== Lootbox-Reveal ===== -->
+  <div class="reward-overlay hidden" id="lootbox">
+    <div class="lootbox-card" id="lootbox-card">
+      <div class="confetti" id="lb-confetti"></div>
+      <!-- Phase 1: geschlossene Kiste -->
+      <div id="lb-closed" class="lb-closed">
+        <div class="lb-box" id="lb-box">🎁</div>
+        <p class="muted" id="lb-boxname">—</p>
+        <button class="btn btn-primary" id="lb-open-btn">Öffnen</button>
+      </div>
+      <!-- Phase 2: Reveal -->
+      <div id="lb-reveal" class="lb-reveal hidden">
+        <div class="rarity-burst" id="lb-burst"></div>
+        <img src="" alt="" class="tanuki tanuki-lg" id="lb-img">
+        <div class="lb-rarity" id="lb-rarity">—</div>
+        <div class="lb-name" id="lb-name">—</div>
+        <p class="lb-dupe muted small hidden" id="lb-dupe"></p>
+        <div class="lb-actions">
+          <button class="btn btn-ghost" id="lb-again">Nochmal (<span id="lb-cost">120</span> ✦)</button>
+          <button class="btn btn-primary" id="lb-equip">Anlegen</button>
+        </div>
+        <button class="btn btn-ghost lb-close" id="lb-close">Schließen</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Belohnungs-Pop -->
   <div class="reward-overlay hidden" id="reward">
     <div class="reward-card">
@@ -144,9 +185,9 @@
   </div>
 
   <nav class="bottom-nav">
-    <button class="nav-item is-active">Heute</button>
+    <button class="nav-item is-active" id="nav-today">Heute</button>
     <button class="nav-item" data-soon>Plan</button>
-    <button class="nav-item" data-soon>Shop</button>
+    <button class="nav-item" id="nav-shop">Shop</button>
     <button class="nav-item" id="nav-more">Mehr</button>
   </nav>
 </div>

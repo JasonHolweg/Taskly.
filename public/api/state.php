@@ -28,4 +28,5 @@ json_out([
         'streak'         => (int) $p['streak_count'],
         'longest_streak' => (int) $p['longest_streak'],
     ],
+    'equipped'  => get_equipped($uid),
 ]);

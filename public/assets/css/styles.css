@@ -194,4 +194,62 @@ textarea{resize:vertical;line-height:1.5}
 @keyframes bounce{0%{transform:translateY(0)}30%{transform:translateY(-12px)}60%{transform:translateY(0)}80%{transform:translateY(-5px)}100%{transform:translateY(0)}}
 @keyframes fall{to{transform:translateY(320px) rotate(360deg);opacity:0}}
 
+/* ===== Raritäten ===== */
+:root{
+  --rar-gewoehnlich:#9AA0A6; --rar-selten:#3E9BE8;
+  --rar-episch:var(--indigo-500); --rar-legendaer:var(--color-spark);
+}
+[data-rarity="gewoehnlich"]{--rar:var(--rar-gewoehnlich)}
+[data-rarity="selten"]{--rar:var(--rar-selten)}
+[data-rarity="episch"]{--rar:var(--rar-episch)}
+[data-rarity="legendaer"]{--rar:var(--rar-legendaer)}
+
+/* ===== Shop ===== */
+.shop-head{display:flex;align-items:center;justify-content:space-between}
+.h1-shop{font-family:var(--font-display);font-weight:800;font-size:28px}
+.sparks-big{font-size:22px}
+.boxes{display:flex;flex-direction:column;gap:var(--space-4)}
+.box-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);box-shadow:var(--shadow-sm);padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-3)}
+.box-top{display:flex;align-items:center;gap:var(--space-3)}
+.box-emoji{font-size:36px}
+.box-title{font-family:var(--font-display);font-weight:700;font-size:18px}
+.box-rates{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.rate{font-size:11px;font-weight:700;padding:2px 8px;border-radius:var(--radius-full);color:var(--rar);border:1px solid color-mix(in srgb,var(--rar) 35%,transparent);background:color-mix(in srgb,var(--rar) 10%,transparent)}
+.box-preview{display:flex;gap:var(--space-2);overflow-x:auto;padding:2px}
+.prev{position:relative;flex:0 0 auto;width:54px;height:54px;border-radius:var(--radius-md);background:var(--color-surface-2);border:2px solid var(--rar);display:grid;place-items:center}
+.prev img{width:46px;height:46px;object-fit:contain}
+.prev.owned::after{content:"✓";position:absolute;right:-4px;top:-4px;width:18px;height:18px;border-radius:50%;background:var(--color-success);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center}
+.prev:not(.owned) img{opacity:.85}
+.box-buy{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3)}
+.box-cost{font-family:var(--font-display);font-weight:800;color:var(--color-spark)}
+.btn[disabled]{opacity:.45;pointer-events:none}
+
+/* Garderobe */
+.garderobe-title{margin-top:var(--space-3)}
+.garderobe{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3)}
+.outfit-tile{position:relative;background:var(--color-surface);border:2px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-3) var(--space-2);text-align:center;cursor:pointer;transition:transform var(--dur-fast) var(--ease-standard)}
+.outfit-tile:active{transform:scale(.96)}
+.outfit-tile[data-rarity]{border-color:color-mix(in srgb,var(--rar) 55%,var(--color-border))}
+.outfit-tile.equipped{border-color:var(--color-primary);box-shadow:0 0 0 2px color-mix(in srgb,var(--color-primary) 35%,transparent)}
+.outfit-tile img{width:100%;aspect-ratio:1;object-fit:contain}
+.outfit-tile .ot-name{font-size:11px;font-weight:600;color:var(--color-text-secondary);margin-top:4px;line-height:1.2}
+.outfit-tile .ot-eq{position:absolute;top:6px;right:6px;font-size:10px;font-weight:800;color:var(--color-primary)}
+.outfit-tile.base{display:flex;flex-direction:column;align-items:center;justify-content:center;border-style:dashed}
+
+/* ===== Lootbox-Reveal ===== */
+.lootbox-card{position:relative;background:var(--color-surface);border-radius:var(--radius-2xl);box-shadow:var(--shadow-lg);padding:var(--space-7) var(--space-6);text-align:center;width:min(90vw,360px);display:flex;flex-direction:column;align-items:center;gap:var(--space-3);animation:pop var(--dur-reward) var(--ease-spring)}
+.lb-closed,.lb-reveal{display:flex;flex-direction:column;align-items:center;gap:var(--space-3)}
+.lb-box{font-size:88px;animation:shake 1.2s var(--ease-standard) infinite}
+.lb-reveal{position:relative}
+.rarity-burst{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,var(--rar) 0%,transparent 68%);opacity:.5;filter:blur(6px);animation:burst var(--dur-reward) var(--ease-spring)}
+.lb-reveal .tanuki{position:relative;z-index:1}
+.lb-rarity{font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--rar)}
+.lb-name{font-family:var(--font-display);font-weight:800;font-size:22px}
+.lb-dupe{color:var(--color-spark)}
+.lb-actions{display:flex;gap:var(--space-2);margin-top:var(--space-2)}
+.lb-close{margin-top:var(--space-1)}
+
+@keyframes shake{0%,100%{transform:rotate(0)}20%{transform:rotate(-8deg) scale(1.04)}40%{transform:rotate(8deg) scale(1.04)}60%{transform:rotate(-6deg)}80%{transform:rotate(6deg)}}
+@keyframes burst{from{transform:translateX(-50%) scale(.3);opacity:0}to{transform:translateX(-50%) scale(1);opacity:.5}}
+
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition-duration:.01ms !important}}

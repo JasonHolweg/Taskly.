@@ -30,6 +30,8 @@ require __DIR__ . '/db.php';
 require __DIR__ . '/lib/helpers.php';
 require __DIR__ . '/lib/gamification.php';
 require __DIR__ . '/lib/selection.php';
+require __DIR__ . '/lib/cosmetics.php';
+require __DIR__ . '/lib/gacha.php';
 require __DIR__ . '/lib/claude.php';
 
 // Session (für simple Familien-Auth, architecture.md §6)
