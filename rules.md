@@ -78,8 +78,8 @@ Zwei Stufen, klar getrennt:
 **Öffnen:** zieht zuerst die Seltenheit, dann ein zufälliges Item dieses Themas + Seltenheit. Das ist der zweite, größere Dopamin-Kick (das Lootbox-Gefühl).
 
 **Fairness (damit RNG nicht frustriert) 🔧:**
-- **Duplikat → Spark-Rückerstattung** (Gewöhnlich 10 / Selten 25 / Episch 60 / Legendär 150) → fließt zurück in neue Boxen.
-- **Soft-Pity:** garantiert **Episch+** spätestens alle 10 Boxen ohne eine.
+- **Kein Duplikat-Frust (v1-Entscheidung, ersetzt die alte Dupe-Rückerstattung):** Solange eine Themen-Kiste noch nicht gesammelte Items enthält, zieht sie **ausschließlich Neues** (re-roll bis neu). Ist alles freigeschaltet, gilt die Kiste als **100 % komplett**, zeigt das im Shop an und ist **nicht mehr kaufbar** — bis neue Items zum Theme dazukommen.
+- **Soft-Pity:** garantiert **Episch+** spätestens alle 10 Boxen ohne eine (greift weiterhin auf die gewürfelte Rarität, bevor das neue Item gezogen wird).
 - **Optional:** einzelne Signature-Items zusätzlich direkt kaufbar (teuer), damit ein gezielter Wunsch erfüllbar bleibt (`cosmetics.cost_sparks`).
 
 **Box-Preis 🔧:** ~120 Sparks/Box.
