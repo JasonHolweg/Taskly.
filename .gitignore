@@ -54,6 +54,10 @@ yarn-error.log*
 *.sublime-project
 *.sublime-workspace
 
+# --- Tanuki-Bilder (nur auf dem Server, nicht ins Repo) ---
+/tanuki-raw/
+/public/assets/img/tanuki/
+
 # --- Sonstiges ---
 Thumbs.db
 desktop.ini

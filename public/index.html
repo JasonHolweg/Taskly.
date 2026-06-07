@@ -10,8 +10,8 @@
   <meta name="apple-mobile-web-app-title" content="Taskly">
   <title>Taskly — eine Sache, die du jetzt machen kannst</title>
   <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="apple-touch-icon" href="/assets/img/tanuki.svg">
-  <link rel="icon" href="/assets/img/tanuki.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/img/tanuki/apple-touch-icon.png">
+  <link rel="icon" href="/assets/img/tanuki/icon-192.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
@@ -22,7 +22,7 @@
 <!-- ============ AUTH ============ -->
 <section id="auth" class="auth hidden">
   <div class="auth-card">
-    <img src="/assets/img/tanuki.svg" alt="Taskly Tanuki" class="tanuki tanuki-lg">
+    <img src="/assets/img/tanuki/base-happy.png" alt="Taskly Tanuki" class="tanuki tanuki-lg">
     <h1 class="brand">Taskly</h1>
     <p class="muted">Eine Sache, die du jetzt machen kannst.</p>
 
@@ -103,14 +103,14 @@
 
       <!-- Startzustand -->
       <div class="hero-card" id="hero-start">
-        <img src="/assets/img/tanuki.svg" alt="" class="tanuki tanuki-md">
+        <img src="/assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
         <button class="btn btn-primary btn-hero" id="btn-whatnow">Was jetzt?</button>
         <p class="muted small">Eine Sache. Kein Stress.</p>
       </div>
 
       <!-- Pick -->
       <div class="hero-card pick hidden" id="hero-pick">
-        <div class="pick-reason"><img src="/assets/img/tanuki.svg" alt="" class="tanuki tanuki-sm"><span id="pick-reason"></span></div>
+        <div class="pick-reason"><img src="/assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-sm"><span id="pick-reason"></span></div>
         <h2 class="display" id="pick-title">—</h2>
         <div class="pick-meta" id="pick-meta"></div>
         <div class="pick-actions">
@@ -124,7 +124,7 @@
 
       <!-- Leerzustand -->
       <div class="hero-card empty hidden" id="hero-empty">
-        <img src="/assets/img/tanuki.svg" alt="" class="tanuki tanuki-md tanuki-calm">
+        <img src="/assets/img/tanuki/base-tired.png" alt="" class="tanuki tanuki-md tanuki-calm">
         <p id="empty-msg" class="empty-msg">Nichts dringend. Genieß die Pause. 🍵</p>
         <button class="btn btn-ghost" id="empty-again">Nochmal schauen</button>
       </div>
@@ -135,7 +135,7 @@
   <div class="reward-overlay hidden" id="reward">
     <div class="reward-card">
       <div class="confetti" id="confetti"></div>
-      <img src="/assets/img/tanuki.svg" alt="" class="tanuki tanuki-lg tanuki-happy">
+      <img src="/assets/img/tanuki/base-celebrate.png" alt="" class="tanuki tanuki-lg tanuki-happy" id="reward-tanuki">
       <div class="reward-xp" id="reward-xp">+0 XP</div>
       <p class="reward-msg" id="reward-msg"></p>
       <div class="reward-extra" id="reward-extra"></div>

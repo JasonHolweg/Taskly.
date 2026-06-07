@@ -1,11 +1,15 @@
 /* Taskly — Service Worker. Offline-Shell (architecture.md §6). */
-const CACHE = 'taskly-v1';
+const CACHE = 'taskly-v2';
 const SHELL = [
   '/',
   '/index.html',
   '/assets/css/styles.css',
   '/assets/js/app.js',
-  '/assets/img/tanuki.svg',
+  '/assets/img/tanuki/base-neutral.png',
+  '/assets/img/tanuki/base-happy.png',
+  '/assets/img/tanuki/base-celebrate.png',
+  '/assets/img/tanuki/base-tired.png',
+  '/assets/img/tanuki/icon-192.png',
   '/manifest.webmanifest',
 ];
 
