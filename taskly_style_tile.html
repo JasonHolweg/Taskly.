@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taskly — Style Tile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --indigo-50:#EEEEFB;--indigo-100:#E0E0F9;--indigo-200:#C4C3F3;--indigo-300:#9F9CEC;
+  --indigo-400:#7C77E6;--indigo-500:#5F58E0;--indigo-600:#4F47D6;--indigo-700:#413AB8;
+  --indigo-800:#353093;--indigo-900:#2A2670;
+  --color-primary:var(--indigo-600);--color-primary-hover:var(--indigo-700);
+  --color-primary-subtle:var(--indigo-50);--color-on-primary:#fff;
+  --color-bg:#F5F5F7;--color-surface:#fff;--color-surface-2:#FAFAFC;--color-border:#E5E5EA;
+  --color-text:#1D1D1F;--color-text-secondary:#6E6E73;--color-text-tertiary:#A1A1A6;
+  --color-spark:#F5A623;--color-spark-bright:#FFB93D;--color-celebrate:#FF5C8A;--color-xp:var(--indigo-500);
+  --color-success:#2FBF71;--color-due-soon:#F2A33C;--color-danger:#E0483D;
+  --font-body:"Hanken Grotesk",-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-display:"Nunito",var(--font-body);
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;--space-6:32px;
+  --radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;--radius-2xl:28px;--radius-full:999px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.04),0 1px 3px rgba(0,0,0,.06);
+  --shadow-md:0 4px 12px rgba(0,0,0,.06),0 2px 4px rgba(0,0,0,.04);
+  --shadow-lg:0 12px 32px rgba(0,0,0,.10),0 4px 8px rgba(0,0,0,.05);
+  --ease-standard:cubic-bezier(.4,0,.2,1);--ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --dur-base:220ms;
+}
+[data-theme="dark"]{
+  --color-primary:#6E68F0;--color-primary-hover:#837EF3;--color-primary-subtle:#1E1B3A;
+  --color-bg:#000;--color-surface:#1C1C1E;--color-surface-2:#2C2C2E;--color-border:#38383A;
+  --color-text:#F5F5F7;--color-text-secondary:#98989D;--color-text-tertiary:#636366;
+  --color-spark:#FFB93D;--color-celebrate:#FF6F9C;--color-success:#32D27A;--color-due-soon:#F7B250;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.4);--shadow-md:0 4px 16px rgba(0,0,0,.5);--shadow-lg:0 16px 40px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--color-bg);color:var(--color-text);
+  transition:background .4s var(--ease-standard),color .4s var(--ease-standard);
+  -webkit-font-smoothing:antialiased;padding:var(--space-5);}
+.wrap{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:380px 1fr;gap:var(--space-6);align-items:start}
+@media(max-width:860px){.wrap{grid-template-columns:1fr}}
+
+/* ---- top bar of page ---- */
+.topbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-2)}
+.brand{font-family:var(--font-display);font-weight:800;font-size:30px;letter-spacing:-.02em}
+.brand .dot{color:var(--color-primary)}
+.brand small{display:block;font-family:var(--font-body);font-weight:500;font-size:13px;color:var(--color-text-secondary);letter-spacing:0}
+.toggle{display:flex;gap:6px;background:var(--color-surface);border:1px solid var(--color-border);
+  border-radius:var(--radius-full);padding:4px;box-shadow:var(--shadow-sm)}
+.toggle button{font-family:var(--font-body);font-weight:600;font-size:13px;border:0;cursor:pointer;
+  padding:8px 16px;border-radius:var(--radius-full);background:transparent;color:var(--color-text-secondary)}
+.toggle button.on{background:var(--color-primary);color:var(--color-on-primary)}
+
+/* ---- phone column ---- */
+.phone{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-2xl);
+  box-shadow:var(--shadow-lg);overflow:hidden}
+.phone-bg{background:var(--color-bg);padding:var(--space-4)}
+.statusbar{display:flex;align-items:center;justify-content:space-between;padding:6px 6px 14px;color:var(--color-text-secondary);font-size:12px;font-weight:600}
+
+/* xp + sparks */
+.hud{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)}
+.lvl{display:flex;align-items:center;gap:10px}
+.ring{position:relative;width:42px;height:42px}
+.ring svg{transform:rotate(-90deg)}
+.ring .lab{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:800;font-size:13px}
+.lvl .meta b{font-family:var(--font-display);font-size:15px}
+.lvl .meta span{display:block;font-size:11px;color:var(--color-text-secondary)}
+.sparks{display:flex;align-items:center;gap:6px;background:var(--color-surface);border:1px solid var(--color-border);
+  border-radius:var(--radius-full);padding:6px 12px;box-shadow:var(--shadow-sm);font-family:var(--font-display);font-weight:800}
+.sparks .ic{color:var(--color-spark);font-size:16px}
+
+/* hero */
+.hero{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);
+  box-shadow:var(--shadow-sm);padding:var(--space-5);position:relative;overflow:hidden}
+.hero .reason{display:flex;align-items:center;gap:8px;color:var(--color-text-secondary);font-size:13.5px;font-weight:500;margin-bottom:var(--space-4)}
+.mascot{width:30px;height:30px;border-radius:50%;background:var(--color-primary-subtle);
+  display:grid;place-items:center;font-size:17px;flex:none}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-tertiary);margin-bottom:6px}
+.task-title{font-family:var(--font-display);font-weight:800;font-size:28px;line-height:1.15;letter-spacing:-.02em;margin-bottom:var(--space-3)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:var(--space-5)}
+.chip{font-size:12px;font-weight:600;padding:5px 10px;border-radius:var(--radius-full);background:var(--color-surface-2);border:1px solid var(--color-border);color:var(--color-text-secondary)}
+.chip.xp{color:var(--color-xp);background:var(--color-primary-subtle);border-color:transparent}
+
+.qrow{margin-bottom:var(--space-3)}
+.qrow .qlab{font-size:11px;font-weight:700;color:var(--color-text-tertiary);margin-bottom:6px;letter-spacing:.04em}
+.pills{display:flex;gap:8px}
+.pill{flex:1;min-height:40px;border:1px solid var(--color-border);background:var(--color-surface-2);
+  border-radius:var(--radius-full);font-family:var(--font-body);font-weight:600;font-size:14px;color:var(--color-text-secondary);
+  cursor:pointer;transition:all var(--dur-base) var(--ease-standard)}
+.pill.on{background:var(--color-primary-subtle);border-color:var(--color-primary);color:var(--color-primary)}
+
+.actions{display:flex;gap:10px;margin-top:var(--space-5)}
+.btn{font-family:var(--font-body);font-weight:700;font-size:15px;border:0;cursor:pointer;border-radius:var(--radius-md);min-height:50px;transition:transform var(--dur-base) var(--ease-spring),background var(--dur-base)}
+.btn:active{transform:scale(.96)}
+.btn-primary{flex:1;background:var(--color-primary);color:var(--color-on-primary)}
+.btn-primary:hover{background:var(--color-primary-hover)}
+.btn-ghost{background:transparent;color:var(--color-text-secondary);padding:0 16px;border:1px solid var(--color-border)}
+
+/* section label */
+.slabel{font-family:var(--font-display);font-weight:700;font-size:13px;color:var(--color-text-tertiary);
+  margin:var(--space-5) 4px var(--space-3);letter-spacing:.02em}
+
+/* task cards */
+.card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);
+  box-shadow:var(--shadow-sm);padding:var(--space-4);display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.ddot{width:10px;height:10px;border-radius:50%;flex:none}
+.card .body{flex:1}
+.card .body b{font-family:var(--font-display);font-weight:700;font-size:15px;display:block}
+.card .body span{font-size:12px;color:var(--color-text-secondary)}
+.check{width:28px;height:28px;border-radius:50%;border:2px solid var(--color-border);flex:none;cursor:pointer;transition:all var(--dur-base) var(--ease-spring)}
+.check.done{background:var(--color-success);border-color:var(--color-success);position:relative}
+.check.done::after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px}
+
+/* streak */
+.streak{display:flex;align-items:center;gap:12px;background:var(--color-surface);border:1px solid var(--color-border);
+  border-radius:var(--radius-xl);box-shadow:var(--shadow-sm);padding:var(--space-4);margin-bottom:10px}
+.streak .big{font-family:var(--font-display);font-weight:800;font-size:20px}
+.streak .sub{font-size:12px;color:var(--color-text-secondary)}
+
+/* leaderboard */
+.lrow{display:flex;align-items:center;gap:12px;background:var(--color-surface);border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);padding:12px var(--space-4);margin-bottom:8px}
+.lrow.me{border-color:var(--color-primary);background:var(--color-primary-subtle)}
+.lrow .ava{width:34px;height:34px;border-radius:50%;background:var(--color-surface-2);display:grid;place-items:center;font-size:17px;flex:none}
+.lrow .nm{flex:1;font-weight:600;font-size:14px}
+.lrow .lv{font-family:var(--font-display);font-weight:800;font-size:13px;color:var(--color-primary)}
+
+/* bottom nav */
+.nav{display:flex;justify-content:space-around;padding:14px 0 6px;border-top:1px solid var(--color-border);margin-top:var(--space-4)}
+.nav div{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;color:var(--color-text-tertiary)}
+.nav div.on{color:var(--color-primary)}
+.nav .ni{font-size:19px}
+
+/* ---- spec column ---- */
+.panel{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);
+  box-shadow:var(--shadow-sm);padding:var(--space-5);margin-bottom:var(--space-4)}
+.panel h3{font-family:var(--font-display);font-weight:800;font-size:16px;margin-bottom:var(--space-4);letter-spacing:-.01em}
+.sw-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.sw{border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--color-border)}
+.sw .col{height:48px}
+.sw .nm{font-size:10px;padding:5px 6px;color:var(--color-text-secondary);background:var(--color-surface-2);font-weight:600}
+.sw .hx{font-size:9px;padding:0 6px 5px;color:var(--color-text-tertiary);background:var(--color-surface-2);font-family:monospace}
+.accent-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.accent{flex:1;min-width:90px;border-radius:var(--radius-md);padding:14px;color:#fff;font-weight:700;font-size:13px;font-family:var(--font-display)}
+.type-spec>div{padding:10px 0;border-bottom:1px solid var(--color-border)}
+.type-spec>div:last-child{border:0}
+.type-spec .t{font-family:var(--font-display)}
+.type-spec .meta{font-size:11px;color:var(--color-text-tertiary);font-family:monospace;margin-top:2px}
+.note{font-size:12px;color:var(--color-text-secondary);margin-top:var(--space-3);line-height:1.5}
+
+/* confetti */
+.confetti{position:absolute;width:8px;height:8px;border-radius:2px;pointer-events:none;opacity:0}
+@keyframes pop{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(.3) rotate(180deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">Taskly<span class="dot">.</span><small>by Jason Holweg · Design Style-Tile</small></div>
+    <div class="toggle">
+      <button id="bl" class="on" onclick="setTheme('light')">Light</button>
+      <button id="bd" onclick="setTheme('dark')">Dark</button>
+    </div>
+  </div>
+
+  <!-- PHONE -->
+  <div class="phone">
+    <div class="phone-bg">
+      <div class="statusbar"><span>9:41</span><span>Heute · Mi</span></div>
+
+      <div class="hud">
+        <div class="lvl">
+          <div class="ring">
+            <svg width="42" height="42"><circle cx="21" cy="21" r="18" fill="none" stroke="var(--color-border)" stroke-width="4"/>
+            <circle cx="21" cy="21" r="18" fill="none" stroke="var(--color-xp)" stroke-width="4" stroke-linecap="round" stroke-dasharray="113" stroke-dashoffset="34"/></svg>
+            <div class="lab">7</div>
+          </div>
+          <div class="meta"><b>Level 7</b><span>noch 80 XP</span></div>
+        </div>
+        <div class="sparks"><span class="ic">✦</span><span id="sparkCount">240</span></div>
+      </div>
+
+      <!-- HERO -->
+      <div class="hero" id="hero">
+        <div class="reason"><span class="mascot">🦝</span> Wenig Akku? Dann was Leichtes.</div>
+        <div class="eyebrow">Was jetzt</div>
+        <div class="task-title">Wäsche umräumen</div>
+        <div class="chips"><span class="chip">⏱ 5 Min</span><span class="chip">🔋 müde ok</span><span class="chip xp">✦ +15 XP</span></div>
+
+        <div class="qrow"><div class="qlab">WIE VIEL ZEIT?</div>
+          <div class="pills" data-group="time">
+            <button class="pill on">10</button><button class="pill">30</button><button class="pill">60+</button>
+          </div></div>
+        <div class="qrow"><div class="qlab">ENERGIE?</div>
+          <div class="pills" data-group="energy">
+            <button class="pill on">müde</button><button class="pill">ok</button><button class="pill">voll</button>
+          </div></div>
+
+        <div class="actions">
+          <button class="btn btn-primary" onclick="complete(this)">Erledigt</button>
+          <button class="btn btn-ghost">Skip</button>
+          <button class="btn btn-ghost">Snooze</button>
+        </div>
+      </div>
+
+      <div class="slabel">DEINE WOCHE</div>
+      <div class="card"><span class="ddot" style="background:#5AC8C8"></span><div class="body"><b>Bad putzen</b><span>Haushalt · 30 Min · +40 XP</span></div><div class="check" onclick="this.classList.toggle('done')"></div></div>
+      <div class="card"><span class="ddot" style="background:var(--indigo-400)"></span><div class="body"><b>Mutter anrufen</b><span>Privat · 10 Min · +15 XP</span></div><div class="check" onclick="this.classList.toggle('done')"></div></div>
+      <div class="card"><span class="ddot" style="background:#C8924A"></span><div class="body"><b>Zahnarzt</b><span>Termin · 14:00 · Erinnerung</span></div><div class="check" onclick="this.classList.toggle('done')"></div></div>
+
+      <div class="slabel">STREAK & FAMILIE</div>
+      <div class="streak"><span class="mascot" style="width:44px;height:44px;font-size:24px">🦝</span><div><div class="big">5 Tage 🔥</div><div class="sub">Weiter so — der Tanuki ist stolz.</div></div></div>
+      <div class="lrow me"><span class="ava">🦝</span><span class="nm">Du</span><span class="lv">Lv 7</span></div>
+      <div class="lrow"><span class="ava">👩</span><span class="nm">Mama</span><span class="lv">Lv 9</span></div>
+      <div class="lrow"><span class="ava">👨</span><span class="nm">Papa</span><span class="lv">Lv 5</span></div>
+
+      <div class="nav">
+        <div class="on"><span class="ni">◉</span>Heute</div>
+        <div><span class="ni">▦</span>Plan</div>
+        <div><span class="ni">✦</span>Shop</div>
+        <div><span class="ni">⋯</span>Mehr</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPEC COLUMN -->
+  <div>
+    <div class="panel">
+      <h3>Indigo</h3>
+      <div class="sw-grid">
+        <div class="sw"><div class="col" style="background:var(--indigo-100)"></div><div class="nm">100</div><div class="hx">#E0E0F9</div></div>
+        <div class="sw"><div class="col" style="background:var(--indigo-300)"></div><div class="nm">300</div><div class="hx">#9F9CEC</div></div>
+        <div class="sw"><div class="col" style="background:var(--indigo-500)"></div><div class="nm">500</div><div class="hx">#5F58E0</div></div>
+        <div class="sw"><div class="col" style="background:var(--indigo-600)"></div><div class="nm">600 ●</div><div class="hx">#4F47D6</div></div>
+        <div class="sw"><div class="col" style="background:var(--indigo-800)"></div><div class="nm">800</div><div class="hx">#353093</div></div>
+      </div>
+      <div class="accent-row">
+        <div class="accent" style="background:var(--color-spark)">Sparks ✦</div>
+        <div class="accent" style="background:var(--color-celebrate)">Celebrate</div>
+        <div class="accent" style="background:var(--color-success)">Erledigt</div>
+        <div class="accent" style="background:var(--color-due-soon)">Deadline</div>
+      </div>
+      <p class="note">Primär = Indigo&nbsp;600, nah an Apples System-Indigo. Belohnung = warmes Gold (Sparks) + Celebrate-Pink für Lootkisten/Level-Up. Kein aggressives Rot.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Typografie</h3>
+      <div class="type-spec">
+        <div><div class="t" style="font-weight:800;font-size:30px;letter-spacing:-.02em">Eine Sache. Jetzt.</div><div class="meta">Nunito 800 · Display / Hero</div></div>
+        <div><div class="t" style="font-weight:700;font-size:20px">Deine Woche</div><div class="meta">Nunito 700 · Headings</div></div>
+        <div><div style="font-family:var(--font-body);font-size:16px">Mach kurz den Abwasch — gibt 20 XP.</div><div class="meta">Hanken Grotesk 400 · Body</div></div>
+        <div><div style="font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--color-text-secondary)">Haushalt · 30 Min · +40 XP</div><div class="meta">Hanken Grotesk 600 · Caption</div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Neutrals (Apple-Graustufen)</h3>
+      <div class="sw-grid">
+        <div class="sw"><div class="col" style="background:var(--color-bg)"></div><div class="nm">bg</div></div>
+        <div class="sw"><div class="col" style="background:var(--color-surface)"></div><div class="nm">surface</div></div>
+        <div class="sw"><div class="col" style="background:var(--color-border)"></div><div class="nm">border</div></div>
+        <div class="sw"><div class="col" style="background:var(--color-text-secondary)"></div><div class="nm">text 2°</div></div>
+        <div class="sw"><div class="col" style="background:var(--color-text)"></div><div class="nm">text</div></div>
+      </div>
+      <p class="note">Tap auf <b>Light/Dark</b> oben — alles wechselt sauber, weil alle Werte Tokens sind. Genau dieser :root-Block liegt 1:1 in <code>design.md</code>.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  document.getElementById('bl').classList.toggle('on',t==='light');
+  document.getElementById('bd').classList.toggle('on',t==='dark');
+}
+document.querySelectorAll('.pills').forEach(g=>{
+  g.querySelectorAll('.pill').forEach(p=>p.onclick=()=>{
+    g.querySelectorAll('.pill').forEach(x=>x.classList.remove('on'));p.classList.add('on');
+  });
+});
+let sparks=240;
+function complete(btn){
+  // reward pop: spark count up + confetti
+  const target=sparks+15;
+  const el=document.getElementById('sparkCount');
+  const iv=setInterval(()=>{sparks++;el.textContent=sparks;if(sparks>=target)clearInterval(iv);},25);
+  burst(document.getElementById('hero'));
+  btn.textContent='✓ Stark!';btn.style.background='var(--color-success)';
+  setTimeout(()=>{btn.textContent='Erledigt';btn.style.background='';},1400);
+}
+function burst(host){
+  const cols=['var(--color-celebrate)','var(--color-spark)','var(--indigo-400)','var(--color-success)'];
+  for(let i=0;i<18;i++){
+    const c=document.createElement('div');c.className='confetti';
+    c.style.left='50%';c.style.top='40%';c.style.background=cols[i%4];
+    c.style.setProperty('--tx',(Math.random()*240-120)+'px');
+    c.style.setProperty('--ty',(Math.random()*-160-40)+'px');
+    c.style.animation='pop '+(600+Math.random()*300)+'ms var(--ease-spring) forwards';
+    host.appendChild(c);setTimeout(()=>c.remove(),1000);
+  }
+}
+</script>
+</body>
+</html>

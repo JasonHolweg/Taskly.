@@ -1,0 +1,59 @@
+# === Taskly .gitignore (PHP 8 · MySQL · Vanilla JS · PWA) ===
+
+# --- Secrets & Konfiguration ---
+# config.php enthält Claude-API-Key, VAPID-Keys, WhatsApp-Token, DB-Zugang
+# -> NICHT committen. Eine config.example.php (ohne echte Werte) bitte committen.
+config.php
+config.local.php
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+vapid_*.json
+secrets/
+
+# --- PHP / Composer ---
+/vendor/
+composer.phar
+.phpunit.result.cache
+.phpunit.cache/
+
+# --- Node / Build-Tools (falls später dazu) ---
+/node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# --- Laufzeit: Logs, Cache, Uploads, DB-Dumps ---
+*.log
+/logs/
+/cache/
+/tmp/
+/storage/
+/uploads/
+*.sql.gz
+*.sqlite
+*.sqlite3
+# Hinweis: schema.sql wird bewusst committet (Quelle der Wahrheit) und ist NICHT ignoriert.
+
+# --- macOS ---
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# --- Editoren / IDEs ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# --- Sonstiges ---
+Thumbs.db
+desktop.ini
