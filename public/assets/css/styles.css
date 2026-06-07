@@ -222,6 +222,10 @@ textarea{resize:vertical;line-height:1.5}
 .prev:not(.owned) img{opacity:.85}
 .box-buy{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3)}
 .box-cost{font-family:var(--font-display);font-weight:800;color:var(--color-spark)}
+.box-progress{font-size:12px;color:var(--color-text-tertiary);margin-top:3px}
+.box-complete{font-size:12px;font-weight:800;color:var(--color-success);margin-top:2px}
+.box-done{font-family:var(--font-display);font-weight:800;color:var(--color-success)}
+.box-card.complete{opacity:.94}
 .btn[disabled]{opacity:.45;pointer-events:none}
 
 /* Garderobe */

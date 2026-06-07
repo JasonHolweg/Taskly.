@@ -301,20 +301,27 @@ function renderShop() {
   $('#shop-sparks').textContent = SHOP.sparks;
   const wrap = $('#boxes'); wrap.innerHTML = '';
   SHOP.boxes.forEach(box => {
-    const can = SHOP.sparks >= box.cost;
+    const complete = box.complete;
+    const can = !complete && SHOP.sparks >= box.cost;
     const rates = SHOP.drop_rates;
     const rateChips = Object.keys(rates).map(r =>
       `<span class="rate" data-rarity="${r}">${RAR_LABEL[r]} ${rates[r]}%</span>`).join('');
     const prev = box.contents.map(c =>
       `<div class="prev ${c.owned ? 'owned' : ''}" data-rarity="${c.rarity}"><img src="${poseImg(c)}" alt="${c.name}" title="${c.name} · ${RAR_LABEL[c.rarity]}"></div>`).join('');
-    const el = document.createElement('div'); el.className = 'box-card';
+    const head = complete
+      ? `<div class="box-complete">100% freigeschaltet ✓</div>`
+      : `<div class="box-rates">${rateChips}</div>`;
+    const btn = complete
+      ? `<span class="box-done">Komplett ✓</span>`
+      : `<button class="btn btn-primary" ${can ? '' : 'disabled'}>Öffnen</button>`;
+    const el = document.createElement('div'); el.className = 'box-card' + (complete ? ' complete' : '');
     el.innerHTML =
-      `<div class="box-top"><img class="box-pochi" src="${box.img_closed}" alt="">
-         <div><div class="box-title">${box.name}</div><div class="box-rates">${rateChips}</div></div></div>
+      `<div class="box-top"><img class="box-pochi" src="${complete ? box.img_open : box.img_closed}" alt="">
+         <div><div class="box-title">${box.name}</div>${head}
+           <div class="box-progress">🔓 ${box.owned}/${box.total} freigeschaltet</div></div></div>
        <div class="box-preview">${prev}</div>
-       <div class="box-buy"><span class="box-cost">${box.cost} ✦</span>
-         <button class="btn btn-primary" ${can ? '' : 'disabled'}>Öffnen</button></div>`;
-    el.querySelector('button').addEventListener('click', () => openBox(box));
+       <div class="box-buy"><span class="box-cost">${box.cost} ✦</span>${btn}</div>`;
+    if (!complete) el.querySelector('button').addEventListener('click', () => openBox(box));
     wrap.appendChild(el);
   });
   renderGarderobe();
@@ -383,14 +390,13 @@ function revealItem(r) {
   $('#lb-img').src = c.poses.celebrate || c.poses.happy || Object.values(c.poses)[0];
   $('#lb-rarity').textContent = RAR_LABEL[r.rarity];
   $('#lb-name').textContent = c.name;
-  const dupe = $('#lb-dupe');
-  if (r.duplicate) {
-    dupe.textContent = `Schon dabei — +${r.refund} ✦ zurück`; dupe.classList.remove('hidden');
-    $('#lb-equip').disabled = true; $('#lb-equip').textContent = 'Im Inventar';
-  } else {
-    dupe.classList.add('hidden'); $('#lb-equip').disabled = false; $('#lb-equip').textContent = 'Anlegen';
-  }
-  $('#lb-again').disabled = r.sparks < CURRENT_BOX.cost;
+  const info = $('#lb-dupe'); info.classList.remove('hidden');
+  info.textContent = r.complete ? `Set komplett! 🎉 ${r.owned}/${r.total}` : `Neu! · ${r.owned}/${r.total} im Set`;
+  $('#lb-equip').disabled = false; $('#lb-equip').textContent = 'Anlegen';
+  // „Nochmal" nur wenn Set noch offen und genug Sparks
+  const again = $('#lb-again');
+  again.classList.toggle('hidden', r.complete);
+  again.disabled = r.complete || r.sparks < CURRENT_BOX.cost;
   lbConfetti(r.rarity);
 }
 function initLootbox() {

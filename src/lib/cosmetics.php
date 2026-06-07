@@ -44,6 +44,21 @@ function get_equipped(int $userId): ?array
     return $c ? cosmetic_dto($c) : null;
 }
 
+/** Sammel-Fortschritt eines Themes: [owned, total]. */
+function theme_progress(int $userId, string $theme): array
+{
+    $st = db()->prepare(
+        "SELECT COUNT(*) AS total,
+                SUM(CASE WHEN uc.user_id IS NOT NULL THEN 1 ELSE 0 END) AS owned
+           FROM cosmetics c
+           LEFT JOIN user_cosmetics uc ON uc.cosmetic_id = c.id AND uc.user_id = ?
+          WHERE c.theme = ? AND c.category = 'tanuki_outfit'"
+    );
+    $st->execute([$userId, $theme]);
+    $r = $st->fetch();
+    return [(int) $r['owned'], (int) $r['total']];
+}
+
 /** Inventar des Users (besessene Outfits inkl. equipped-Flag). */
 function get_inventory(int $userId): array
 {

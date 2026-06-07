@@ -29,6 +29,7 @@ foreach ($pdo->query("SELECT * FROM lootboxes WHERE active = 1")->fetchAll() as 
         $counts[$c['rarity']] = ($counts[$c['rarity']] ?? 0) + 1;
     }
 
+    [$ownedN, $totalN] = theme_progress($uid, $box['theme']);
     $boxes[] = [
         'id'         => (int) $box['id'],
         'name'       => $box['name'],
@@ -36,6 +37,9 @@ foreach ($pdo->query("SELECT * FROM lootboxes WHERE active = 1")->fetchAll() as 
         'cost'       => (int) $box['cost_sparks'],
         'counts'     => $counts,
         'contents'   => $contents,
+        'owned'      => $ownedN,
+        'total'      => $totalN,
+        'complete'   => ($ownedN >= $totalN),
         'img_closed' => '/assets/img/pochibukuro/' . $box['theme'] . '-closed.png',
         'img_open'   => '/assets/img/pochibukuro/' . $box['theme'] . '-open.png',
     ];
