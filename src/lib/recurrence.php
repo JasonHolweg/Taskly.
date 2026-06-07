@@ -11,8 +11,12 @@ const BYDAY_MAP = ['MO' => 1, 'TU' => 2, 'WE' => 3, 'TH' => 4, 'FR' => 5, 'SA' =
 /** RRULE in einen assoziativen Array parsen. */
 function parse_rrule(string $rule): array
 {
+    $rule = strtoupper(trim($rule));
+    if (strncmp($rule, 'RRULE:', 6) === 0) {
+        $rule = substr($rule, 6);   // optionales iCal-Präfix entfernen
+    }
     $out = [];
-    foreach (explode(';', strtoupper(trim($rule))) as $part) {
+    foreach (explode(';', $rule) as $part) {
         if (strpos($part, '=') === false) {
             continue;
         }
