@@ -186,6 +186,8 @@ function initHero() {
     } catch (err) { alert(err.message); }
   });
 
+  $('#env-img').addEventListener('click', openEnvelope);
+
   $('#reward-close').addEventListener('click', async () => {
     $('#reward').classList.add('hidden');
     // Nahtlos: direkt die nächste Sache (straffrei weiter).
@@ -195,6 +197,7 @@ function initHero() {
 }
 
 /* ---------- Reward-Pop ---------- */
+let PENDING_SPARKS = 0, ENV_OPENED = false;
 function showReward(rw) {
   $('#reward-xp').textContent = `+${rw.xp} XP`;
   $('#reward-msg').textContent = rw.message || '';
@@ -204,13 +207,30 @@ function showReward(rw) {
     d.className = 'reward-badge'; d.textContent = rw.level_message || `Level ${rw.level}! 🎉`;
     extra.appendChild(d);
   }
-  (rw.envelopes || []).forEach(env => {
-    const d = document.createElement('div');
-    d.className = 'reward-spark'; d.textContent = `✦ +${env.sparks} Sparks`;
-    extra.appendChild(d);
-  });
+  // Glücksumschlag (Pochibukuro) — antippen zum Öffnen → Sparks
+  const total = (rw.envelopes || []).reduce((s, e) => s + (e.sparks || 0), 0);
+  const env = $('#reward-envelope');
+  if (total > 0) {
+    PENDING_SPARKS = total; ENV_OPENED = false;
+    $('#env-img').src = '/assets/img/pochibukuro/sparks-closed.png';
+    $('#env-img').classList.add('pochi-wiggle'); $('#env-img').classList.remove('pochi-pop');
+    $('#env-cap').textContent = 'Glücksumschlag — tippen! 🧧';
+    $('#env-sparks').classList.add('hidden');
+    env.classList.remove('hidden');
+  } else {
+    env.classList.add('hidden');
+  }
   confetti();
   $('#reward').classList.remove('hidden');
+}
+function openEnvelope() {
+  if (ENV_OPENED) return;
+  ENV_OPENED = true;
+  $('#env-img').src = '/assets/img/pochibukuro/sparks-open.png';
+  $('#env-img').classList.remove('pochi-wiggle'); $('#env-img').classList.add('pochi-pop');
+  $('#env-cap').textContent = 'Aufgemacht!';
+  const es = $('#env-sparks'); es.textContent = `+${PENDING_SPARKS} ✦`; es.classList.remove('hidden');
+  confetti();
 }
 function confetti() {
   const box = $('#confetti'); box.innerHTML = '';
@@ -289,7 +309,7 @@ function renderShop() {
       `<div class="prev ${c.owned ? 'owned' : ''}" data-rarity="${c.rarity}"><img src="${poseImg(c)}" alt="${c.name}" title="${c.name} · ${RAR_LABEL[c.rarity]}"></div>`).join('');
     const el = document.createElement('div'); el.className = 'box-card';
     el.innerHTML =
-      `<div class="box-top"><span class="box-emoji">${BOX_EMOJI[box.theme] || '🎁'}</span>
+      `<div class="box-top"><img class="box-pochi" src="${box.img_closed}" alt="">
          <div><div class="box-title">${box.name}</div><div class="box-rates">${rateChips}</div></div></div>
        <div class="box-preview">${prev}</div>
        <div class="box-buy"><span class="box-cost">${box.cost} ✦</span>
@@ -330,9 +350,10 @@ async function equip(id) {
 function openBox(box) {
   CURRENT_BOX = box;
   $('#lb-boxname').textContent = box.name;
-  $('#lb-box').textContent = BOX_EMOJI[box.theme] || '🎁';
+  $('#lb-box-img').src = box.img_closed;
   $('#lb-cost').textContent = box.cost;
   $('#lb-closed').classList.remove('hidden');
+  $('#lb-opening').classList.add('hidden');
   $('#lb-reveal').classList.add('hidden');
   $('#lootbox').classList.remove('hidden');
 }
@@ -341,9 +362,16 @@ async function doOpen() {
   $('#lb-open-btn').disabled = true;
   try {
     const r = await api('openbox.php', 'POST', { box_id: CURRENT_BOX.id });
-    revealItem(r);
     $('#spark-count').textContent = r.sparks;
     $('#shop-sparks').textContent = r.sparks;
+    // Aufreiß-Sequenz: zu → offen → Outfit
+    $('#lb-closed').classList.add('hidden');
+    $('#lb-reveal').classList.add('hidden');
+    $('#lb-open-img').src = CURRENT_BOX.img_open;
+    $('#lb-opening').classList.remove('hidden');
+    await new Promise(res => setTimeout(res, 850));
+    $('#lb-opening').classList.add('hidden');
+    revealItem(r);
   } catch (e) { alert(e.message); $('#lootbox').classList.add('hidden'); }
   finally { $('#lb-open-btn').disabled = false; }
 }

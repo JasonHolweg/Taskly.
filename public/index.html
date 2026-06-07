@@ -150,11 +150,15 @@
   <div class="reward-overlay hidden" id="lootbox">
     <div class="lootbox-card" id="lootbox-card">
       <div class="confetti" id="lb-confetti"></div>
-      <!-- Phase 1: geschlossene Kiste -->
+      <!-- Phase 1: geschlossener Umschlag -->
       <div id="lb-closed" class="lb-closed">
-        <div class="lb-box" id="lb-box">🎁</div>
+        <img src="" alt="" class="pochi pochi-wiggle" id="lb-box-img">
         <p class="muted" id="lb-boxname">—</p>
         <button class="btn btn-primary" id="lb-open-btn">Öffnen</button>
+      </div>
+      <!-- Phase 1.5: aufgerissener Umschlag -->
+      <div id="lb-opening" class="lb-opening hidden">
+        <img src="" alt="" class="pochi pochi-burst" id="lb-open-img">
       </div>
       <!-- Phase 2: Reveal -->
       <div id="lb-reveal" class="lb-reveal hidden">
@@ -180,6 +184,11 @@
       <div class="reward-xp" id="reward-xp">+0 XP</div>
       <p class="reward-msg" id="reward-msg"></p>
       <div class="reward-extra" id="reward-extra"></div>
+      <div class="envelope hidden" id="reward-envelope">
+        <p class="env-cap" id="env-cap">Glücksumschlag — tippen! 🧧</p>
+        <img src="/assets/img/pochibukuro/sparks-closed.png" alt="Glücksumschlag" class="pochi pochi-wiggle" id="env-img">
+        <div class="env-sparks hidden" id="env-sparks">+0 ✦</div>
+      </div>
       <button class="btn btn-primary" id="reward-close">Weiter</button>
     </div>
   </div>

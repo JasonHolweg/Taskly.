@@ -252,4 +252,20 @@ textarea{resize:vertical;line-height:1.5}
 @keyframes shake{0%,100%{transform:rotate(0)}20%{transform:rotate(-8deg) scale(1.04)}40%{transform:rotate(8deg) scale(1.04)}60%{transform:rotate(-6deg)}80%{transform:rotate(6deg)}}
 @keyframes burst{from{transform:translateX(-50%) scale(.3);opacity:0}to{transform:translateX(-50%) scale(1);opacity:.5}}
 
+/* ===== Pochibukuro-Umschläge ===== */
+.pochi{width:150px;height:auto;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(0,0,0,.18))}
+.box-pochi{width:60px;height:60px;object-fit:contain;flex:0 0 auto}
+.lb-opening{display:flex;justify-content:center}
+.pochi-wiggle{animation:shake 1.3s var(--ease-standard) infinite;cursor:pointer}
+.pochi-burst{animation:pochiBurst .85s var(--ease-spring)}
+.pochi-pop{animation:pochiPop var(--dur-reward) var(--ease-spring)}
+@keyframes pochiBurst{0%{transform:scale(.6) rotate(-4deg);opacity:0}40%{opacity:1}60%{transform:scale(1.12) rotate(3deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes pochiPop{0%{transform:scale(.7)}55%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+/* Glücksumschlag im Reward-Pop */
+.envelope{display:flex;flex-direction:column;align-items:center;gap:var(--space-2);margin-top:var(--space-1)}
+.env-cap{font-size:13px;font-weight:600;color:var(--color-text-secondary)}
+.envelope .pochi{width:120px}
+.env-sparks{font-family:var(--font-display);font-weight:800;font-size:30px;color:var(--color-spark);animation:pop var(--dur-reward) var(--ease-spring)}
+
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition-duration:.01ms !important}}

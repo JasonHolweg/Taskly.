@@ -30,12 +30,14 @@ foreach ($pdo->query("SELECT * FROM lootboxes WHERE active = 1")->fetchAll() as 
     }
 
     $boxes[] = [
-        'id'       => (int) $box['id'],
-        'name'     => $box['name'],
-        'theme'    => $box['theme'],
-        'cost'     => (int) $box['cost_sparks'],
-        'counts'   => $counts,
-        'contents' => $contents,
+        'id'         => (int) $box['id'],
+        'name'       => $box['name'],
+        'theme'      => $box['theme'],
+        'cost'       => (int) $box['cost_sparks'],
+        'counts'     => $counts,
+        'contents'   => $contents,
+        'img_closed' => '/assets/img/pochibukuro/' . $box['theme'] . '-closed.png',
+        'img_open'   => '/assets/img/pochibukuro/' . $box['theme'] . '-open.png',
     ];
 }
 
