@@ -36,8 +36,8 @@ require __DIR__ . '/lib/claude.php';
 require __DIR__ . '/lib/recurrence.php';
 require __DIR__ . '/lib/planner.php';
 
-// Session (für simple Familien-Auth, architecture.md §6)
-if (session_status() === PHP_SESSION_NONE) {
+// Session (für simple Familien-Auth, architecture.md §6) — im CLI/Cron nicht nötig.
+if (PHP_SAPI !== 'cli' && session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
         'lifetime' => 60 * 60 * 24 * 30,
         'path'     => '/',
