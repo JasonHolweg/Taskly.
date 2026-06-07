@@ -1,0 +1,14 @@
+{
+  "name": "Taskly",
+  "short_name": "Taskly",
+  "description": "Eine Sache, die du jetzt machen kannst.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F5F5F7",
+  "theme_color": "#4F47D6",
+  "lang": "de",
+  "icons": [
+    { "src": "/assets/img/tanuki.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

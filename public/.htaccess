@@ -1,0 +1,20 @@
+# Taskly — public webroot
+Options -Indexes
+AddDefaultCharset UTF-8
+DirectoryIndex index.html
+
+# Dotfiles & interne PHP-Includes sperren
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+<FilesMatch "^_">
+  Require all denied
+</FilesMatch>
+
+# Statische Assets cachen
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+</IfModule>
