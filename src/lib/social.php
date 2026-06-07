@@ -192,8 +192,9 @@ function send_rescue(int $userId, int $toUser): array
 function pending_rescues(int $userId): array
 {
     $st = db()->prepare(
-        'SELECT DISTINCT u.name FROM rescues r JOIN users u ON u.id = r.from_user
-          WHERE r.to_user = ? AND r.seen = 0 ORDER BY r.created_at DESC'
+        'SELECT u.name FROM rescues r JOIN users u ON u.id = r.from_user
+          WHERE r.to_user = ? AND r.seen = 0
+          GROUP BY u.id, u.name ORDER BY MAX(r.created_at) DESC'
     );
     $st->execute([$userId]);
     return array_column($st->fetchAll(), 'name');
