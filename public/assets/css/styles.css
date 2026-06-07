@@ -272,4 +272,22 @@ textarea{resize:vertical;line-height:1.5}
 .envelope .pochi{width:120px}
 .env-sparks{font-family:var(--font-display);font-weight:800;font-size:30px;color:var(--color-spark);animation:pop var(--dur-reward) var(--ease-spring)}
 
+/* ===== Wochen-Plan ===== */
+.week{display:flex;flex-direction:column;gap:var(--space-3)}
+.day{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4)}
+.day.today{border-color:var(--color-primary);box-shadow:0 0 0 2px color-mix(in srgb,var(--color-primary) 22%,transparent)}
+.day-head{display:flex;align-items:baseline;gap:var(--space-2);margin-bottom:var(--space-2)}
+.day-wd{font-family:var(--font-display);font-weight:800;font-size:16px}
+.day-date{font-size:13px;color:var(--color-text-tertiary)}
+.day-badge{margin-left:auto;font-size:11px;font-weight:800;color:var(--color-primary);background:var(--color-primary-subtle);padding:2px 8px;border-radius:var(--radius-full)}
+.day-body{display:flex;flex-direction:column;gap:6px}
+.day-empty{font-size:13px;color:var(--color-text-tertiary);padding:2px 0}
+.plan-card{display:flex;align-items:center;gap:var(--space-2);background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:8px 10px}
+.plan-card[data-type="termin"]{border-left:3px solid var(--dom-termin)}
+.plan-card.done{opacity:.5}
+.plan-card.done .plan-title{text-decoration:line-through}
+.dom-dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+.plan-title{font-size:14px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.plan-meta{font-size:11px;color:var(--color-text-tertiary);flex:0 0 auto}
+
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition-duration:.01ms !important}}

@@ -33,6 +33,8 @@ require __DIR__ . '/lib/selection.php';
 require __DIR__ . '/lib/cosmetics.php';
 require __DIR__ . '/lib/gacha.php';
 require __DIR__ . '/lib/claude.php';
+require __DIR__ . '/lib/recurrence.php';
+require __DIR__ . '/lib/planner.php';
 
 // Session (für simple Familien-Auth, architecture.md §6)
 if (session_status() === PHP_SESSION_NONE) {

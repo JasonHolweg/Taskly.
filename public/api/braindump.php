@@ -24,10 +24,11 @@ $insTask = $pdo->prepare(
         priority, base_xp, recurrence_rule, due_at, fixed_at, created_by)
      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 );
-// Eine erste Occurrence direkt anlegen (flexible/deadline landen im „Was jetzt?"-Pool).
+// Erste Occurrence anlegen. Termin = fixer Tag; wiederkehrend = überlässt es dem
+// Planer (ensure_recurrences); sonst ungeplant (NULL) → die Wochen-Verteilung legt den Tag fest.
 $insOcc = $pdo->prepare(
     "INSERT INTO task_occurrences (task_id, assignee_id, scheduled_date, status)
-     VALUES (?, ?, CURDATE(), 'open')"
+     VALUES (?, ?, ?, 'open')"
 );
 
 $created = [];
@@ -39,11 +40,17 @@ foreach ($tasks as $t) {
         $t['base_xp'], $t['recurrence_rule'], $t['due_at'], $t['fixed_at'], $uid,
     ]);
     $taskId = (int) $pdo->lastInsertId();
-    $insOcc->execute([$taskId, $uid]);
+    if (empty($t['recurrence_rule'])) {
+        $sched = ($t['type'] === 'termin' && $t['fixed_at']) ? substr($t['fixed_at'], 0, 10) : null;
+        $insOcc->execute([$taskId, $uid, $sched]);
+    }
     $t['id'] = $taskId;
     $created[] = $t;
 }
 $pdo->commit();
+
+// Wiederkehrende Tasks für diese Woche materialisieren.
+ensure_recurrences($uid);
 
 // Skip-Liste der Session zurücksetzen — neuer Stoff im Pool.
 $_SESSION['skips']  = [];

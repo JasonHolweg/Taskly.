@@ -276,15 +276,58 @@ function applyTanuki() {
 
 /* ---------- Views / Nav ---------- */
 function showView(which) {
-  $('#view-today').classList.toggle('hidden', which !== 'today');
-  $('#view-shop').classList.toggle('hidden', which !== 'shop');
-  $('#nav-today').classList.toggle('is-active', which === 'today');
-  $('#nav-shop').classList.toggle('is-active', which === 'shop');
+  ['today', 'plan', 'shop'].forEach(v => {
+    $('#view-' + v).classList.toggle('hidden', which !== v);
+    $('#nav-' + v).classList.toggle('is-active', which === v);
+  });
   if (which === 'shop') loadShop();
+  if (which === 'plan') loadWeek();
 }
 function initNav() {
   $('#nav-today').addEventListener('click', () => showView('today'));
+  $('#nav-plan').addEventListener('click', () => showView('plan'));
   $('#nav-shop').addEventListener('click', () => showView('shop'));
+}
+
+/* ---------- Wochen-Plan ---------- */
+function renderWeek(days) {
+  const w = $('#week'); w.innerHTML = '';
+  days.forEach(day => {
+    const col = document.createElement('div');
+    col.className = 'day' + (day.is_today ? ' today' : '');
+    const dd = +day.date.slice(8, 10), mm = +day.date.slice(5, 7);
+    const head = `<div class="day-head"><span class="day-wd">${day.weekday}</span>`
+      + `<span class="day-date">${dd}.${mm}.</span>`
+      + (day.is_today ? '<span class="day-badge">heute</span>' : '') + '</div>';
+    let body;
+    if (!day.tasks.length) {
+      body = '<div class="day-empty">frei 🍵</div>';
+    } else {
+      body = day.tasks.map(t => {
+        const time = (t.type === 'termin' && t.fixed_at) ? t.fixed_at.slice(11, 16) + ' · ' : '';
+        const meta = t.type === 'termin' ? 'Termin' : (t.time_estimate + 'm · ' + t.base_xp + ' XP');
+        return `<div class="plan-card${t.done ? ' done' : ''}" data-type="${t.type}">
+            <span class="dom-dot" style="background:${DOMAIN_COLOR[t.domain] || 'var(--dom-privat)'}"></span>
+            <span class="plan-title">${time}${t.title}${t.recurring ? ' 🔁' : ''}</span>
+            <span class="plan-meta">${meta}</span>
+          </div>`;
+      }).join('');
+    }
+    col.innerHTML = head + `<div class="day-body">${body}</div>`;
+    w.appendChild(col);
+  });
+}
+async function loadWeek() {
+  try { renderWeek((await api('week.php')).days); }
+  catch (e) { alert(e.message); }
+}
+function initPlan() {
+  $('#btn-plan').addEventListener('click', async () => {
+    const btn = $('#btn-plan'); btn.disabled = true; btn.textContent = 'Plane…';
+    try { renderWeek((await api('plan_week.php', 'POST')).days); }
+    catch (e) { alert(e.message); }
+    finally { btn.disabled = false; btn.textContent = 'Neu planen'; }
+  });
 }
 
 /* ---------- Shop ---------- */
@@ -439,7 +482,7 @@ async function boot() {
   } catch (_) { showAuth(); }
 }
 
-initTheme(); initAuth(); initDump(); initQuick(); initHero(); initMore(); initNav(); initLootbox();
+initTheme(); initAuth(); initDump(); initQuick(); initHero(); initMore(); initNav(); initLootbox(); initPlan();
 boot();
 
 if ('serviceWorker' in navigator) {
