@@ -44,6 +44,6 @@ function pick_response(int $uid): array
             'base_xp'       => (int) $pick['base_xp'],
             'due_at'        => $pick['due_at'],
         ],
-        'reason' => reason_for($pick, $ctx),
+        'reason' => smart_reason($pick, $ctx),
     ];
 }

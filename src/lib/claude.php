@@ -51,6 +51,52 @@ function claude_call(string $model, string $system, string $userText, int $maxTo
     return $data['content'][0]['text'] ?? null;
 }
 
+/**
+ * „Was jetzt?"-Begründung via Haiku (architecture.md §4.4) — ein warmer, persönlicher
+ * Satz zur gewählten Aufgabe + Live-Kontext. Fällt auf die Standard-Copy zurück.
+ */
+function smart_reason(array $pick, array $ctx): string
+{
+    global $CONFIG;
+    if (!claude_available()) {
+        return reason_for($pick, $ctx);
+    }
+
+    $hour = (int) date('G');
+    $tag  = $hour < 5 ? 'spätnachts' : ($hour < 11 ? 'morgens' : ($hour < 14 ? 'mittags'
+          : ($hour < 18 ? 'nachmittags' : ($hour < 22 ? 'abends' : 'spätabends'))));
+
+    $info = "Aufgabe: \"{$pick['title']}\" ({$pick['time_estimate']} Min, Energie-Bedarf {$pick['energy']}, Bereich {$pick['domain']})";
+    if (($pick['type'] ?? '') === 'deadline' && !empty($pick['due_at'])) {
+        $days = (int) (new DateTimeImmutable('today'))->diff(new DateTimeImmutable(substr($pick['due_at'], 0, 10)))->days;
+        $info .= $days <= 0 ? ', Frist ist heute/überfällig' : ", Frist in $days Tag(en)";
+    }
+    if (!empty($pick['base_xp'])) {
+        $info .= ", gibt {$pick['base_xp']} XP";
+    }
+    $userCtx = "Gerade: {$ctx['time']} Min Zeit, Akku {$ctx['energy']}, $tag";
+
+    $system = <<<SYS
+Du bist Taskly — ein ruhiger, ermutigender Begleiter (ADHS-App). Schreibe GENAU EINEN
+kurzen, warmen deutschen Satz (höchstens ~12 Wörter), warum diese eine Aufgabe jetzt passt.
+Regeln: Du-Form, konkret, nie Schuld/Druck, nie eine Liste, kein Drama. Bezieh dich auf den
+Kontext (wenig Zeit → klein/schnell; müde → Quick-Win; voll → ruhig was Größeres; Frist →
+sanft dringlich). Höchstens ein Emoji. Antworte NUR mit dem Satz, ohne Anführungszeichen.
+SYS;
+
+    $text = claude_call($CONFIG['anthropic']['model_select'], $system, "$info\n$userCtx", 80);
+    if ($text === null) {
+        return reason_for($pick, $ctx);
+    }
+    // Säubern: erste Zeile, Anführungszeichen weg, Länge begrenzen.
+    $line = trim(preg_split('/\r?\n/', trim($text))[0]);
+    $line = trim($line, "\"'„“ ");
+    if ($line === '' || mb_strlen($line) > 160) {
+        return $line !== '' ? mb_substr($line, 0, 160) : reason_for($pick, $ctx);
+    }
+    return $line;
+}
+
 /** JSON aus einer Claude-Antwort extrahieren (Code-Fences/Prosa tolerieren). */
 function extract_json(string $text): ?array
 {
