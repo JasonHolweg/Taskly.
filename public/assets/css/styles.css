@@ -373,6 +373,15 @@ textarea{resize:vertical;line-height:1.5}
 /* Hero */
 .hero{display:flex;flex-direction:column;gap:var(--space-5)}
 .hero-prompt{font-family:var(--font-display);font-weight:700;font-size:17px;line-height:1.4;color:var(--color-text);margin:0}
+.hero-greeting{font-family:var(--font-display);font-weight:700;font-size:clamp(17px,4.6vw,20px);line-height:1.35;color:var(--color-text);margin:0;max-width:24ch}
+.mic-btn{position:absolute;right:-6px;bottom:4px;width:46px;height:46px;border-radius:var(--radius-full);background:var(--color-surface);color:var(--color-primary);border:1px solid var(--color-border);box-shadow:var(--shadow-md);display:grid;place-items:center;cursor:pointer;z-index:3;transition:transform var(--dur-fast) var(--ease-standard),background var(--dur-fast)}
+.mic-btn:hover{background:var(--color-primary-subtle)}
+.mic-btn:active{transform:scale(.92)}
+.mic-btn svg{width:22px;height:22px}
+.filter-toggle{background:none;border:none;color:var(--color-text-tertiary);font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;padding:6px 10px;display:inline-flex;align-items:center;gap:5px}
+.filter-toggle:hover{color:var(--color-text-secondary)}
+.filter-toggle::after{content:"›";display:inline-block;font-weight:800;transition:transform var(--dur-base) var(--ease-standard)}
+.filter-toggle.open::after{transform:rotate(90deg)}
 .quick{display:flex;flex-direction:column;gap:var(--space-4);width:100%;text-align:left}
 .quick-group{display:flex;flex-direction:column;gap:var(--space-2)}
 .quick-q{font-size:14px;font-weight:600;color:var(--color-text-secondary)}

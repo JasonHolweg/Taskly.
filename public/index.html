@@ -92,15 +92,25 @@
     <!-- Was jetzt? (Hero, direkt unter der HUD) -->
     <section class="hero" data-frame="default">
 
-      <!-- Ruhe-Zustand: Rahmen-Satz + erklärte Regler + Button -->
+      <!-- Ruhe-Zustand: Tanuki + Tageszeit-Begrüßung + ein klarer CTA -->
       <div class="hero-card" id="hero-start">
         <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
         <div class="tanuki-stage">
           <div class="tanuki-bubble" id="tanuki-bubble"></div>
           <img src="/assets/img/tanuki/base-neutral.png" alt="Tanuki" class="tanuki tanuki-lg tanuki-idle" id="hero-tanuki">
+          <button class="mic-btn" id="mic-btn" aria-label="Kopf leeren – sprich mit dem Tanuki" title="Kopf leeren">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="2" width="6" height="11" rx="3"></rect>
+              <path d="M5 10a7 7 0 0 0 14 0"></path>
+              <line x1="12" y1="19" x2="12" y2="22"></line>
+            </svg>
+          </button>
         </div>
-        <p class="hero-prompt">Sag mir, wie’s gerade steht — ich find die passende Sache für jetzt.</p>
-        <div class="quick">
+        <p class="hero-greeting" id="hero-greeting">Lass uns eine Sache erledigen.</p>
+        <button class="btn btn-primary btn-hero" id="btn-whatnow">Was jetzt?</button>
+
+        <button class="filter-toggle" id="filter-toggle" aria-expanded="false">Zeit &amp; Akku anpassen</button>
+        <div class="quick hidden" id="quick">
           <div class="quick-group" id="q-time" data-key="time">
             <span class="quick-q">⏱ Wie viel Zeit hast du?</span>
             <div class="pill-row">
@@ -118,8 +128,6 @@
             </div>
           </div>
         </div>
-        <button class="btn btn-primary btn-hero" id="btn-whatnow" disabled>Was jetzt?</button>
-        <p class="muted small" id="hero-hint">Zeit &amp; Akku wählen, dann los.</p>
       </div>
 
       <!-- Pick -->
@@ -146,12 +154,6 @@
       </div>
     </section>
 
-    <!-- Erfassen (sekundär — öffnet das Sheet) -->
-    <section class="braindump-wrap" id="braindump-wrap">
-      <button class="dump-trigger" id="dump-trigger">
-        <span class="dump-plus">+</span><span>Kopf leeren</span>
-      </button>
-    </section>
   </main>
 
   <!-- ===== SHOP ===== -->

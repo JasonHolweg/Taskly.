@@ -122,7 +122,6 @@ function initAuth() {
 function applyFirstRun(hasTasks) {
   $('#onboarding').classList.toggle('hidden', hasTasks);
   $('.hero').classList.toggle('hidden', !hasTasks);
-  $('#braindump-wrap').classList.toggle('hidden', !hasTasks);
 }
 
 function openDump() {
@@ -134,9 +133,15 @@ function closeDump() {
   $('#dump-sheet').classList.add('hidden');
   $('#dump-text').blur();
 }
+// Mikrofon: Sheet öffnen und – wenn unterstützt – direkt Sprache starten.
+function openDumpVoice() {
+  openDump();
+  const v = $('#dump-voice');
+  if (v && !v.hidden) setTimeout(() => v.click(), 350);
+}
 
 function initDump() {
-  $('#dump-trigger').addEventListener('click', openDump);
+  $('#mic-btn').addEventListener('click', openDumpVoice);
   $('#onb-start').addEventListener('click', openDump);
   $('#dump-close').addEventListener('click', closeDump);
   $('#dump-sheet').addEventListener('click', e => { if (e.target.id === 'dump-sheet') closeDump(); });
@@ -180,16 +185,25 @@ function initQuick() {
       const pill = e.target.closest('.pill');
       if (!pill) return;
       $$('.pill', group).forEach(p => p.classList.toggle('is-active', p === pill));
-      updateWhatnow();
     });
   });
+  // Optionaler Filter „Zeit & Akku" — standardmäßig eingeklappt
+  $('#filter-toggle')?.addEventListener('click', () => {
+    const open = $('#quick').classList.toggle('hidden') === false;
+    $('#filter-toggle').setAttribute('aria-expanded', String(open));
+    $('#filter-toggle').classList.toggle('open', open);
+  });
 }
-// „Was jetzt?" erst aktiv, wenn Zeit UND Akku gewählt sind (neutraler Start).
-function updateWhatnow() {
-  const ready = $('#q-time .pill.is-active') && $('#q-energy .pill.is-active');
-  $('#btn-whatnow').disabled = !ready;
-  const hint = $('#hero-hint');
-  if (hint) hint.textContent = ready ? 'Eine Sache. Kein Stress.' : 'Zeit & Akku wählen, dann los.';
+// Tageszeit-abhängige Begrüßung (kein Zwang zur Vorauswahl mehr).
+function setGreeting() {
+  const h = new Date().getHours();
+  const g = h < 5 ? 'Lass uns vor dem Schlafengehen noch eine Sache abhaken.'
+    : h < 11 ? 'Lass uns produktiv in den Tag starten.'
+    : h < 14 ? 'Lass uns eine Sache erledigen.'
+    : h < 18 ? 'Lass uns etwas von deiner Liste schaffen.'
+    : h < 22 ? 'Lass uns vor dem Feierabend noch eine Kleinigkeit erledigen.'
+    : 'Lass uns vor dem Schlafengehen noch eine Sache abhaken.';
+  const el = $('#hero-greeting'); if (el) el.textContent = g;
 }
 function ctx() {
   const t = $('#q-time .pill.is-active'), e = $('#q-energy .pill.is-active');
@@ -201,7 +215,7 @@ function resetHero() {
   $('#hero-pick').classList.add('hidden');
   $('#hero-empty').classList.add('hidden');
   $('#hero-start').classList.remove('hidden');
-  updateWhatnow();
+  setGreeting();
 }
 function renderPick(r) {
   $('#hero-start').classList.add('hidden');
