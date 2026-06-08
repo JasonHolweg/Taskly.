@@ -28,6 +28,17 @@ if ($method === 'POST' || $method === 'PUT') {
         fail('Task-id fehlt.');
     }
 
+    // Löschen: Soft-Delete + offene Vorkommen entfernen (raus aus Pool/Plan).
+    if (($b['action'] ?? '') === 'delete') {
+        db()->prepare('UPDATE tasks SET active = 0 WHERE id = ? AND household_id = ?')
+            ->execute([$id, $householdId]);
+        db()->prepare(
+            "DELETE o FROM task_occurrences o JOIN tasks t ON t.id = o.task_id
+              WHERE o.task_id = ? AND t.household_id = ? AND o.status = 'open'"
+        )->execute([$id, $householdId]);
+        json_out(['ok' => true, 'deleted' => true]);
+    }
+
     // Nur Felder anfassen, die mitgeschickt wurden (Whitelist).
     $fields = [];
     $params = [];

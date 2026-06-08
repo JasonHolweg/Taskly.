@@ -223,7 +223,7 @@ function get_week_plan(int $userId, ?string $weekStart = null): array
 
     $st = db()->prepare(
         "SELECT o.id AS occ_id, o.scheduled_date, o.status,
-                t.title, t.type, t.domain, t.time_estimate, t.energy, t.base_xp, t.due_at, t.fixed_at,
+                t.id AS task_id, t.title, t.type, t.domain, t.time_estimate, t.energy, t.base_xp, t.due_at, t.fixed_at,
                 (t.recurrence_rule IS NOT NULL AND t.recurrence_rule <> '') AS recurring
            FROM task_occurrences o
            JOIN tasks t ON t.id = o.task_id
@@ -245,6 +245,7 @@ function get_week_plan(int $userId, ?string $weekStart = null): array
         }
         $byDay[$d][] = [
             'occ_id'        => (int) $o['occ_id'],
+            'task_id'       => (int) $o['task_id'],
             'title'         => $o['title'],
             'type'          => $o['type'],
             'domain'        => $o['domain'],

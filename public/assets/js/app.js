@@ -460,7 +460,7 @@ function renderWeek(days) {
       body = day.tasks.map(t => {
         const time = (t.type === 'termin' && t.fixed_at) ? t.fixed_at.slice(11, 16) + ' · ' : '';
         const meta = t.type === 'termin' ? 'Termin' : (t.time_estimate + 'm · ' + t.base_xp + ' XP');
-        return `<div class="plan-card${t.done ? ' done' : ''}" data-type="${t.type}">
+        return `<div class="plan-card${t.done ? ' done' : ''}" data-type="${t.type}" data-task="${t.task_id}">
             <span class="dom-dot" style="background:${DOMAIN_COLOR[t.domain] || 'var(--dom-privat)'}"></span>
             <span class="plan-title">${time}${t.title}${t.recurring ? ' 🔁' : ''}</span>
             <span class="plan-meta">${meta}</span>
@@ -472,10 +472,14 @@ function renderWeek(days) {
   });
 }
 async function loadWeek() {
-  try { renderWeek((await api('week.php')).days); }
+  try { renderWeek((await api('week.php')).days); loadTasks(); }
   catch (e) { alert(e.message); }
 }
 function initPlan() {
+  $('#week').addEventListener('click', e => {
+    const c = e.target.closest('.plan-card[data-task]');
+    if (c) openTaskEditById(+c.dataset.task);
+  });
   $('#btn-plan').addEventListener('click', async () => {
     const btn = $('#btn-plan'); btn.disabled = true; btn.textContent = 'Plane…';
     try { renderWeek((await api('plan_week.php', 'POST')).days); }
@@ -678,6 +682,78 @@ function initPush() {
   $$('#push-windows .pill').forEach(p => p.addEventListener('click', () => p.classList.toggle('is-active')));
 }
 
+/* ---------- Aufgaben bearbeiten ---------- */
+let TASKS = [], EDIT_ID = null;
+
+async function loadTasks() {
+  try { TASKS = (await api('tasks.php')).tasks || []; renderTaskList(); } catch (_) {}
+}
+function renderTaskList() {
+  const wrap = $('#task-list'); wrap.innerHTML = '';
+  $('#task-empty').classList.toggle('hidden', TASKS.length > 0);
+  applyFirstRun(TASKS.length > 0);
+  TASKS.forEach(t => {
+    const meta = t.type === 'termin' ? 'Termin' : `${t.time_estimate}m · ${t.energy}`;
+    const row = document.createElement('button');
+    row.className = 'task-row';
+    row.innerHTML =
+      `<span class="dom-dot" style="background:${DOMAIN_COLOR[t.domain] || 'var(--dom-privat)'}"></span>
+       <span class="task-row-title">${t.title}${t.recurrence_rule ? ' 🔁' : ''}</span>
+       <span class="task-row-meta">${meta}</span><span class="task-row-chev">›</span>`;
+    row.addEventListener('click', () => openTaskEdit(t));
+    wrap.appendChild(row);
+  });
+}
+function setPills(groupId, val) {
+  $$('#' + groupId + ' .pill').forEach(p => p.classList.toggle('is-active', String(p.dataset.val) === String(val)));
+}
+function openTaskEdit(t) {
+  EDIT_ID = t.id;
+  $('#te-title').value = t.title || '';
+  $('#te-notes').value = t.notes || '';
+  setPills('te-time', t.time_estimate);
+  setPills('te-energy', t.energy);
+  setPills('te-domain', t.domain);
+  setPills('te-priority', t.priority);
+  $('#te-msg').textContent = '';
+  $('#task-sheet').classList.remove('hidden');
+}
+function openTaskEditById(id) {
+  const t = TASKS.find(x => +x.id === +id);
+  if (t) openTaskEdit(t);
+}
+function closeTaskSheet() { $('#task-sheet').classList.add('hidden'); EDIT_ID = null; }
+
+async function saveTask() {
+  if (!EDIT_ID) return;
+  const body = { id: EDIT_ID, title: $('#te-title').value.trim(), notes: $('#te-notes').value };
+  if (!body.title) { $('#te-msg').textContent = 'Titel darf nicht leer sein.'; return; }
+  const t = $('#te-time .pill.is-active'); if (t) body.time_estimate = +t.dataset.val;
+  const e = $('#te-energy .pill.is-active'); if (e) body.energy = e.dataset.val;
+  const d = $('#te-domain .pill.is-active'); if (d) body.domain = d.dataset.val;
+  const p = $('#te-priority .pill.is-active'); if (p) body.priority = +p.dataset.val;
+  try { await api('tasks.php', 'POST', body); closeTaskSheet(); await loadTasks(); loadWeek(); }
+  catch (err) { $('#te-msg').textContent = err.message; }
+}
+async function deleteTask() {
+  if (!EDIT_ID) return;
+  if (!confirm('Aufgabe wirklich löschen?')) return;
+  try { await api('tasks.php', 'POST', { id: EDIT_ID, action: 'delete' }); closeTaskSheet(); await loadTasks(); loadWeek(); }
+  catch (err) { $('#te-msg').textContent = err.message; }
+}
+function initTasks() {
+  $('#task-close').addEventListener('click', closeTaskSheet);
+  $('#task-sheet').addEventListener('click', e => { if (e.target.id === 'task-sheet') closeTaskSheet(); });
+  $('#te-save').addEventListener('click', saveTask);
+  $('#te-delete').addEventListener('click', deleteTask);
+  ['te-time', 'te-energy', 'te-domain', 'te-priority'].forEach(g => {
+    $('#' + g).addEventListener('click', e => {
+      const p = e.target.closest('.pill'); if (!p) return;
+      $$('#' + g + ' .pill').forEach(x => x.classList.toggle('is-active', x === p));
+    });
+  });
+}
+
 /* ---------- Boot ---------- */
 async function boot() {
   try {
@@ -692,7 +768,7 @@ async function boot() {
   } catch (_) { showAuth(); }
 }
 
-initTheme(); initAuth(); initDump(); initQuick(); initHero(); initMore(); initNav(); initLootbox(); initPlan(); initPush();
+initTheme(); initAuth(); initDump(); initQuick(); initHero(); initMore(); initNav(); initLootbox(); initPlan(); initPush(); initTasks();
 boot();
 
 if ('serviceWorker' in navigator) {

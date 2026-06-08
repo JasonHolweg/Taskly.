@@ -174,6 +174,10 @@
     </div>
     <p class="muted small">Taskly verteilt deine Aufgaben über die Woche. Kein Muss — „Was jetzt?" zieht trotzdem aus allem.</p>
     <section id="week" class="week"></section>
+
+    <h2 class="h3 garderobe-title">Alle Aufgaben</h2>
+    <p class="muted small" id="task-empty">Noch keine Aufgaben — leer einmal deinen Kopf. 🦝</p>
+    <section id="task-list" class="task-list"></section>
   </main>
 
   <!-- ===== MEHR (Freunde + Leaderboard) ===== -->
@@ -264,6 +268,53 @@
         <button class="btn btn-primary" id="dump-save">Erfassen</button>
       </div>
       <p class="dump-result muted small" id="dump-result"></p>
+    </div>
+  </div>
+
+  <!-- ===== Aufgabe bearbeiten ===== -->
+  <div class="sheet-overlay hidden" id="task-sheet">
+    <div class="sheet">
+      <div class="sheet-head">
+        <h2 class="h3">Aufgabe bearbeiten</h2>
+        <button class="icon-btn" id="task-close" aria-label="Schließen">✕</button>
+      </div>
+      <input id="te-title" type="text" placeholder="Titel">
+      <div class="te-group"><span class="quick-q">⏱ Dauer</span>
+        <div class="pill-row" id="te-time">
+          <button class="pill" data-val="5">5</button>
+          <button class="pill" data-val="15">15</button>
+          <button class="pill" data-val="30">30</button>
+          <button class="pill" data-val="60">60 Min</button>
+        </div>
+      </div>
+      <div class="te-group"><span class="quick-q">🔋 Energie</span>
+        <div class="pill-row" id="te-energy">
+          <button class="pill" data-val="niedrig">niedrig</button>
+          <button class="pill" data-val="mittel">mittel</button>
+          <button class="pill" data-val="hoch">hoch</button>
+        </div>
+      </div>
+      <div class="te-group"><span class="quick-q">🗂 Bereich</span>
+        <div class="pill-row" id="te-domain">
+          <button class="pill" data-val="haushalt">Haushalt</button>
+          <button class="pill" data-val="privat">Privat</button>
+          <button class="pill" data-val="business">Business</button>
+          <button class="pill" data-val="termin">Termin</button>
+        </div>
+      </div>
+      <div class="te-group"><span class="quick-q">⭐ Priorität</span>
+        <div class="pill-row" id="te-priority">
+          <button class="pill" data-val="1">niedrig</button>
+          <button class="pill" data-val="2">normal</button>
+          <button class="pill" data-val="3">hoch</button>
+        </div>
+      </div>
+      <textarea id="te-notes" rows="2" placeholder="Notizen (optional)"></textarea>
+      <div class="te-actions">
+        <button class="btn btn-ghost te-delete" id="te-delete">Löschen</button>
+        <button class="btn btn-primary" id="te-save">Speichern</button>
+      </div>
+      <p class="muted small" id="te-msg"></p>
     </div>
   </div>
 
