@@ -44,15 +44,31 @@
   --dom-business:#7E8AA0; --dom-termin:#C8924A;
 }
 
+/* Dark-Tokens (per Klasse referenziert, damit explizit + Auto sie teilen) */
 [data-theme="dark"]{
   --color-primary:#6E68F0; --color-primary-hover:#837EF3; --color-primary-subtle:#1E1B3A;
   --color-bg:#000000; --color-surface:#1C1C1E; --color-surface-2:#2C2C2E;
   --color-border:#38383A; --color-text:#F5F5F7;
   --color-text-secondary:#98989D; --color-text-tertiary:#636366;
   --color-spark:#FFB93D; --color-celebrate:#FF6F9C; --color-success:#32D27A; --color-due-soon:#F7B250;
+  --color-xp:#7C77E6;
   --shadow-sm:0 1px 2px rgba(0,0,0,.4);
   --shadow-md:0 4px 16px rgba(0,0,0,.5);
   --shadow-lg:0 16px 40px rgba(0,0,0,.6);
+}
+/* Auto: System-Dark respektieren, außer der User hat explizit „hell" gewählt (design.md §10) */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]):not([data-theme="dark"]){
+    --color-primary:#6E68F0; --color-primary-hover:#837EF3; --color-primary-subtle:#1E1B3A;
+    --color-bg:#000000; --color-surface:#1C1C1E; --color-surface-2:#2C2C2E;
+    --color-border:#38383A; --color-text:#F5F5F7;
+    --color-text-secondary:#98989D; --color-text-tertiary:#636366;
+    --color-spark:#FFB93D; --color-celebrate:#FF6F9C; --color-success:#32D27A; --color-due-soon:#F7B250;
+  --color-xp:#7C77E6;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+    --shadow-md:0 4px 16px rgba(0,0,0,.5);
+    --shadow-lg:0 16px 40px rgba(0,0,0,.6);
+  }
 }
 
 *{box-sizing:border-box;margin:0;padding:0}

@@ -21,17 +21,35 @@ async function api(path, method = 'GET', data = null) {
 }
 
 /* ---------- Theme ---------- */
+function effectiveDark() {
+  const t = document.documentElement.getAttribute('data-theme');
+  if (t === 'dark') return true;
+  if (t === 'light') return false;
+  return matchMedia('(prefers-color-scheme: dark)').matches;
+}
+function updateThemeChrome() {
+  const t = document.documentElement.getAttribute('data-theme');
+  const btn = $('#theme-toggle');
+  if (btn) {
+    btn.textContent = t === 'light' ? '☀️' : t === 'dark' ? '🌙' : '◐';
+    btn.title = 'Theme: ' + (t === 'light' ? 'Hell' : t === 'dark' ? 'Dunkel' : 'Automatisch');
+  }
+  let m = document.querySelector('meta[name="theme-color"]:not([media])');
+  if (!m) { m = document.createElement('meta'); m.setAttribute('name', 'theme-color'); document.head.appendChild(m); }
+  m.setAttribute('content', effectiveDark() ? '#000000' : '#F5F5F7');
+}
 function initTheme() {
   const saved = localStorage.getItem('taskly-theme');
-  if (saved) document.documentElement.setAttribute('data-theme', saved);
+  if (saved === 'dark' || saved === 'light') document.documentElement.setAttribute('data-theme', saved);
+  updateThemeChrome();
+  matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', updateThemeChrome);
   $('#theme-toggle')?.addEventListener('click', () => {
-    const cur = document.documentElement.getAttribute('data-theme');
-    const next = cur === 'dark' ? 'light'
-      : cur === 'light' ? ''
-      : (matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark');
+    const cur = document.documentElement.getAttribute('data-theme');   // null | light | dark
+    const next = !cur ? 'light' : cur === 'light' ? 'dark' : '';        // Auto → Hell → Dunkel → Auto
     if (next) document.documentElement.setAttribute('data-theme', next);
     else document.documentElement.removeAttribute('data-theme');
     localStorage.setItem('taskly-theme', next);
+    updateThemeChrome();
   });
 }
 
