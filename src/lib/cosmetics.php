@@ -59,6 +59,18 @@ function theme_progress(int $userId, string $theme): array
     return [(int) $r['owned'], (int) $r['total']];
 }
 
+/** Aktuell getragener Rahmen-Variant ('default', 'premium', 'samurai'). */
+function get_equipped_frame(int $userId): string
+{
+    $st = db()->prepare(
+        'SELECT c.asset_ref FROM tanuki_profile tp
+           JOIN cosmetics c ON c.id = tp.equipped_frame_id
+          WHERE tp.user_id = ? AND c.category = \'frame\''
+    );
+    $st->execute([$userId]);
+    return (string) ($st->fetchColumn() ?: 'default');
+}
+
 /** Inventar des Users (besessene Outfits inkl. equipped-Flag). */
 function get_inventory(int $userId): array
 {

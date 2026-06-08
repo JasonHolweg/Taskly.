@@ -250,6 +250,18 @@ textarea{resize:vertical;line-height:1.5}
   50%{opacity:1; filter:drop-shadow(0 0 clamp(2px,1vw,4px) color-mix(in srgb, var(--color-spark) 60%, transparent))}
 }
 
+/* Rahmen-Shop (Vorschau-Kacheln) */
+.frame-shop{display:flex;flex-direction:column;gap:var(--space-4)}
+.frame-tile{display:flex;flex-direction:column;gap:var(--space-2)}
+.ft-preview{pointer-events:none;gap:0}
+.ft-preview .hero-card{padding:var(--space-5) var(--space-4);min-height:clamp(64px,18vw,92px);justify-content:center;animation:none}
+.ft-mini{font-family:var(--font-display);font-weight:800;font-size:clamp(15px,4.5vw,18px);color:var(--color-text)}
+.ft-meta{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3)}
+.ft-name{font-weight:700;font-size:15px}
+.frame-tile.equipped .ft-name{color:var(--color-primary)}
+.ft-state{font-family:var(--font-display);font-weight:800;color:var(--color-success)}
+.ft-btn{min-height:38px;padding:0 var(--space-4);flex:0 0 auto}
+
 /* Onboarding (Erststart) */
 .onboarding{align-items:center;text-align:center;gap:var(--space-4)}
 .onb-title{font-family:var(--font-display);font-weight:800;font-size:22px;line-height:1.2}

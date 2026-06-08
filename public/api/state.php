@@ -36,6 +36,7 @@ json_out([
         'frozen_until'   => $p['streak_frozen_until'],
     ],
     'equipped'  => get_equipped($uid),
+    'frame'     => get_equipped_frame($uid),
     'rescues'   => $p['streak_state'] === 'frozen' ? pending_rescues($uid) : (clear_rescues($uid) ?? []),
     'has_tasks' => $hasTasks,
 ]);

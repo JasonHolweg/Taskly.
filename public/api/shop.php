@@ -45,8 +45,28 @@ foreach ($pdo->query("SELECT * FROM lootboxes WHERE active = 1")->fetchAll() as 
     ];
 }
 
+// Rahmen-Kosmetik (Direktkauf mit Sparks)
+$curFrame = get_equipped_frame($uid);
+$frames = [[
+    'id' => 0, 'name' => 'Schlicht', 'variant' => 'default', 'rarity' => 'gewoehnlich',
+    'cost' => 0, 'owned' => true, 'equipped' => $curFrame === 'default',
+]];
+foreach ($pdo->query("SELECT * FROM cosmetics WHERE category = 'frame' ORDER BY cost_sparks") as $c) {
+    $frames[] = [
+        'id'       => (int) $c['id'],
+        'name'     => $c['name'],
+        'variant'  => $c['asset_ref'],
+        'rarity'   => $c['rarity'],
+        'cost'     => (int) $c['cost_sparks'],
+        'owned'    => in_array((int) $c['id'], $owned, true),
+        'equipped' => $curFrame === $c['asset_ref'],
+    ];
+}
+
 global $CONFIG;
 json_out([
+    'frames'      => $frames,
+    'frame'       => $curFrame,
     'sparks'      => (int) $p['sparks'],
     'pity'        => (int) $p['pity_counter'],
     'pity_max'    => (int) $CONFIG['tuning']['soft_pity'],

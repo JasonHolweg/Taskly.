@@ -446,7 +446,11 @@ const BASE_TANUKI = {
   tired: '/assets/img/tanuki/base-tired.png',
   sad: '/assets/img/tanuki/base-sad.png',
 };
-let EQUIPPED = null, FROZEN = false;
+let EQUIPPED = null, FROZEN = false, FRAME = 'default';
+function applyFrame(v) {
+  FRAME = v || 'default';
+  const h = $('.hero'); if (h) h.dataset.frame = FRAME;
+}
 function tanukiFor(emotion) {
   if (EQUIPPED && EQUIPPED.poses) {
     if (emotion === 'neutral' && EQUIPPED.poses.happy) return EQUIPPED.poses.happy;
@@ -582,6 +586,38 @@ function renderShop() {
     wrap.appendChild(el);
   });
   renderGarderobe();
+  renderFrames();
+}
+function renderFrames() {
+  const wrap = $('#frame-shop'); if (!wrap || !SHOP.frames) return;
+  wrap.innerHTML = '';
+  SHOP.frames.forEach(f => {
+    let action;
+    if (f.equipped) action = '<span class="ft-state">Aktiv ✓</span>';
+    else if (f.owned) action = `<button class="btn btn-primary ft-btn" data-equip="${f.id}" data-var="${f.variant}">Anlegen</button>`;
+    else action = `<button class="btn btn-primary ft-btn" data-buy="${f.id}" ${SHOP.sparks >= f.cost ? '' : 'disabled'}>${f.cost} ✦</button>`;
+    const tile = document.createElement('div');
+    tile.className = 'frame-tile' + (f.equipped ? ' equipped' : '');
+    tile.innerHTML =
+      `<div class="hero ft-preview" data-frame="${f.variant}">
+         <div class="hero-card">
+           <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+           <span class="ft-mini">Was jetzt?</span>
+         </div>
+       </div>
+       <div class="ft-meta"><span class="ft-name">${f.name}</span>${action}</div>`;
+    wrap.appendChild(tile);
+  });
+  wrap.querySelectorAll('[data-buy]').forEach(b => b.addEventListener('click', () => buyFrame(+b.dataset.buy)));
+  wrap.querySelectorAll('[data-equip]').forEach(b => b.addEventListener('click', () => equipFrame(+b.dataset.equip, b.dataset.var)));
+}
+async function buyFrame(id) {
+  try { const r = await api('buy.php', 'POST', { cosmetic_id: id }); $('#spark-count').textContent = r.sparks; await loadShop(); }
+  catch (e) { alert(e.message); }
+}
+async function equipFrame(id, variant) {
+  try { const r = await api('equip.php', 'POST', { cosmetic_id: id, kind: 'frame' }); applyFrame(r.frame || variant); await loadShop(); }
+  catch (e) { alert(e.message); }
 }
 function renderGarderobe() {
   const g = $('#garderobe'); g.innerHTML = '';
@@ -822,6 +858,7 @@ async function boot() {
       renderProgress(s.progress);
       showIce(s);
       EQUIPPED = s.equipped || null; applyTanuki();
+      applyFrame(s.frame);
       applyFirstRun(!!s.has_tasks);
       showApp(); resetHero(); showView('today');
     } else showAuth();
