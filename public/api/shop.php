@@ -15,7 +15,7 @@ $boxes = [];
 foreach ($pdo->query("SELECT * FROM lootboxes WHERE active = 1")->fetchAll() as $box) {
     $cs = $pdo->prepare(
         "SELECT * FROM cosmetics
-          WHERE theme = ? AND category='tanuki_outfit'
+          WHERE theme = ? AND category IN ('tanuki_outfit','frame')
           ORDER BY FIELD(rarity,'legendaer','episch','selten','gewoehnlich'), name"
     );
     $cs->execute([$box['theme']]);
@@ -70,15 +70,30 @@ foreach ($pdo->query(
     ];
 }
 
+$equippedOutfitId = (int) ($pdo->query("SELECT equipped_outfit_id FROM tanuki_profile WHERE user_id={$uid}")->fetchColumn() ?: 0);
+
+// Alle Outfits (auch nicht freigeschaltete → ausgegraut in der Garderobe)
+$outfits = [];
+foreach ($pdo->query(
+    "SELECT * FROM cosmetics WHERE category='tanuki_outfit'
+      ORDER BY FIELD(rarity,'gewoehnlich','selten','episch','legendaer'), theme, name"
+) as $c) {
+    $dto = cosmetic_dto($c);
+    $dto['owned']    = in_array((int) $c['id'], $owned, true);
+    $dto['equipped'] = (int) $c['id'] === $equippedOutfitId;
+    $outfits[] = $dto;
+}
+
 global $CONFIG;
 json_out([
     'frames'      => $frames,
     'frame'       => $curFrame,
+    'outfits'     => $outfits,
     'sparks'      => (int) $p['sparks'],
     'pity'        => (int) $p['pity_counter'],
     'pity_max'    => (int) $CONFIG['tuning']['soft_pity'],
     'drop_rates'  => $CONFIG['tuning']['drop_rates'],
     'boxes'       => $boxes,
     'inventory'   => get_inventory($uid),
-    'equipped_id' => (int) ($pdo->query("SELECT equipped_outfit_id FROM tanuki_profile WHERE user_id={$uid}")->fetchColumn() ?: 0),
+    'equipped_id' => $equippedOutfitId,
 ]);

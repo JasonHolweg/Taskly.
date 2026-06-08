@@ -560,38 +560,51 @@ const poseImg = c => c.poses.happy || c.poses.celebrate || Object.values(c.poses
 let SHOP = null, CURRENT_BOX = null, LAST_DRAW = null;
 
 async function loadShop() {
-  try { SHOP = await api('shop.php'); renderShop(); }
+  try { SHOP = await api('shop.php'); renderShowcase(); openCat(CUST_CAT); }
   catch (e) { alert(e.message); }
 }
-function renderShop() {
+function renderShowcase() {
   $('#shop-sparks').textContent = SHOP.sparks;
-  const wrap = $('#boxes'); wrap.innerHTML = '';
-  SHOP.boxes.forEach(box => {
-    const complete = box.complete;
-    const can = !complete && SHOP.sparks >= box.cost;
-    const rates = SHOP.drop_rates;
-    const rateChips = Object.keys(rates).map(r =>
-      `<span class="rate" data-rarity="${r}">${RAR_LABEL[r]} ${rates[r]}%</span>`).join('');
-    const prev = box.contents.map(c =>
-      `<div class="prev ${c.owned ? 'owned' : ''}" data-rarity="${c.rarity}"><img src="${poseImg(c)}" alt="${c.name}" title="${c.name} · ${RAR_LABEL[c.rarity]}"></div>`).join('');
-    const head = complete
-      ? `<div class="box-complete">100% freigeschaltet ✓</div>`
-      : `<div class="box-rates">${rateChips}</div>`;
-    const btn = complete
-      ? `<span class="box-done">Komplett ✓</span>`
-      : `<button class="btn btn-primary" ${can ? '' : 'disabled'}>Öffnen</button>`;
-    const el = document.createElement('div'); el.className = 'box-card' + (complete ? ' complete' : '');
-    el.innerHTML =
-      `<div class="box-top"><img class="box-pochi" src="${complete ? box.img_open : box.img_closed}" alt="">
-         <div><div class="box-title">${box.name}</div>${head}
-           <div class="box-progress">🔓 ${box.owned}/${box.total} freigeschaltet</div></div></div>
-       <div class="box-preview">${prev}</div>
-       <div class="box-buy"><span class="box-cost">${box.cost} ✦</span>${btn}</div>`;
-    if (!complete) el.querySelector('button').addEventListener('click', () => openBox(box));
-    wrap.appendChild(el);
+  const sc = $('#tanuki-showcase'); if (sc) sc.dataset.frame = SHOP.frame || 'default';
+  const poses = EQUIPPED && EQUIPPED.poses;
+  $('#tanuki-show-img').src = (poses && (poses.happy || poses.celebrate)) || '/assets/img/tanuki/base-happy.png';
+  $('#tanuki-show-cap').textContent = (EQUIPPED && EQUIPPED.name) ? EQUIPPED.name : 'Basis-Tanuki';
+}
+
+/* ---- Customizing-Hub ---- */
+let CUST_CAT = 'garderobe', MODAL_BOX = null;
+function initCust() {
+  $$('.cust-cat').forEach(b => b.addEventListener('click', () => openCat(b.dataset.cat)));
+  $('#bm-close').addEventListener('click', () => $('#box-modal').classList.add('hidden'));
+  $('#box-modal').addEventListener('click', e => { if (e.target.id === 'box-modal') $('#box-modal').classList.add('hidden'); });
+  $('#bm-open').addEventListener('click', () => { if (MODAL_BOX) { $('#box-modal').classList.add('hidden'); openBox(MODAL_BOX); } });
+}
+function openCat(cat) {
+  CUST_CAT = cat;
+  $$('.cust-cat').forEach(b => b.classList.toggle('is-active', b.dataset.cat === cat));
+  const panel = $('#cust-panel'); if (!panel || !SHOP) return;
+  if (cat === 'garderobe') renderGarderobePanel(panel);
+  else if (cat === 'frames') renderFramesPanel(panel);
+  else if (cat === 'shop') renderShopPanel(panel);
+  else renderPlaceholder(panel, cat);
+}
+function renderGarderobePanel(panel) {
+  panel.innerHTML = '<div class="garderobe"></div>';
+  const g = panel.querySelector('.garderobe');
+  const base = document.createElement('div');
+  base.className = 'outfit-tile base' + (SHOP.equipped_id ? '' : ' equipped');
+  base.innerHTML = `<img src="/assets/img/tanuki/base-neutral.png" alt="Basis"><div class="ot-name">Basis</div>` + (SHOP.equipped_id ? '' : '<span class="ot-eq">●</span>');
+  base.addEventListener('click', () => equip(0));
+  g.appendChild(base);
+  (SHOP.outfits || []).forEach(it => {
+    const t = document.createElement('div');
+    t.className = 'outfit-tile' + (it.equipped ? ' equipped' : '') + (it.owned ? '' : ' locked');
+    t.dataset.rarity = it.rarity;
+    t.innerHTML = `<img src="${poseImg(it)}" alt="${it.name}"><div class="ot-name">${it.name}</div>`
+      + (it.equipped ? '<span class="ot-eq">●</span>' : (it.owned ? '' : '<span class="ot-lock">🔒</span>'));
+    if (it.owned) t.addEventListener('click', () => equip(it.id));
+    g.appendChild(t);
   });
-  renderGarderobe();
-  renderFrames();
 }
 const FRAME_CAT = { basis: 'Standard', prestige: 'Prestige', japan: 'Japanisch', helden: 'Helden', royal: 'Royal', drache: 'Drache', arcane: 'Magie', galaxy: 'Weltraum', cyberpunk: 'Cyberpunk', steampunk: 'Steampunk', frost: 'Frost', winter: 'Winter', halloween: 'Halloween', ozean: 'Ozean', blumen: 'Blumen', streak: 'Streak' };
 function frameTile(f) {
@@ -613,9 +626,9 @@ function frameTile(f) {
      <div class="ft-meta"><span class="ft-name">${f.name}</span>${action}</div>`;
   return tile;
 }
-function renderFrames() {
-  const wrap = $('#frame-shop'); if (!wrap || !SHOP.frames) return;
-  wrap.innerHTML = '';
+function renderFramesPanel(panel) {
+  panel.innerHTML = '<p class="muted small">Aus Kisten, Streaks, Level-Ups oder Sparks. Tippen = anlegen.</p><div class="frame-shop"></div>';
+  const wrap = panel.querySelector('.frame-shop');
   const order = [], byCat = {};
   SHOP.frames.forEach(f => { (byCat[f.theme] = byCat[f.theme] || (order.push(f.theme), [])).push(f); });
   order.forEach(theme => {
@@ -634,24 +647,49 @@ async function equipFrame(id, variant) {
   try { const r = await api('equip.php', 'POST', { cosmetic_id: id, kind: 'frame' }); applyFrame(r.frame || variant); await loadShop(); }
   catch (e) { alert(e.message); }
 }
-function renderGarderobe() {
-  const g = $('#garderobe'); g.innerHTML = '';
-  $('#garderobe-empty').classList.toggle('hidden', SHOP.inventory.length > 0);
-  const base = document.createElement('div');
-  base.className = 'outfit-tile base' + (SHOP.equipped_id ? '' : ' equipped');
-  base.innerHTML = `<img src="/assets/img/tanuki/base-neutral.png" alt="Basis"><div class="ot-name">Basis</div>`
-    + (SHOP.equipped_id ? '' : '<span class="ot-eq">●</span>');
-  base.addEventListener('click', () => equip(0));
-  g.appendChild(base);
-  SHOP.inventory.forEach(it => {
-    const t = document.createElement('div');
-    t.className = 'outfit-tile' + (it.equipped ? ' equipped' : '');
-    t.dataset.rarity = it.rarity;
-    t.innerHTML = `<img src="${poseImg(it)}" alt="${it.name}"><div class="ot-name">${it.name}</div>`
-      + (it.equipped ? '<span class="ot-eq">●</span>' : '');
-    t.addEventListener('click', () => equip(it.id));
-    g.appendChild(t);
+function renderShopPanel(panel) {
+  panel.innerHTML = '<p class="muted small">Kisten geben zufällig Outfits & Rahmen der Kategorie — keine Duplikate.</p><div class="boxes-compact"></div>';
+  const wrap = panel.querySelector('.boxes-compact');
+  SHOP.boxes.forEach(box => {
+    const pct = box.total ? Math.round(box.owned / box.total * 100) : 0;
+    const el = document.createElement('button'); el.className = 'box-card-compact' + (box.complete ? ' complete' : '');
+    el.innerHTML =
+      `<img class="box-pochi" src="${box.complete ? box.img_open : box.img_closed}" alt="">
+       <div class="bc-info"><div class="box-title">${box.name}</div>
+         <div class="bc-bar"><span style="width:${pct}%"></span></div>
+         <div class="box-progress">${box.owned}/${box.total}${box.complete ? ' · komplett ✓' : ''}</div></div>
+       <div class="bc-price">${box.complete ? '✓' : box.cost + ' ✦'}</div>`;
+    el.addEventListener('click', () => openBoxModal(box));
+    wrap.appendChild(el);
   });
+}
+function openBoxModal(box) {
+  MODAL_BOX = box;
+  $('#bm-name').textContent = box.name;
+  $('#bm-img').src = box.complete ? box.img_open : box.img_closed;
+  const rates = SHOP.drop_rates;
+  $('#bm-rates').innerHTML = Object.keys(rates).map(r => `<span class="rate" data-rarity="${r}">${RAR_LABEL[r]} ${rates[r]}%</span>`).join('');
+  $('#bm-contents').innerHTML = box.contents.map(c => c.category === 'frame'
+    ? `<div class="fprev ${c.owned ? 'owned' : ''}" data-rarity="${c.rarity}" title="${c.name}"><div class="hero" data-frame="${c.slug}"><div class="hero-card"></div></div></div>`
+    : `<div class="prev ${c.owned ? 'owned' : ''}" data-rarity="${c.rarity}" title="${c.name}"><img src="${poseImg(c)}" alt="${c.name}"></div>`).join('');
+  $('#bm-progress').textContent = `🔓 ${box.owned}/${box.total}`;
+  $('#bm-cost').textContent = box.cost;
+  const ob = $('#bm-open');
+  if (box.complete) { ob.textContent = 'Komplett ✓'; ob.disabled = true; }
+  else { ob.innerHTML = `Öffnen · ${box.cost} ✦`; ob.disabled = SHOP.sparks < box.cost; }
+  $('#box-modal').classList.remove('hidden');
+}
+function renderPlaceholder(panel, cat) {
+  const P = {
+    anim:  { ic: '✨', t: 'Animationen', d: 'Idle-, Feier-, Reise- & Special-Animationen — bald freischaltbar.', items: ['Idle', 'Feiern', 'Reise', 'Special'] },
+    icons: { ic: '📱', t: 'App-Icons', d: 'Wechsle das Home-Bildschirm-Icon deiner App — bald freischaltbar.', items: ['Klassik', 'Gold', 'Sakura', 'Neon'] },
+    items: { ic: '🎒', t: 'Items & Slots', d: 'Ausrüstungs-Slots — kommt mit „Tanuki Reisen" (v2).', slots: ['Accessoire', 'Reise-Item', 'Special'] },
+  }[cat];
+  if (!P) { panel.innerHTML = ''; return; }
+  const body = P.slots
+    ? '<div class="slot-grid">' + P.slots.map(s => `<div class="slot-tile"><span class="slot-ic">➕</span><span class="slot-nm">${s}</span><span class="slot-soon">leer</span></div>`).join('') + '</div>'
+    : '<div class="slot-grid">' + P.items.map(s => `<div class="slot-tile"><span class="slot-nm">${s}</span><span class="slot-soon">bald</span></div>`).join('') + '</div>';
+  panel.innerHTML = `<div class="cust-ph"><div class="ph-ic">${P.ic}</div><h3 class="h3">${P.t}</h3><p class="muted small">${P.d}</p>${body}</div>`;
 }
 async function equip(id) {
   try {
@@ -891,7 +929,7 @@ async function boot() {
   } catch (_) { showAuth(); }
 }
 
-initTheme(); initAuth(); initDump(); initQuick(); initHero(); initMore(); initNav(); initLootbox(); initPlan(); initPush(); initTasks();
+initTheme(); initAuth(); initDump(); initQuick(); initHero(); initMore(); initNav(); initLootbox(); initPlan(); initPush(); initTasks(); initCust();
 boot();
 
 if ('serviceWorker' in navigator) {

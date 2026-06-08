@@ -317,6 +317,52 @@ textarea{resize:vertical;line-height:1.5}
 .lb-frame-prev{width:min(78vw,300px);pointer-events:none}
 .lb-frame-prev .hero-card{padding:var(--space-5);min-height:90px;justify-content:center;animation:none}
 
+/* ===== Tanuki-Customizing-Hub ===== */
+.tanuki-showcase{margin-bottom:var(--space-2)}
+.tanuki-showcase .hero-card{padding:var(--space-6) var(--space-5);gap:var(--space-2)}
+.tanuki-xl{width:clamp(140px,42vw,200px);height:auto}
+.cust-cats{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-2)}
+.cust-cat{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);cursor:pointer;font-family:var(--font-body);color:var(--color-text-secondary);transition:border-color var(--dur-fast),background var(--dur-fast),color var(--dur-fast)}
+.cust-cat.is-active{border-color:var(--color-primary);background:var(--color-primary-subtle);color:var(--color-primary)}
+.cust-cat .cc-ic{font-size:22px;line-height:1}
+.cust-cat .cc-lb{font-size:12px;font-weight:600}
+.cust-panel{margin-top:var(--space-2);display:flex;flex-direction:column;gap:var(--space-3)}
+
+/* Kompakte Kisten */
+.boxes-compact{display:flex;flex-direction:column;gap:var(--space-2)}
+.box-card-compact{display:flex;align-items:center;gap:var(--space-3);width:100%;text-align:left;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:10px 12px;cursor:pointer;font-family:var(--font-body);transition:transform var(--dur-fast)}
+.box-card-compact:active{transform:scale(.99)}
+.box-card-compact .box-pochi{width:48px;height:48px}
+.bc-info{flex:1;min-width:0}
+.bc-bar{height:5px;border-radius:var(--radius-full);background:var(--color-surface-2);overflow:hidden;margin:5px 0}
+.bc-bar span{display:block;height:100%;background:var(--color-primary);border-radius:inherit}
+.bc-price{font-family:var(--font-display);font-weight:800;color:var(--color-spark);flex:0 0 auto}
+.box-card-compact.complete .bc-price{color:var(--color-success)}
+
+/* Box-Modal */
+#bm-img{align-self:center;width:clamp(120px,40vw,170px)}
+#bm-rates{justify-content:center}
+.bm-foot{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);margin-top:var(--space-2)}
+.fprev{position:relative;width:54px;height:54px;flex:0 0 auto}
+.fprev .hero{width:54px}
+.fprev .hero-card{min-height:54px;padding:0;animation:none;gap:0}
+.fprev:not(.owned){opacity:.6}
+.fprev.owned::after{content:"✓";position:absolute;right:-4px;top:-4px;width:18px;height:18px;border-radius:50%;background:var(--color-success);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;z-index:4}
+
+/* Garderobe gesperrt */
+.outfit-tile{position:relative}
+.outfit-tile.locked{opacity:.45;cursor:default}
+.ot-lock{position:absolute;top:6px;right:6px;font-size:12px}
+
+/* Platzhalter (Animationen / Icons / Items) */
+.cust-ph{text-align:center;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--space-6) var(--space-4);display:flex;flex-direction:column;gap:var(--space-2);align-items:center}
+.cust-ph .ph-ic{font-size:40px}
+.slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-2);width:100%;margin-top:var(--space-3)}
+.slot-tile{display:flex;flex-direction:column;align-items:center;gap:4px;padding:var(--space-4) var(--space-2);background:var(--color-surface-2);border:1px dashed var(--color-border);border-radius:var(--radius-md);color:var(--color-text-secondary)}
+.slot-tile .slot-ic{font-size:20px;color:var(--color-text-tertiary)}
+.slot-nm{font-size:12px;font-weight:600}
+.slot-soon{font-size:10px;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.05em}
+
 /* Onboarding (Erststart) */
 .onboarding{align-items:center;text-align:center;gap:var(--space-4)}
 .onb-title{font-family:var(--font-display);font-weight:800;font-size:22px;line-height:1.2}
