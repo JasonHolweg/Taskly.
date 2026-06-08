@@ -17,6 +17,10 @@ reconcile_streak($uid);          // Eis/Bruch beim App-Start aktuell halten
 $p   = get_progress($uid);
 $lvl = level_from_xp((int) $p['xp_total']);
 
+$ht = db()->prepare('SELECT 1 FROM tasks WHERE household_id = ? AND active = 1 LIMIT 1');
+$ht->execute([(int) $u['household_id']]);
+$hasTasks = (bool) $ht->fetchColumn();
+
 json_out([
     'logged_in' => true,
     'user'      => ['id' => (int) $u['id'], 'name' => $u['name'], 'household_id' => (int) $u['household_id']],
@@ -33,4 +37,5 @@ json_out([
     ],
     'equipped'  => get_equipped($uid),
     'rescues'   => $p['streak_state'] === 'frozen' ? pending_rescues($uid) : (clear_rescues($uid) ?? []),
+    'has_tasks' => $hasTasks,
 ]);

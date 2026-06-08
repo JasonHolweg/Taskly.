@@ -57,6 +57,7 @@
       <div class="xp-ring" id="xp-ring" style="--p:0">
         <span class="xp-level" id="xp-level">1</span>
       </div>
+      <span class="level-label" id="level-label">Lv&nbsp;1</span>
       <div class="streak" id="streak" title="Streak">
         <span class="streak-flame">🔥</span><span id="streak-count">0</span>
       </div>
@@ -74,6 +75,20 @@
 
     <!-- Streak auf Eis / Rettung -->
     <div class="ice-banner hidden" id="ice-banner"></div>
+
+    <!-- Onboarding (nur wenn noch keine Aufgaben) -->
+    <section class="card onboarding hidden" id="onboarding">
+      <img src="/assets/img/tanuki/base-happy.png" alt="" class="tanuki tanuki-lg">
+      <h2 class="h2 onb-title">Willkommen bei Taskly! 🦝</h2>
+      <p class="muted">Leer einmal deinen Kopf — schreib alles rein, was ansteht. Ich sortiere es und sage dir dann immer <b>eine</b> Sache, die du als Nächstes machen kannst.</p>
+      <ul class="onb-list">
+        <li><span>📅</span><div><b>Tägliches</b><br><span class="muted small">„jeden Tag 10 Min lesen"</span></div></li>
+        <li><span>🔁</span><div><b>Wiederkehrendes</b><br><span class="muted small">„jeden Montag Müll rausbringen"</span></div></li>
+        <li><span>🗓️</span><div><b>Diese Woche</b><br><span class="muted small">„Steuer sortieren, Fenster putzen"</span></div></li>
+        <li><span>📌</span><div><b>Termine</b><br><span class="muted small">„Freitag 15 Uhr Zahnarzt"</span></div></li>
+      </ul>
+      <button class="btn btn-primary btn-block btn-hero" id="onb-start">Kopf leeren</button>
+    </section>
 
     <!-- Was jetzt? (Hero, direkt unter der HUD) -->
     <section class="hero">
@@ -126,19 +141,11 @@
       </div>
     </section>
 
-    <!-- Erfassen (sekundär, standardmäßig eingeklappt) -->
-    <section class="braindump-wrap">
-      <button class="dump-trigger" id="dump-trigger" aria-expanded="false">
+    <!-- Erfassen (sekundär — öffnet das Sheet) -->
+    <section class="braindump-wrap" id="braindump-wrap">
+      <button class="dump-trigger" id="dump-trigger">
         <span class="dump-plus">+</span><span>Kopf leeren</span>
       </button>
-      <div class="braindump-body hidden" id="dump-body">
-        <textarea id="dump-text" rows="3" placeholder="z.B. Bad putzen, Mama anrufen, Steuerordner sortieren …"></textarea>
-        <div class="braindump-actions">
-          <button class="btn btn-ghost" id="dump-voice" title="Sprechen" hidden>🎙️ Sprechen</button>
-          <button class="btn btn-primary" id="dump-save">Erfassen</button>
-        </div>
-        <p class="dump-result muted small" id="dump-result"></p>
-      </div>
     </section>
   </main>
 
@@ -238,6 +245,23 @@
         </div>
         <button class="btn btn-ghost lb-close" id="lb-close">Schließen</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ===== Kopf-leeren-Sheet (oben, tastatur-sicher) ===== -->
+  <div class="sheet-overlay hidden" id="dump-sheet">
+    <div class="sheet">
+      <div class="sheet-head">
+        <h2 class="h3">Kopf leeren</h2>
+        <button class="icon-btn" id="dump-close" aria-label="Schließen">✕</button>
+      </div>
+      <p class="muted small">Schreib alles rein — Tägliches, Wöchentliches, einmalige Aufgaben und Termine. Ich sortiere es.</p>
+      <textarea id="dump-text" rows="4" placeholder="z.B. jeden Tag 10 Min lesen, montags Müll raus, diese Woche Steuer sortieren, Freitag 15 Uhr Zahnarzt …"></textarea>
+      <div class="braindump-actions">
+        <button class="btn btn-ghost" id="dump-voice" title="Sprechen" hidden>🎙️ Sprechen</button>
+        <button class="btn btn-primary" id="dump-save">Erfassen</button>
+      </div>
+      <p class="dump-result muted small" id="dump-result"></p>
     </div>
   </div>
 

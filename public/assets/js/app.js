@@ -39,6 +39,7 @@ function initTheme() {
 function renderProgress(p) {
   if (!p) return;
   $('#xp-level').textContent = p.level;
+  const ll = $('#level-label'); if (ll) ll.textContent = 'Lv ' + p.level;
   const pct = p.xp_needed ? Math.round((p.xp_into / p.xp_needed) * 100) : 0;
   $('#xp-ring').style.setProperty('--p', pct);
   $('#spark-count').textContent = p.sparks;
@@ -99,14 +100,28 @@ function initAuth() {
 }
 
 /* ---------- Brain-Dump ---------- */
+// Onboarding (kein Tasks) vs. normaler Hero
+function applyFirstRun(hasTasks) {
+  $('#onboarding').classList.toggle('hidden', hasTasks);
+  $('.hero').classList.toggle('hidden', !hasTasks);
+  $('#braindump-wrap').classList.toggle('hidden', !hasTasks);
+}
+
+function openDump() {
+  $('#dump-result').textContent = '';
+  $('#dump-sheet').classList.remove('hidden');
+  setTimeout(() => $('#dump-text').focus(), 50);
+}
+function closeDump() {
+  $('#dump-sheet').classList.add('hidden');
+  $('#dump-text').blur();
+}
+
 function initDump() {
-  // Ein-/Ausklappen des Erfassen-Moduls
-  $('#dump-trigger').addEventListener('click', () => {
-    const open = $('#dump-body').classList.toggle('hidden') === false;
-    $('#dump-trigger').classList.toggle('open', open);
-    $('#dump-trigger').setAttribute('aria-expanded', String(open));
-    if (open) $('#dump-text').focus();
-  });
+  $('#dump-trigger').addEventListener('click', openDump);
+  $('#onb-start').addEventListener('click', openDump);
+  $('#dump-close').addEventListener('click', closeDump);
+  $('#dump-sheet').addEventListener('click', e => { if (e.target.id === 'dump-sheet') closeDump(); });
 
   $('#dump-save').addEventListener('click', async () => {
     const text = $('#dump-text').value.trim();
@@ -117,8 +132,10 @@ function initDump() {
       const r = await api('braindump.php', 'POST', { text });
       $('#dump-text').value = '';
       const word = r.count === 1 ? 'Aufgabe' : 'Aufgaben';
-      $('#dump-result').textContent = `${r.count} ${word} erfasst${r.ai_used ? '' : ' (ohne KI)'}. Tipp „Was jetzt?".`;
+      $('#dump-result').textContent = `${r.count} ${word} erfasst${r.ai_used ? '' : ' (ohne KI)'} ✓`;
+      applyFirstRun(true);
       resetHero();
+      setTimeout(closeDump, 1000);
     } catch (err) { $('#dump-result').textContent = err.message; }
     finally { btn.disabled = false; btn.textContent = 'Erfassen'; }
   });
@@ -639,6 +656,7 @@ async function boot() {
       renderProgress(s.progress);
       showIce(s);
       EQUIPPED = s.equipped || null; applyTanuki();
+      applyFirstRun(!!s.has_tasks);
       showApp(); resetHero(); showView('today');
     } else showAuth();
   } catch (_) { showAuth(); }
