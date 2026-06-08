@@ -332,6 +332,8 @@ function initMore() {
   });
   $('#friend-add').addEventListener('click', addFriend);
   $('#friend-input').addEventListener('keydown', e => { if (e.key === 'Enter') addFriend(); });
+  $('#acc-save').addEventListener('click', saveProfile);
+  $('#acc-pw-save').addEventListener('click', savePassword);
 }
 
 async function loadMore() {
@@ -340,7 +342,27 @@ async function loadMore() {
     renderFriends(ov);
     renderLeaderboard((await api('leaderboard.php')).rows);
     loadPush();
+    loadAccount();
   } catch (e) { alert(e.message); }
+}
+
+/* ---------- Konto ---------- */
+async function loadAccount() {
+  try { const a = await api('account.php'); $('#acc-name').value = a.name || ''; $('#acc-email').value = a.email || ''; }
+  catch (_) {}
+}
+async function saveProfile() {
+  const name = $('#acc-name').value.trim(), email = $('#acc-email').value.trim();
+  try { await api('account.php', 'POST', { action: 'profile', name, email }); $('#acc-msg').textContent = 'Gespeichert ✓'; }
+  catch (e) { $('#acc-msg').textContent = e.message; }
+}
+async function savePassword() {
+  const cur = $('#acc-pw-cur').value, nw = $('#acc-pw-new').value;
+  try {
+    await api('account.php', 'POST', { action: 'password', current: cur, new: nw });
+    $('#acc-msg').textContent = 'Passwort geändert ✓';
+    $('#acc-pw-cur').value = ''; $('#acc-pw-new').value = '';
+  } catch (e) { $('#acc-msg').textContent = e.message; }
 }
 
 function renderFriends(ov) {

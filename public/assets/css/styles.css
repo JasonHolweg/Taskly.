@@ -181,6 +181,12 @@ textarea{resize:vertical;line-height:1.5}
 .te-actions{display:flex;justify-content:space-between;align-items:center;gap:var(--space-3);margin-top:var(--space-2)}
 .te-delete{color:var(--color-danger)}
 
+/* Konto */
+.acc-label{font-size:13px;font-weight:600;color:var(--color-text-secondary);margin-top:var(--space-2)}
+.acc-pw{margin-top:var(--space-2);border-top:1px solid var(--color-border);padding-top:var(--space-3);display:flex;flex-direction:column;gap:var(--space-2)}
+.acc-pw summary{cursor:pointer;font-weight:600;color:var(--color-primary);font-size:14px;list-style:none}
+.acc-pw summary::-webkit-details-marker{display:none}
+
 /* Onboarding (Erststart) */
 .onboarding{align-items:center;text-align:center;gap:var(--space-4)}
 .onb-title{font-family:var(--font-display);font-weight:800;font-size:22px;line-height:1.2}

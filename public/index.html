@@ -221,6 +221,24 @@
       <p class="muted small" id="push-msg"></p>
     </section>
 
+    <h2 class="h3 garderobe-title">Konto</h2>
+    <section class="card account">
+      <span class="acc-label">Name</span>
+      <input id="acc-name" type="text" autocomplete="name">
+      <span class="acc-label">E-Mail</span>
+      <input id="acc-email" type="email" autocomplete="email">
+      <button class="btn btn-primary btn-block" id="acc-save">Speichern</button>
+
+      <details class="acc-pw">
+        <summary>Passwort ändern</summary>
+        <input id="acc-pw-cur" type="password" placeholder="Aktuelles Passwort" autocomplete="current-password">
+        <input id="acc-pw-new" type="password" placeholder="Neues Passwort (≥6 Zeichen)" autocomplete="new-password">
+        <button class="btn btn-primary btn-block" id="acc-pw-save">Passwort ändern</button>
+      </details>
+
+      <p class="muted small" id="acc-msg"></p>
+    </section>
+
     <button class="btn btn-ghost btn-block" id="btn-logout">Abmelden</button>
   </main>
 
