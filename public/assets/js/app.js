@@ -334,6 +334,12 @@ function initMore() {
   $('#friend-input').addEventListener('keydown', e => { if (e.key === 'Enter') addFriend(); });
   $('#acc-save').addEventListener('click', saveProfile);
   $('#acc-pw-save').addEventListener('click', savePassword);
+  $('#cal-copy').addEventListener('click', async () => {
+    const url = $('#cal-url').value;
+    try { await navigator.clipboard.writeText(url); }
+    catch (_) { $('#cal-url').select(); document.execCommand('copy'); }
+    $('#cal-msg').textContent = 'Link kopiert ✓';
+  });
 }
 
 async function loadMore() {
@@ -343,7 +349,17 @@ async function loadMore() {
     renderLeaderboard((await api('leaderboard.php')).rows);
     loadPush();
     loadAccount();
+    loadCalendar();
   } catch (e) { alert(e.message); }
+}
+
+/* ---------- Kalender-Abo ---------- */
+async function loadCalendar() {
+  try {
+    const c = await api('calendar.php');
+    $('#cal-url').value = c.url;
+    $('#cal-subscribe').href = c.webcal;
+  } catch (_) {}
 }
 
 /* ---------- Konto ---------- */

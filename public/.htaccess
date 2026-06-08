@@ -3,6 +3,12 @@ Options -Indexes
 AddDefaultCharset UTF-8
 DirectoryIndex index.html
 
+# Schöne Kalender-Abo-URL: /cal/<token>.ics → API
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^cal/([a-f0-9]{32})\.ics$ /api/calendar.php?token=$1 [L,QSA]
+</IfModule>
+
 # Dotfiles & interne PHP-Includes sperren
 <FilesMatch "^\.">
   Require all denied
