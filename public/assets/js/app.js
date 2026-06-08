@@ -48,6 +48,7 @@ function renderProgress(p) {
 
 function showIce(s) {
   const b = $('#ice-banner'); const p = s.progress;
+  FROZEN = !!(p && p.frozen);
   if (p && p.frozen) {
     let hrs = '';
     if (p.frozen_until) {
@@ -194,6 +195,7 @@ function renderPick(r) {
   }
   const p = r.pick;
   current = p;
+  $('#pick-tanuki').src = tanukiFor(MOOD_BY_ENERGY[ctx().energy] || 'neutral');
   $('#pick-reason').textContent = r.reason || '';
   $('#pick-title').textContent = p.title;
   $('#pick-meta').innerHTML =
@@ -214,6 +216,10 @@ function initHero() {
   });
   $('#empty-again').addEventListener('click', () => resetHero());
 
+  const heroT = $('#hero-tanuki');
+  heroT.addEventListener('click', pokeTanuki);
+  heroT.addEventListener('animationend', e => { if (e.animationName === 'bounce') heroT.classList.remove('tanuki-poke'); });
+
   $('#act-skip').addEventListener('click', async () => {
     if (!current) return;
     try { renderPick(await api('skip.php', 'POST', { occ_id: current.occ_id })); }
@@ -233,6 +239,7 @@ function initHero() {
       const r = await api('complete.php', 'POST', { occ_id: occ });
       renderProgress(r.progress);
       $('#ice-banner').classList.add('hidden');
+      FROZEN = false; applyTanuki();
       showReward(r.rewards);
     } catch (err) { alert(err.message); }
   });
@@ -383,7 +390,7 @@ const BASE_TANUKI = {
   tired: '/assets/img/tanuki/base-tired.png',
   sad: '/assets/img/tanuki/base-sad.png',
 };
-let EQUIPPED = null;
+let EQUIPPED = null, FROZEN = false;
 function tanukiFor(emotion) {
   if (EQUIPPED && EQUIPPED.poses) {
     if (emotion === 'neutral' && EQUIPPED.poses.happy) return EQUIPPED.poses.happy;
@@ -392,9 +399,33 @@ function tanukiFor(emotion) {
   return BASE_TANUKI[emotion] || BASE_TANUKI.neutral;
 }
 function applyTanuki() {
-  $$('#hero-start .tanuki, #hero-pick .tanuki').forEach(i => i.src = tanukiFor('neutral'));
+  const hero = $('#hero-tanuki'); if (hero) hero.src = FROZEN ? tanukiFor('sad') : tanukiFor('neutral');
+  const pick = $('#pick-tanuki'); if (pick) pick.src = tanukiFor('neutral');
   const empty = $('#hero-empty .tanuki'); if (empty) empty.src = tanukiFor('tired');
   const rt = $('#reward-tanuki'); if (rt) rt.src = tanukiFor('celebrate');
+}
+
+// Tanuki-Mimik passend zur gewählten Energie (im Vorschlag-Zustand)
+const MOOD_BY_ENERGY = { 'müde': 'tired', 'mude': 'tired', 'ok': 'neutral', 'voll': 'celebrate' };
+
+// Antippen → kleiner Hüpfer + Spruch (Persönlichkeit, brand.md §4)
+const TANUKI_LINES = [
+  'Komm, das kriegst du. 💪',
+  'Eine Sache nach der anderen.',
+  'Schön, dass du da bist. 🍵',
+  'Kein Stress — Schritt für Schritt.',
+  'Bereit, wenn du’s bist.',
+  'Klein anfangen zählt auch.',
+];
+let _bubbleTimer = null;
+function pokeTanuki() {
+  const img = $('#hero-tanuki');
+  img.classList.remove('tanuki-poke'); void img.offsetWidth; img.classList.add('tanuki-poke');
+  const b = $('#tanuki-bubble');
+  b.textContent = TANUKI_LINES[Math.floor(Math.random() * TANUKI_LINES.length)];
+  b.classList.add('show');
+  clearTimeout(_bubbleTimer);
+  _bubbleTimer = setTimeout(() => b.classList.remove('show'), 2200);
 }
 
 /* ---------- Views / Nav ---------- */

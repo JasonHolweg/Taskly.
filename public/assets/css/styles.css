@@ -192,8 +192,22 @@ textarea{resize:vertical;line-height:1.5}
 .tanuki{display:block;object-fit:contain}
 .tanuki-sm{width:28px;height:28px}
 .tanuki-md{width:72px;height:72px}
-.tanuki-lg{width:120px;height:120px}
+.tanuki-lg{width:124px;height:124px}
 .tanuki-happy{animation:bounce var(--dur-reward) var(--ease-spring)}
+
+/* Lebendiger Hero-Tanuki */
+.tanuki-stage{position:relative;display:flex;justify-content:center;align-items:flex-end;min-height:132px}
+#hero-tanuki{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tanuki-idle{animation:idleBob 3.2s ease-in-out infinite}
+.tanuki-poke{animation:bounce var(--dur-reward) var(--ease-spring)}
+@keyframes idleBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.tanuki-bubble{position:absolute;bottom:calc(100% - 8px);left:50%;transform:translateX(-50%) translateY(8px) scale(.92);
+  background:var(--color-surface);border:1px solid var(--color-border);box-shadow:var(--shadow-md);
+  border-radius:var(--radius-lg);padding:8px 14px;font-family:var(--font-body);font-weight:600;font-size:14px;
+  color:var(--color-text);white-space:nowrap;opacity:0;pointer-events:none;z-index:3;
+  transition:opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-spring)}
+.tanuki-bubble::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--color-surface)}
+.tanuki-bubble.show{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
 
 /* Reward */
 .reward-overlay{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);animation:fade var(--dur-base) var(--ease-out)}
