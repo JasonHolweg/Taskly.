@@ -90,10 +90,11 @@
     </section>
 
     <!-- Was jetzt? (Hero, direkt unter der HUD) -->
-    <section class="hero">
+    <section class="hero" data-frame="default">
 
       <!-- Ruhe-Zustand: Rahmen-Satz + erklärte Regler + Button -->
       <div class="hero-card" id="hero-start">
+        <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
         <div class="tanuki-stage">
           <div class="tanuki-bubble" id="tanuki-bubble"></div>
           <img src="/assets/img/tanuki/base-neutral.png" alt="Tanuki" class="tanuki tanuki-lg tanuki-idle" id="hero-tanuki">
@@ -123,6 +124,7 @@
 
       <!-- Pick -->
       <div class="hero-card pick hidden" id="hero-pick">
+        <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
         <div class="pick-reason"><img src="/assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md" id="pick-tanuki"><span id="pick-reason"></span></div>
         <h2 class="display" id="pick-title">—</h2>
         <div class="pick-meta" id="pick-meta"></div>
@@ -137,6 +139,7 @@
 
       <!-- Leerzustand -->
       <div class="hero-card empty hidden" id="hero-empty">
+        <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
         <img src="/assets/img/tanuki/base-tired.png" alt="" class="tanuki tanuki-lg tanuki-calm">
         <p id="empty-msg" class="empty-msg">Nichts dringend. Genieß die Pause. 🍵</p>
         <button class="btn btn-ghost" id="empty-again">Nochmal schauen</button>

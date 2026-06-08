@@ -187,6 +187,69 @@ textarea{resize:vertical;line-height:1.5}
 .acc-pw summary{cursor:pointer;font-weight:600;color:var(--color-primary);font-size:14px;list-style:none}
 .acc-pw summary::-webkit-details-marker{display:none}
 
+/* =====================================================================
+   Kosmetisches Frame-System für die „Was jetzt?"-Card (data-frame)
+   Layer: ::before = Rahmen/Glow · .frame-corners = SVG-Eckdeko · Content darüber
+   Responsiv via clamp() + Tokens, Dark-Mode-kompatibel, max. dezente Motion.
+   ===================================================================== */
+.hero[data-frame] .hero-card > *{position:relative;z-index:1}
+.frame-corners{display:none}
+
+/* --- Default: dezente Outline + weicher Glow --- */
+.hero[data-frame="default"] .hero-card{
+  box-shadow:var(--shadow-md),
+             inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 22%, transparent),
+             0 clamp(6px,2vw,12px) clamp(20px,6vw,38px) -14px color-mix(in srgb, var(--color-primary) 50%, transparent);
+}
+
+/* --- Gradient-Rahmen via Mask (Premium & Samurai teilen die Technik) --- */
+.hero[data-frame="premium"] .hero-card::before,
+.hero[data-frame="samurai"] .hero-card::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;z-index:0;pointer-events:none;
+  padding:clamp(2px,0.7vw,3px);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+}
+
+/* --- Premium: Violett → Gold, langsam wandernder Glow --- */
+.hero[data-frame="premium"] .hero-card{
+  box-shadow:var(--shadow-md), 0 clamp(8px,3vw,16px) clamp(26px,8vw,46px) -16px color-mix(in srgb, #8B5CF6 60%, transparent);
+}
+.hero[data-frame="premium"] .hero-card::before{
+  background:linear-gradient(135deg, #A78BFA 0%, #F5C46B 45%, #C9A0FF 75%, #A78BFA 100%);
+  background-size:220% 220%;
+  animation:framePremium 9s ease-in-out infinite;
+}
+@keyframes framePremium{
+  0%,100%{background-position:0% 50%; opacity:.9}
+  50%{background-position:100% 50%; opacity:1}
+}
+
+/* --- Samurai: warmer Gold-Rahmen + SVG-Eckornamente + sanfter Schimmer --- */
+.hero[data-frame="samurai"] .hero-card{
+  --corner:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'%3E%3Cpath d='M6 27 V13 Q6 6 13 6 H27' stroke='%23D9A85C' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M13.5 13.5 q7.5 0 10.5 -5.5' stroke='%23B5854A' stroke-width='1.5' stroke-linecap='round' opacity='0.85'/%3E%3Ccircle cx='12' cy='12' r='2.2' fill='%23EBCE8F'/%3E%3C/svg%3E");
+  box-shadow:var(--shadow-md), 0 clamp(8px,3vw,16px) clamp(26px,8vw,46px) -16px color-mix(in srgb, var(--color-spark) 55%, transparent);
+}
+.hero[data-frame="samurai"] .hero-card::before{
+  background:linear-gradient(135deg, #8A5E38 0%, #E9C887 35%, #C8924A 60%, #F0D9A0 100%);
+}
+.hero[data-frame="samurai"] .frame-corners{
+  display:block;position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;
+  animation:frameSamurai 6s ease-in-out infinite;
+}
+.hero[data-frame="samurai"] .frame-corners span{
+  position:absolute; width:clamp(24px,8.5vw,46px); aspect-ratio:1;
+  background:var(--corner) center/contain no-repeat;
+}
+.hero[data-frame="samurai"] .frame-corners span:nth-child(1){top:clamp(5px,1.5vw,9px);left:clamp(5px,1.5vw,9px);transform:rotate(0deg)}
+.hero[data-frame="samurai"] .frame-corners span:nth-child(2){top:clamp(5px,1.5vw,9px);right:clamp(5px,1.5vw,9px);transform:rotate(90deg)}
+.hero[data-frame="samurai"] .frame-corners span:nth-child(3){bottom:clamp(5px,1.5vw,9px);right:clamp(5px,1.5vw,9px);transform:rotate(180deg)}
+.hero[data-frame="samurai"] .frame-corners span:nth-child(4){bottom:clamp(5px,1.5vw,9px);left:clamp(5px,1.5vw,9px);transform:rotate(270deg)}
+@keyframes frameSamurai{
+  0%,100%{opacity:.92; filter:drop-shadow(0 0 0 transparent)}
+  50%{opacity:1; filter:drop-shadow(0 0 clamp(2px,1vw,4px) color-mix(in srgb, var(--color-spark) 60%, transparent))}
+}
+
 /* Onboarding (Erststart) */
 .onboarding{align-items:center;text-align:center;gap:var(--space-4)}
 .onb-title{font-family:var(--font-display);font-weight:800;font-size:22px;line-height:1.2}
@@ -210,6 +273,7 @@ textarea{resize:vertical;line-height:1.5}
 .pill.is-active{background:var(--color-primary-subtle);border-color:var(--color-primary);color:var(--color-primary)}
 
 .hero-card{
+  position:relative;isolation:isolate;
   background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-2xl);
   box-shadow:var(--shadow-md);padding:var(--space-7) var(--space-5);text-align:center;
   display:flex;flex-direction:column;align-items:center;gap:var(--space-4);

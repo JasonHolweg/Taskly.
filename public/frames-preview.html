@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frame-Preview</title>
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+  body{padding:24px 0;display:flex;flex-direction:column;gap:8px;align-items:center}
+  .lbl{font-family:var(--font-display);font-weight:800;color:var(--color-text-secondary);max-width:480px;width:100%;padding:0 16px;margin-top:8px}
+  .hero{width:100%;max-width:480px;padding:0 16px}
+</style>
+</head>
+<body>
+  <div class="lbl">default</div>
+  <section class="hero" data-frame="default">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-lg">
+      <p class="hero-prompt">Sag mir, wie’s gerade steht.</p>
+      <button class="btn btn-primary btn-hero">Was jetzt?</button>
+    </div>
+  </section>
+
+  <div class="lbl">premium</div>
+  <section class="hero" data-frame="premium">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-lg">
+      <p class="hero-prompt">Sag mir, wie’s gerade steht.</p>
+      <button class="btn btn-primary btn-hero">Was jetzt?</button>
+    </div>
+  </section>
+
+  <div class="lbl">samurai</div>
+  <section class="hero" data-frame="samurai">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/samurai-happy.png" alt="" class="tanuki tanuki-lg">
+      <p class="hero-prompt">Sag mir, wie’s gerade steht.</p>
+      <button class="btn btn-primary btn-hero">Was jetzt?</button>
+    </div>
+  </section>
+</body>
+</html>
