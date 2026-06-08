@@ -1,59 +1,90 @@
-# Taskly — Handover & Kickoff (für Claude Code)
+# Taskly — Handover & Stand (für Claude Code)
 
-> **Taskly** by Jason Holweg · `taskly.jasonholweg.de` (Hetzner)
-> Lies dieses File zuerst, dann die referenzierten Docs. Sie sind die Quelle der Wahrheit — nicht neu herleiten, sondern befolgen.
+> **Taskly** by Jason Holweg · **live: https://taskly.jasonholweg.de** (Hetzner)
+> ADHS-Aufgaben-App, PWA, Deutsch, iOS-first. Diese Datei = aktueller Projektstand.
+> **Detail-Infos zum Live-Deployment** stehen im Auto-Memory (`memory/taskly-deployment.md`,
+> lädt in neuer Session automatisch). Produkt-Quelle der Wahrheit: die Docs unten.
 
 ## Was ist Taskly
-Eine ADHS-Aufgaben-App, die **Initiierung & Choice-Paralyse** löst, nicht Tracking. Kernversprechen: statt einer To-do-Wand sagt sie dir **eine Sache, die du jetzt machen kannst** — und belohnt dich dafür. Für Jason + Familie (speziell seine Mutter). PWA, iOS-first.
+Löst **Initiierung & Choice-Paralyse**, nicht Tracking. Statt To-do-Wand sagt sie dir
+**eine Sache, die du jetzt machen kannst** — und belohnt dich. Für Jason + Familie (Mutter Marlis).
 
-## Quelle der Wahrheit (in diesem Ordner)
-| Datei | Inhalt |
-|---|---|
-| `concept.md` | Vision, Loops, Aufgaben-Typen, Gamification, v2-Vision §14 |
-| `brand.md` | Name, Stimme, Tanuki-Maskottchen, Sparks |
-| `design.md` | Design-Tokens (CSS-Variablen, Light/Dark, Indigo) — **1:1 übernehmen** |
-| `taskly_style_tile.html` | Der gerenderte Look als Referenz |
-| `architecture.md` | Stack, KI-Pipeline, Nudges |
-| `rules.md` | XP/Level/Sparks/Lootbox/Streak-Logik + „Was jetzt?"-Scoring + Copy |
-| `schema.sql` | Komplettes MySQL-Schema, einspielbereit |
-
-## Nicht-verhandelbare Prinzipien (sonst ist es das falsche Produkt)
+## Nicht-verhandelbare Prinzipien
 1. **Eine Aufgabe auf „Was jetzt?" — niemals eine Liste.**
-2. **Die KI plant, nicht der User.** Kein Wochen-Planungs-Zwang.
-3. **Kein Schuld-UI:** keine roten Overdue-Badges, keine „X überfällig"-Zähler.
+2. **Die KI plant, nicht der User.**
+3. **Kein Schuld-UI** (keine roten Overdue-Badges/Zähler).
 4. **Skip & Snooze immer straffrei.** Snooze verschiebt, löscht nie.
 5. **XP/Sparks nur bei echter Erledigung.**
-6. **Streak-Bruch tröstet, bestraft nie** (Ton: `brand.md` §5, Logik: `rules.md` §4).
+6. **Streak-Bruch tröstet, bestraft nie.**
 
-## Stack & Konventionen
-- **PHP 8.x · MySQL 8 · Vanilla JS** (kein Framework). PWA (Manifest + Service Worker).
-- **Design:** CSS-Variablen-Block aus `design.md` als globales `:root` + `[data-theme="dark"]`.
-- **KI-Modelle:** Brain-Dump-Parsing = `claude-sonnet-4-6`; Wochen-Verteilung & „Was jetzt?"-Auswahl = `claude-haiku-4-5`.
-- **Alle Stellschrauben** (XP-Kurve, Drop-Rates, Pity, Eis-Fenster …) zentral in **`config.php`** — Werte aus `rules.md` §9. Nicht im Code verstreuen.
-- Sprache der UI: Deutsch.
-
-## v1-Scope
-**Drin:** Brain-Dump (Text + Voice-Versuch), Aufgaben (flexible/deadline/termin), KI-Wochenverteilung, „Was jetzt?", XP/Level/Streak, Glücksumschlag → Sparks, Themen-Lootboxen mit Seltenheiten, Tanuki-Garderobe, Family-Leaderboard, Web-Push.
-**Non-Goals (NICHT bauen):** Echtgeld/In-App-Käufe · Public Signup · Native App · externer Nachrichten-Kanal (Telegram/WhatsApp = v1.1) · Kalender-Sync · „Tanuki Reisen"-RPG (concept §14, v2). Schema lässt diese andocken — v1 nutzt sie nicht.
-
-## Bekanntes Risiko (früh prüfen)
-On-device Web-Speech (`SpeechRecognition`) ist auf iOS Safari/PWA wackelig (`architecture.md` §4.0). **Daher Text-Eingabe zuerst bauen** (gleicher Parse-Pfad), Voice als Progressive Enhancement. Falls iOS-Voice scheitert: serverseitige STT nachrüstbar, ohne den Rest zu ändern.
+## Produkt-Docs (Quelle der Wahrheit)
+`concept.md` (Vision/Loops/v2) · `brand.md` (Stimme/Tanuki/Sparks) · `design.md` (Tokens, 1:1) ·
+`architecture.md` (Stack/KI/Nudges) · `rules.md` (XP/Lootbox/Streak/Scoring §9 = alle Stellschrauben) ·
+`schema.sql` (Basis-Schema) + `db/migrations/*` (spätere Änderungen).
 
 ---
 
-## Erster Auftrag: der Kern-Loop
-Baue *nur* dies, bevor Gamification-Tiefe drankommt:
+## ✅ Status: v1 komplett + viele Erweiterungen — alles live
+- **Kern-Loop:** Brain-Dump (Text + Voice) → Sonnet parst → „Was jetzt?" (Filter+Scoring, **KI-Begründung** via Haiku) → Erledigt/Skip/Snooze. Eine Aufgabe, kein Schuld-UI.
+- **Aufgaben:** flexible/deadline/termin, **bearbeiten & löschen** (Plan-Ansicht).
+- **Wochen-Verteilung:** Haiku verteilt über die Woche (rules §6) + Recurrence (RRULE) + **Crons** (Mo 04:00 Plan, tgl. 03:00 Streak, alle 5 Min Nudges).
+- **Gamification:** XP/Level/Streak · **Streak-Eis + Freundes-Rettung** · Glücksumschlag (Pochibukuro) → Sparks · **1–5 Sparks pro Erledigung**.
+- **Kosmetik:** Tanuki-Garderobe (Outfits), **44 Frames / 15 Kategorien**, Themen-Lootboxen (No-Dupe-Sammelmodell, Outfits **und** Frames droppen zusammen).
+- **Tanuki-Hub** (Tab „Tanuki", ex-Shop): großer ausgerüsteter Tanuki im Rahmen + Kategorie-Buttons (Garderobe/Rahmen/Animationen/App-Icons/Items/Shop). Animationen/Icons/Items = Platzhalter (für v2 „Tanuki Reisen" vorbereitet).
+- **Sozial:** Freunde per Code, **Freunde-Leaderboard** (ersetzt Familie).
+- **Web-Push** (VAPID): Termin-Reminder, „Was jetzt?"-Nudges zu Zeitfenstern, Rettungs-Push.
+- **Kalender-Sync** (Export): abonnierbarer iCal-Feed `/cal/<token>.ics`.
+- **Konto:** Name/E-Mail/Passwort ändern.
+- **PWA · Dark Mode** (folgt System) · **Onboarding** · **Heute = max. einfach** (Tageszeit-Gruß, sofort klickbarer CTA, Mikro-Button für Kopf-leeren, Zeit/Akku hinter „Anpassen").
 
-1. **Setup:** `schema.sql` einspielen; `config.php` mit den `rules.md`-§9-Defaults; Projektstruktur anlegen.
-2. **Erfassen (Loop A):** Eingabe (Text; Voice optional) → `claude-sonnet-4-6` parst zu strukturierten Tasks (JSON, Schema in `architecture.md` §4.1) → in `tasks`/`task_occurrences` speichern → ohne Bestätigungs-Gate, aber editierbar.
-3. **„Was jetzt?" (Loop B):** Button → 2 Quick-Selects (Zeit 10/30/60 · Energie müde/ok/voll) → harte Filter + Scoring (`rules.md` §5) ggf. via `claude-haiku-4-5` → zeigt **genau eine** Aufgabe + ein Satz Begründung → Aktionen Erledigt / Skip / Snooze.
-4. **Belohnung:** „Erledigt" vergibt XP (`rules.md` §1), aktualisiert `user_progress`, kleiner Pop (kein Listen-Update als Antwort).
+## Stack & Infrastruktur
+- **Server:** `root@178.104.95.146` (Ubuntu 24.04, Apache 2.4, **PHP 8.3**, MySQL 8). Viele andere Sites laufen hier — vorsichtig.
+- **Webroot:** `/var/www/taskly.jasonholweg.de/` (Git-Clone). DocumentRoot → `public/`. Apache-vHosts + Let's-Encrypt (Certbot).
+- **DB:** `taskly` / User `taskly@localhost`. Zugang in `/root/.taskly-db.cnf` (chmod 600).
+- **Secrets:** `src/config.php` (gitignored, nur auf Server) — DB-Pass, **Anthropic-API-Key** (gesetzt, Sonnet+Haiku aktiv; bei Ausfall greift Heuristik-Fallback), VAPID-Keys. Vorlage: `src/config.example.php`. Alle Tuning-Werte unter `'tuning'` (rules §9).
+- **Composer:** `minishlink/web-push` (für Push). `vendor/` server-only (gitignored), `composer.json/lock` im Repo.
 
-**Akzeptanzkriterien:**
-- „Was jetzt?" liefert nie mehr als eine Aufgabe.
-- Zeit-Filter respektiert (kein 60-Min-Task bei „10 Min").
-- Skip zeigt sofort die nächstbeste, straffrei.
-- UI nutzt die `design.md`-Tokens, Light + Dark.
-- Erledigen erhöht XP sichtbar; kein Schuld-UI nirgends.
+## Code-Struktur
+```
+src/              (außerhalb Webroot)
+  config.php          secrets+tuning (server-only)  · config.example.php
+  bootstrap.php       lädt config/db/libs, Session (CLI-safe)
+  db.php              PDO
+  lib/  helpers, gamification (XP/Level/Streak), selection („Was jetzt?"-Scoring),
+        claude (Sonnet-Parse + Haiku smart_reason), recurrence (RRULE), planner (Wochenverteilung),
+        cosmetics (Outfit/Frame-Resolver), gacha (Lootbox no-dupe), social (Freunde/Leaderboard/Rettung),
+        push (Web-Push), calendar (iCal)
+public/             (= DocumentRoot)
+  index.html  ·  assets/css/styles.css  ·  assets/js/app.js  ·  sw.js  ·  manifest.webmanifest
+  assets/img/tanuki/ (Outfit-Posen + base-emotions + Icons, server-only/gitignored)
+  assets/img/pochibukuro/ (Lootbox-/Umschlag-Art, server-only/gitignored)
+  api/  state, braindump, whatnow, skip, snooze, complete, tasks, week, plan_week,
+        shop, openbox, equip, buy, friends, leaderboard, rescue, push, calendar, account, auth/*
+bin/  cron_plan_week.php · cron_daily.php · cron_nudges.php
+db/   schema.sql · seed_*.sql · migrations/*
+```
+Frontend ist **Vanilla JS** (kein React!). UI über `data-`-Attribute + CSS-Tokens. Single-Page mit
+Views (Heute/Plan/Tanuki/Mehr) per `showView()`.
 
-Gamification-Tiefe (Lootboxen, Garderobe, Leaderboard, Streak-Eis) und Wochenverteilung als **zweiter** Schritt, sobald der Kern-Loop trägt.
+## Wichtige Workflows
+- **Deployen:** lokal committen + `git push`; dann auf Server `cd /var/www/taskly.jasonholweg.de && git pull --ff-only && chown -R www-data:www-data .`. Bei jeder Frontend-Änderung **`CACHE` in `public/sw.js` hochzählen** (aktuell `taskly-v24`), sonst sehen Clients altes JS/CSS.
+- **Bilder (server-only):** Raw-PNGs in `tanuki-raw/` bzw. `pochibukuro-raw/` (Originale, gitignored; „Bereits gecheckt"-Unterordner = schon verarbeitet). Mit PIL-Skript skalieren/umbenennen → `public/assets/img/...` → per `rsync` hochladen + chown. Bilder sind **gitignored** (nicht im Repo).
+- **Frame hinzufügen:** 1 CSS-Zeile in `styles.css` (`.hero[data-frame="slug"]{--f-grad:…;--f-glow:…;--f-corner:…}`) + 1 `cosmetics`-Zeile (category `frame`, theme, asset_ref=slug). Eck-Ornamente als SVG-Data-URI in `:root`.
+- **Outfit/Box hinzufügen:** Bilder verarbeiten → `cosmetics`(tanuki_outfit, meta.poses) bzw. `lootboxes` seeden. Box zieht Outfits **und** Frames des Themes (no-dupe).
+- **DB-Migration:** `db/migrations/*.sql` schreiben, `mysql taskly < datei.sql` auf Server, in `schema.sql` dokumentieren.
+- **Testen:** Wegwerf-Accounts `…@example.com` per API anlegen, am Ende per ID löschen.
+- **Visuelle QA:** kein Live-Login im Preview möglich (Preview-Browser nur localhost; PHP lokal nicht verfügbar). → **statische Mock-HTML** mit echten CSS-Klassen bauen + `.claude/launch.json` „taskly-node" (Node-Static-Server, ABSOLUTER Pfad — Python http.server ist sandbox-blockiert) + Preview-MCP-Screenshot. `frames-preview.html` zeigt alle Frames.
+
+## Offene Punkte / nächste Schritte
+- **iOS-Voice** in installierter PWA real validieren/härten (größtes Risiko, architecture §4.0).
+- **Animationen / App-Icons** echt befüllen (UI-Platzhalter im Tanuki-Hub stehen).
+- **Items/Slots** → „Tanuki Reisen v2" (concept §14): tanuki_profile hat reservierte v2-Spalten.
+- **Lootbox-Art fehlt** für Frame-Kategorien royal/arcane/winter/halloween (sind aktuell Direktkauf).
+- **Kalender-Import** (Termine lesen → drumherum planen) = OAuth/CalDAV, größerer Schritt.
+- **Telegram-Nudges** (v1.1): robuster als iOS-Web-Push.
+- **Security-Review** vor weiterem Nutzerwachstum.
+
+## Wichtige Hinweise
+- **Echte Accounts auf der Live-DB** (NIE als Testdaten anfassen/löschen): u.a. `hallo@jasonholweg.de` (Jason), `mhsmyla2000@gmail.com` (Marlis, Mutter), weitere reale Registrierungen. Nur `@example.com` ist Test.
+- **Anthropic-API-Key** wurde einmal im Chat geteilt — bei Bedarf rotieren.
+- Kosmetik-Slugs `asset_ref` müssen mit den Bilddateinamen bzw. CSS-`data-frame`-Werten exakt übereinstimmen.
