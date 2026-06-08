@@ -100,13 +100,19 @@ function build_ics(int $userId): string
         $rec  = !empty($t['recurrence_rule']) ? ics_rrule($t['recurrence_rule']) : null;
 
         if ($t['type'] === 'termin' && !empty($t['fixed_at'])) {
-            $dur  = max(5, (int) ($t['time_estimate'] ?: 30));
-            $body = [
-                'DTSTART:' . ics_utc($t['fixed_at']),
-                'DURATION:PT' . $dur . 'M',
-                'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' . ics_escape($t['title']),
-                'TRIGGER:-PT30M', 'END:VALARM',
-            ];
+            $hasTime = substr($t['fixed_at'], 11, 8) !== '00:00:00';
+            if ($hasTime) {
+                $dur  = max(5, (int) ($t['time_estimate'] ?: 30));
+                $body = [
+                    'DTSTART:' . ics_utc($t['fixed_at']),
+                    'DURATION:PT' . $dur . 'M',
+                    'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' . ics_escape($t['title']),
+                    'TRIGGER:-PT30M', 'END:VALARM',
+                ];
+            } else {
+                // Termin ohne echte Uhrzeit → Ganztags
+                $body = ['DTSTART;VALUE=DATE:' . date('Ymd', strtotime($t['fixed_at']))];
+            }
             if ($rec) { $body[] = 'RRULE:' . $rec; }
             $ev(['uid' => "task-$id@" . CAL_DOMAIN, 'summary' => $t['title'], 'body' => $body]);
             continue;
