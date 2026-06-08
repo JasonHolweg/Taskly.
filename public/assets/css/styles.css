@@ -314,6 +314,8 @@ textarea{resize:vertical;line-height:1.5}
 .ft-state{font-family:var(--font-display);font-weight:800;color:var(--color-success)}
 .ft-locked{font-size:12px;font-weight:700;color:var(--color-spark)}
 .ft-btn{min-height:38px;padding:0 var(--space-4);flex:0 0 auto}
+.lb-frame-prev{width:min(78vw,300px);pointer-events:none}
+.lb-frame-prev .hero-card{padding:var(--space-5);min-height:90px;justify-content:center;animation:none}
 
 /* Onboarding (Erststart) */
 .onboarding{align-items:center;text-align:center;gap:var(--space-4)}

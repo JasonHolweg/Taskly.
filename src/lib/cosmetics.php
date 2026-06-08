@@ -22,12 +22,13 @@ function cosmetic_poses(?string $metaJson): array
 function cosmetic_dto(array $c): array
 {
     return [
-        'id'     => (int) $c['id'],
-        'name'   => $c['name'],
-        'theme'  => $c['theme'],
-        'rarity' => $c['rarity'],
-        'slug'   => $c['asset_ref'],
-        'poses'  => cosmetic_poses($c['meta'] ?? null),
+        'id'       => (int) $c['id'],
+        'name'     => $c['name'],
+        'theme'    => $c['theme'],
+        'rarity'   => $c['rarity'],
+        'category' => $c['category'] ?? 'tanuki_outfit',
+        'slug'     => $c['asset_ref'],
+        'poses'    => cosmetic_poses($c['meta'] ?? null),
     ];
 }
 
@@ -52,7 +53,7 @@ function theme_progress(int $userId, string $theme): array
                 SUM(CASE WHEN uc.user_id IS NOT NULL THEN 1 ELSE 0 END) AS owned
            FROM cosmetics c
            LEFT JOIN user_cosmetics uc ON uc.cosmetic_id = c.id AND uc.user_id = ?
-          WHERE c.theme = ? AND c.category = 'tanuki_outfit'"
+          WHERE c.theme = ? AND c.category IN ('tanuki_outfit','frame')"
     );
     $st->execute([$userId, $theme]);
     $r = $st->fetch();

@@ -37,7 +37,7 @@ function draw_cosmetic(string $theme, string $rarity, int $userId): ?array
     // Welche Raritäten haben in diesem Theme noch ungesammelte Items?
     $av = $pdo->prepare(
         "SELECT DISTINCT c.rarity FROM cosmetics c
-          WHERE c.theme = ? AND c.category='tanuki_outfit'
+          WHERE c.theme = ? AND c.category IN ('tanuki_outfit','frame')
             AND c.id NOT IN (SELECT cosmetic_id FROM user_cosmetics WHERE user_id = ?)"
     );
     $av->execute([$theme, $userId]);
@@ -62,7 +62,7 @@ function draw_cosmetic(string $theme, string $rarity, int $userId): ?array
     // Zufälliges, noch nicht besessenes Item dieser Theme+Rarität.
     $st = $pdo->prepare(
         "SELECT * FROM cosmetics
-          WHERE theme = ? AND rarity = ? AND category='tanuki_outfit'
+          WHERE theme = ? AND rarity = ? AND category IN ('tanuki_outfit','frame')
             AND id NOT IN (SELECT cosmetic_id FROM user_cosmetics WHERE user_id = ?)
           ORDER BY RAND() LIMIT 1"
     );

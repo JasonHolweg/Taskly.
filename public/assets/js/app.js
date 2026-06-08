@@ -599,7 +599,8 @@ function frameTile(f) {
   if (f.equipped) action = '<span class="ft-state">Aktiv ✓</span>';
   else if (f.owned) action = `<button class="btn btn-primary ft-btn" data-equip="${f.id}" data-var="${f.variant}">Anlegen</button>`;
   else if (f.locked) action = '<span class="ft-locked">🔥 ab 30-Tage-Streak</span>';
-  else action = `<button class="btn btn-primary ft-btn" data-buy="${f.id}" ${SHOP.sparks >= f.cost ? '' : 'disabled'}>${f.cost} ✦</button>`;
+  else if (f.cost > 0) action = `<button class="btn btn-primary ft-btn" data-buy="${f.id}" ${SHOP.sparks >= f.cost ? '' : 'disabled'}>${f.cost} ✦</button>`;
+  else action = '<span class="ft-locked">🎁 aus Kiste</span>';
   const tile = document.createElement('div');
   tile.className = 'frame-tile' + (f.equipped ? ' equipped' : '');
   tile.innerHTML =
@@ -694,7 +695,14 @@ function revealItem(r) {
   const c = r.cosmetic;
   $('#lb-closed').classList.add('hidden');
   const rev = $('#lb-reveal'); rev.classList.remove('hidden'); rev.dataset.rarity = r.rarity;
-  $('#lb-img').src = c.poses.celebrate || c.poses.happy || Object.values(c.poses)[0];
+  if (c.category === 'frame') {
+    $('#lb-img').classList.add('hidden');
+    const fp = $('#lb-frame'); fp.classList.remove('hidden'); fp.dataset.frame = c.slug;
+  } else {
+    $('#lb-frame').classList.add('hidden');
+    $('#lb-img').classList.remove('hidden');
+    $('#lb-img').src = c.poses.celebrate || c.poses.happy || Object.values(c.poses)[0];
+  }
   $('#lb-rarity').textContent = RAR_LABEL[r.rarity];
   $('#lb-name').textContent = c.name;
   const info = $('#lb-dupe'); info.classList.remove('hidden');
@@ -710,7 +718,11 @@ function initLootbox() {
   $('#lb-open-btn').addEventListener('click', doOpen);
   $('#lb-again').addEventListener('click', doOpen);
   $('#lb-equip').addEventListener('click', async () => {
-    if (LAST_DRAW && !LAST_DRAW.duplicate) await equip(LAST_DRAW.cosmetic.id);
+    if (LAST_DRAW && !LAST_DRAW.duplicate) {
+      const c = LAST_DRAW.cosmetic;
+      if (c.category === 'frame') await equipFrame(c.id, c.slug);
+      else await equip(c.id);
+    }
     $('#lootbox').classList.add('hidden');
   });
   $('#lb-close').addEventListener('click', async () => {

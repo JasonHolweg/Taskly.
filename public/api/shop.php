@@ -64,7 +64,7 @@ foreach ($pdo->query(
         'theme'    => $c['theme'],
         'rarity'   => $c['rarity'],
         'cost'     => (int) $c['cost_sparks'],
-        'locked'   => $c['cost_sparks'] === null,
+        'locked'   => $c['theme'] === 'streak',
         'owned'    => in_array((int) $c['id'], $owned, true),
         'equipped' => $curFrame === $c['asset_ref'],
     ];
