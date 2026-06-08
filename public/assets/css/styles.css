@@ -117,11 +117,11 @@ textarea{resize:vertical;line-height:1.5}
 }
 .progress-cluster,.right-cluster{display:flex;align-items:center;gap:var(--space-2)}
 .xp-ring{
-  --p:0; width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+  --p:0; position:relative; width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
   background:conic-gradient(var(--color-xp) calc(var(--p)*1%), var(--color-border) 0);
 }
-.xp-ring::after{content:"";position:absolute;width:30px;height:30px;border-radius:50%;background:var(--color-bg)}
-.xp-level{position:relative;font-family:var(--font-display);font-weight:800;font-size:14px}
+.xp-ring::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--color-bg)}
+.xp-level{position:relative;z-index:1;font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--color-text);line-height:1}
 .streak{display:flex;align-items:center;gap:2px;font-family:var(--font-display);font-weight:700;font-size:15px}
 .streak-flame{font-size:14px;filter:grayscale(.1)}
 .sparks{display:flex;align-items:center;gap:4px;font-family:var(--font-display);font-weight:700;color:var(--color-spark)}
@@ -142,9 +142,6 @@ textarea{resize:vertical;line-height:1.5}
 .dump-plus{font-family:var(--font-display);font-weight:800;font-size:20px;line-height:1;display:inline-block;transition:transform var(--dur-base) var(--ease-spring)}
 .dump-trigger.open .dump-plus{transform:rotate(45deg)}
 .braindump-body{display:flex;flex-direction:column;gap:var(--space-3);background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--space-4);box-shadow:var(--shadow-sm);animation:pop var(--dur-base) var(--ease-out)}
-
-/* Level-Label in der HUD */
-.level-label{font-family:var(--font-display);font-weight:800;font-size:13px;color:var(--color-text-secondary);white-space:nowrap}
 
 /* Kopf-leeren-Sheet (oben verankert → tastatur-sicher) */
 .sheet-overlay{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;padding:calc(env(safe-area-inset-top) + var(--space-3)) var(--space-4) var(--space-4);animation:fade var(--dur-base) var(--ease-out)}

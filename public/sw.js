@@ -1,5 +1,5 @@
 /* Taskly — Service Worker. Offline-Shell (architecture.md §6). */
-const CACHE = 'taskly-v10';
+const CACHE = 'taskly-v11';
 const SHELL = [
   '/',
   '/index.html',

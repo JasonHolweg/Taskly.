@@ -39,7 +39,6 @@ function initTheme() {
 function renderProgress(p) {
   if (!p) return;
   $('#xp-level').textContent = p.level;
-  const ll = $('#level-label'); if (ll) ll.textContent = 'Lv ' + p.level;
   const pct = p.xp_needed ? Math.round((p.xp_into / p.xp_needed) * 100) : 0;
   $('#xp-ring').style.setProperty('--p', pct);
   $('#spark-count').textContent = p.sparks;
