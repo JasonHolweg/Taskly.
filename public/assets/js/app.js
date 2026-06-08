@@ -278,6 +278,11 @@ function showReward(rw) {
   $('#reward-xp').textContent = `+${rw.xp} XP`;
   $('#reward-msg').textContent = rw.message || '';
   const extra = $('#reward-extra'); extra.innerHTML = '';
+  if (rw.sparks) {
+    const d = document.createElement('div');
+    d.className = 'reward-spark'; d.textContent = `+${rw.sparks} ✦`;
+    extra.appendChild(d);
+  }
   if (rw.thawed) {
     const d = document.createElement('div');
     d.className = 'reward-badge'; d.textContent = 'Streak gerettet! 🔥 Weiter geht’s.';
@@ -588,11 +593,12 @@ function renderShop() {
   renderGarderobe();
   renderFrames();
 }
-const FRAME_CAT = { basis: 'Standard', prestige: 'Prestige', japan: 'Japanisch', helden: 'Helden', cyberpunk: 'Cyberpunk', steampunk: 'Steampunk', blumen: 'Blumen' };
+const FRAME_CAT = { basis: 'Standard', prestige: 'Prestige', japan: 'Japanisch', helden: 'Helden', royal: 'Royal', drache: 'Drache', arcane: 'Magie', galaxy: 'Weltraum', cyberpunk: 'Cyberpunk', steampunk: 'Steampunk', frost: 'Frost', winter: 'Winter', halloween: 'Halloween', ozean: 'Ozean', blumen: 'Blumen', streak: 'Streak' };
 function frameTile(f) {
   let action;
   if (f.equipped) action = '<span class="ft-state">Aktiv ✓</span>';
   else if (f.owned) action = `<button class="btn btn-primary ft-btn" data-equip="${f.id}" data-var="${f.variant}">Anlegen</button>`;
+  else if (f.locked) action = '<span class="ft-locked">🔥 ab 30-Tage-Streak</span>';
   else action = `<button class="btn btn-primary ft-btn" data-buy="${f.id}" ${SHOP.sparks >= f.cost ? '' : 'disabled'}>${f.cost} ✦</button>`;
   const tile = document.createElement('div');
   tile.className = 'frame-tile' + (f.equipped ? ' equipped' : '');

@@ -180,6 +180,17 @@ function advance_streak(int $userId): array
         $milestone = grant_envelope($userId, 'streak_milestone', (int) $bonus);
     }
 
+    // Status-Rahmen „Glut" schaltet ab 30-Tage-Streak frei (nicht kaufbar)
+    if ($streak >= 30) {
+        $gl = db()->prepare("SELECT id FROM cosmetics WHERE category='frame' AND asset_ref='glut' LIMIT 1");
+        $gl->execute();
+        $gid = (int) $gl->fetchColumn();
+        if ($gid) {
+            db()->prepare('INSERT IGNORE INTO user_cosmetics (user_id, cosmetic_id) VALUES (?, ?)')
+                ->execute([$userId, $gid]);
+        }
+    }
+
     db()->prepare(
         "UPDATE user_progress
             SET streak_count = ?, streak_last = ?, longest_streak = ?, schontag_available = ?,
@@ -214,11 +225,17 @@ function complete_occurrence(int $userId, array $occ, array $task): array
     $pdo->prepare('UPDATE user_progress SET xp_total = xp_total + ? WHERE user_id = ?')
         ->execute([$xp, $userId]);
 
+    // Sparks pro Erledigung (1–5, nach Aufwand) → schnelleres Freischalten
+    $sparkReward = (int) max(1, min(5, (int) round(((int) ($task['base_xp'] ?? 0)) / 20)));
+    $pdo->prepare('UPDATE user_progress SET sparks = sparks + ? WHERE user_id = ?')
+        ->execute([$sparkReward, $userId]);
+
     $after = get_progress($userId);
     $lvlAfter = level_from_xp((int) $after['xp_total']);
 
     $rewards = [
         'xp'         => $xp,
+        'sparks'     => $sparkReward,
         'message'    => copy_line('done', ['xp' => $xp]),
         'leveled_up' => false,
         'envelopes'  => [],

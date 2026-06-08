@@ -1,0 +1,28 @@
+-- Taskly — Seed: weitere Frame-Kategorien
+SET NAMES utf8mb4;
+INSERT INTO cosmetics (category,theme,rarity,name,cost_sparks,asset_ref,meta) VALUES
+('frame','galaxy','episch','Nebula',350,'nebula','{"variant":"nebula"}'),
+('frame','galaxy','selten','Sternennacht',200,'sternennacht','{"variant":"sternennacht"}'),
+('frame','galaxy','legendaer','Supernova',600,'supernova','{"variant":"supernova"}'),
+('frame','frost','episch','Eiskristall',350,'eiskristall','{"variant":"eiskristall"}'),
+('frame','frost','legendaer','Polarlicht',600,'polarlicht','{"variant":"polarlicht"}'),
+('frame','frost','selten','Frostglas',200,'frostglas','{"variant":"frostglas"}'),
+('frame','halloween','selten','Kürbis',200,'kuerbis','{"variant":"kuerbis"}'),
+('frame','halloween','episch','Geist',350,'geist','{"variant":"geist"}'),
+('frame','halloween','legendaer','Spuk',600,'spuk','{"variant":"spuk"}'),
+('frame','winter','selten','Tannengrün',200,'tanne','{"variant":"tanne"}'),
+('frame','winter','episch','Schneeflocke',350,'schnee','{"variant":"schnee"}'),
+('frame','winter','selten','Lebkuchen',200,'lebkuchen','{"variant":"lebkuchen"}'),
+('frame','royal','episch','Purpur',350,'purpur','{"variant":"purpur"}'),
+('frame','royal','legendaer','Goldkrone',600,'goldkrone','{"variant":"goldkrone"}'),
+('frame','royal','episch','Saphir',350,'saphir','{"variant":"saphir"}'),
+('frame','ozean','selten','Tiefsee',200,'tiefsee','{"variant":"tiefsee"}'),
+('frame','ozean','episch','Koralle',350,'koralle','{"variant":"koralle"}'),
+('frame','ozean','legendaer','Welle',600,'welle','{"variant":"welle"}'),
+('frame','drache','episch','Smaragd-Drache',350,'smaragddrache','{"variant":"smaragddrache"}'),
+('frame','drache','legendaer','Feuer-Drache',600,'feuerdrache','{"variant":"feuerdrache"}'),
+('frame','drache','episch','Schatten-Drache',350,'schattendrache','{"variant":"schattendrache"}'),
+('frame','arcane','episch','Runen',350,'runen','{"variant":"runen"}'),
+('frame','arcane','selten','Kristallmagie',200,'kristallmagie','{"variant":"kristallmagie"}'),
+('frame','arcane','legendaer','Hexerei',600,'hexerei','{"variant":"hexerei"}'),
+('frame','streak','legendaer','Glut',NULL,'glut','{"variant":"glut","unlock":"streak30"}');

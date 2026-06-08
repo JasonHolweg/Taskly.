@@ -239,6 +239,12 @@ textarea{resize:vertical;line-height:1.5}
   --corner-gear:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cg transform='translate(14,14)' fill='none' stroke='%23CBA06A' stroke-width='2' stroke-linecap='round'%3E%3Ccircle r='6.5'/%3E%3Cpath d='M0 -9 V-7 M0 9 V7 M-9 0 H-7 M9 0 H7 M-6 -6 l1.3 1.3 M6 6 l-1.3 -1.3 M6 -6 l-1.3 1.3 M-6 6 l1.3 -1.3'/%3E%3C/g%3E%3Ccircle cx='14' cy='14' r='2.4' fill='%23CBA06A'/%3E%3C/svg%3E");
 }
 
+:root{
+  --corner-snow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cg transform='translate(14,14)' stroke='%239AD8F0' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M0 -8 V8 M-7 -4 L7 4 M-7 4 L7 -4'/%3E%3Cpath d='M0 -8 l2.4 2 M0 -8 l-2.4 2 M0 8 l2.4 -2 M0 8 l-2.4 -2'/%3E%3C/g%3E%3C/svg%3E");
+  --corner-gem:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cg transform='translate(13,13)'%3E%3Cpath d='M0 -5 L5 0 L0 6 L-5 0 Z' fill='%23F5C84B'/%3E%3Cpath d='M-5 0 H5' stroke='%23B8860B' stroke-width='0.7'/%3E%3C/g%3E%3C/svg%3E");
+  --corner-wave:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cg transform='translate(13,13)' fill='none' stroke='%237DD3FC' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M-7 4 A7 7 0 0 1 7 4'/%3E%3Cpath d='M-4 4 A4 4 0 0 1 4 4'/%3E%3C/g%3E%3C/svg%3E");
+}
+
 /* ---- Varianten ---- */
 .hero[data-frame="premium"]{--f-grad:linear-gradient(135deg,#A78BFA,#F5C46B 45%,#C9A0FF 75%,#A78BFA);--f-glow:color-mix(in srgb,#8B5CF6 60%,transparent)}
 .hero[data-frame="platin"]{--f-grad:linear-gradient(135deg,#AEB6C2,#FFFFFF 50%,#C9D2DE);--f-glow:color-mix(in srgb,#C9D2DE 55%,transparent)}
@@ -259,6 +265,40 @@ textarea{resize:vertical;line-height:1.5}
 .hero[data-frame="held-lila"]{--f-grad:linear-gradient(135deg,#6D28D9,#C4B5FD 50%,#7C3AED);--f-glow:color-mix(in srgb,#7C3AED 55%,transparent);--f-corner:var(--corner-star)}
 .hero[data-frame="held-gold"]{--f-grad:linear-gradient(135deg,#B8860B,#FBE08A 50%,#D9A521);--f-glow:color-mix(in srgb,#F5C84B 55%,transparent);--f-corner:var(--corner-star)}
 .hero[data-frame="held-gruen"]{--f-grad:linear-gradient(135deg,#15803D,#86EFAC 50%,#16A34A);--f-glow:color-mix(in srgb,#22C55E 50%,transparent);--f-corner:var(--corner-star)}
+/* Galaxy */
+.hero[data-frame="nebula"]{--f-grad:linear-gradient(135deg,#6D28D9,#DB2777 45%,#2563EB);--f-glow:color-mix(in srgb,#7C3AED 55%,transparent)}
+.hero[data-frame="sternennacht"]{--f-grad:linear-gradient(135deg,#1E293B,#6366F1 50%,#0F172A);--f-glow:color-mix(in srgb,#6366F1 55%,transparent);--f-corner:var(--corner-star)}
+.hero[data-frame="supernova"]{--f-grad:linear-gradient(135deg,#F59E0B,#EC4899 50%,#7C3AED);--f-glow:color-mix(in srgb,#EC4899 55%,transparent)}
+/* Frost */
+.hero[data-frame="eiskristall"]{--f-grad:linear-gradient(135deg,#67E8F9,#FFFFFF 50%,#A5F3FC);--f-glow:color-mix(in srgb,#67E8F9 55%,transparent);--f-corner:var(--corner-snow)}
+.hero[data-frame="polarlicht"]{--f-grad:linear-gradient(135deg,#22D3EE,#34D399 45%,#A78BFA);--f-glow:color-mix(in srgb,#34D399 50%,transparent)}
+.hero[data-frame="frostglas"]{--f-grad:linear-gradient(135deg,#93C5FD,#E0F2FE 50%,#BAE6FD);--f-glow:color-mix(in srgb,#93C5FD 55%,transparent);--f-corner:var(--corner-snow)}
+/* Halloween */
+.hero[data-frame="kuerbis"]{--f-grad:linear-gradient(135deg,#EA580C,#FB923C 45%,#1C1917);--f-glow:color-mix(in srgb,#EA580C 55%,transparent)}
+.hero[data-frame="geist"]{--f-grad:linear-gradient(135deg,#7C3AED,#A3E635 55%,#312E81);--f-glow:color-mix(in srgb,#A3E635 50%,transparent)}
+.hero[data-frame="spuk"]{--f-grad:linear-gradient(135deg,#1C1917,#9333EA 50%,#4C1D95);--f-glow:color-mix(in srgb,#9333EA 55%,transparent)}
+/* Winter */
+.hero[data-frame="tanne"]{--f-grad:linear-gradient(135deg,#166534,#DC2626 50%,#14532D);--f-glow:color-mix(in srgb,#DC2626 50%,transparent)}
+.hero[data-frame="schnee"]{--f-grad:linear-gradient(135deg,#BAE6FD,#FFFFFF 50%,#7DD3FC);--f-glow:color-mix(in srgb,#BAE6FD 55%,transparent);--f-corner:var(--corner-snow)}
+.hero[data-frame="lebkuchen"]{--f-grad:linear-gradient(135deg,#92400E,#FCD34D 50%,#B45309);--f-glow:color-mix(in srgb,#FCD34D 50%,transparent)}
+/* Royal */
+.hero[data-frame="purpur"]{--f-grad:linear-gradient(135deg,#581C87,#C084FC 50%,#7E22CE);--f-glow:color-mix(in srgb,#C084FC 55%,transparent);--f-corner:var(--corner-gem)}
+.hero[data-frame="goldkrone"]{--f-grad:linear-gradient(135deg,#B8860B,#FDE68A 50%,#D97706);--f-glow:color-mix(in srgb,#FDE68A 55%,transparent);--f-corner:var(--corner-gem)}
+.hero[data-frame="saphir"]{--f-grad:linear-gradient(135deg,#1E3A8A,#93C5FD 50%,#1E40AF);--f-glow:color-mix(in srgb,#3B82F6 55%,transparent);--f-corner:var(--corner-gem)}
+/* Ozean */
+.hero[data-frame="tiefsee"]{--f-grad:linear-gradient(135deg,#0C4A6E,#22D3EE 50%,#0E7490);--f-glow:color-mix(in srgb,#22D3EE 55%,transparent)}
+.hero[data-frame="koralle"]{--f-grad:linear-gradient(135deg,#0D9488,#FB7185 50%,#14B8A6);--f-glow:color-mix(in srgb,#FB7185 55%,transparent)}
+.hero[data-frame="welle"]{--f-grad:linear-gradient(135deg,#0369A1,#7DD3FC 50%,#0284C7);--f-glow:color-mix(in srgb,#38BDF8 55%,transparent);--f-corner:var(--corner-wave)}
+/* Drache */
+.hero[data-frame="smaragddrache"]{--f-grad:linear-gradient(135deg,#065F46,#FCD34D 50%,#047857);--f-glow:color-mix(in srgb,#10B981 55%,transparent)}
+.hero[data-frame="feuerdrache"]{--f-grad:linear-gradient(135deg,#7F1D1D,#FB923C 50%,#DC2626);--f-glow:color-mix(in srgb,#F97316 55%,transparent)}
+.hero[data-frame="schattendrache"]{--f-grad:linear-gradient(135deg,#1E1B4B,#7C3AED 50%,#0F0F23);--f-glow:color-mix(in srgb,#7C3AED 55%,transparent)}
+/* Arcane */
+.hero[data-frame="runen"]{--f-grad:linear-gradient(135deg,#4C1D95,#22D3EE 50%,#6D28D9);--f-glow:color-mix(in srgb,#22D3EE 55%,transparent);--f-corner:var(--corner-star)}
+.hero[data-frame="kristallmagie"]{--f-grad:linear-gradient(135deg,#7C3AED,#F0ABFC 50%,#A21CAF);--f-glow:color-mix(in srgb,#F0ABFC 55%,transparent)}
+.hero[data-frame="hexerei"]{--f-grad:linear-gradient(135deg,#14532D,#A855F7 55%,#166534);--f-glow:color-mix(in srgb,#A855F7 55%,transparent)}
+/* Streak-Glut (Status, ab 30 Tagen) */
+.hero[data-frame="glut"]{--f-grad:linear-gradient(135deg,#7F1D1D,#FB923C 40%,#DC2626 70%,#F59E0B);--f-glow:color-mix(in srgb,#F97316 65%,transparent)}
 
 /* Rahmen-Shop (Vorschau-Kacheln) */
 .frame-shop{display:flex;flex-direction:column;gap:var(--space-3)}
@@ -272,6 +312,7 @@ textarea{resize:vertical;line-height:1.5}
 .ft-name{font-weight:700;font-size:15px}
 .frame-tile.equipped .ft-name{color:var(--color-primary)}
 .ft-state{font-family:var(--font-display);font-weight:800;color:var(--color-success)}
+.ft-locked{font-size:12px;font-weight:700;color:var(--color-spark)}
 .ft-btn{min-height:38px;padding:0 var(--space-4);flex:0 0 auto}
 
 /* Onboarding (Erststart) */

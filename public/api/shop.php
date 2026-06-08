@@ -53,7 +53,8 @@ $frames = [[
 ]];
 foreach ($pdo->query(
     "SELECT * FROM cosmetics WHERE category = 'frame'
-      ORDER BY FIELD(theme,'prestige','japan','helden','cyberpunk','steampunk','blumen'),
+      ORDER BY FIELD(theme,'prestige','japan','helden','royal','drache','arcane','galaxy',
+                     'cyberpunk','steampunk','frost','winter','halloween','ozean','blumen','streak'),
                FIELD(rarity,'selten','episch','legendaer'), name"
 ) as $c) {
     $frames[] = [
@@ -63,6 +64,7 @@ foreach ($pdo->query(
         'theme'    => $c['theme'],
         'rarity'   => $c['rarity'],
         'cost'     => (int) $c['cost_sparks'],
+        'locked'   => $c['cost_sparks'] === null,
         'owned'    => in_array((int) $c['id'], $owned, true),
         'equipped' => $curFrame === $c['asset_ref'],
     ];
