@@ -100,6 +100,14 @@ function initAuth() {
 
 /* ---------- Brain-Dump ---------- */
 function initDump() {
+  // Ein-/Ausklappen des Erfassen-Moduls
+  $('#dump-trigger').addEventListener('click', () => {
+    const open = $('#dump-body').classList.toggle('hidden') === false;
+    $('#dump-trigger').classList.toggle('open', open);
+    $('#dump-trigger').setAttribute('aria-expanded', String(open));
+    if (open) $('#dump-text').focus();
+  });
+
   $('#dump-save').addEventListener('click', async () => {
     const text = $('#dump-text').value.trim();
     if (!text) return;
@@ -137,13 +145,20 @@ function initQuick() {
       const pill = e.target.closest('.pill');
       if (!pill) return;
       $$('.pill', group).forEach(p => p.classList.toggle('is-active', p === pill));
+      updateWhatnow();
     });
   });
 }
+// „Was jetzt?" erst aktiv, wenn Zeit UND Akku gewählt sind (neutraler Start).
+function updateWhatnow() {
+  const ready = $('#q-time .pill.is-active') && $('#q-energy .pill.is-active');
+  $('#btn-whatnow').disabled = !ready;
+  const hint = $('#hero-hint');
+  if (hint) hint.textContent = ready ? 'Eine Sache. Kein Stress.' : 'Zeit & Akku wählen, dann los.';
+}
 function ctx() {
-  const time = +$('#q-time .pill.is-active').dataset.val;
-  const energy = $('#q-energy .pill.is-active').dataset.val;
-  return { time, energy };
+  const t = $('#q-time .pill.is-active'), e = $('#q-energy .pill.is-active');
+  return { time: t ? +t.dataset.val : 30, energy: e ? e.dataset.val : 'ok' };
 }
 
 /* ---------- Was jetzt? ---------- */
@@ -151,6 +166,7 @@ function resetHero() {
   $('#hero-pick').classList.add('hidden');
   $('#hero-empty').classList.add('hidden');
   $('#hero-start').classList.remove('hidden');
+  updateWhatnow();
 }
 function renderPick(r) {
   $('#hero-start').classList.add('hidden');

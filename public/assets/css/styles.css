@@ -134,11 +134,22 @@ textarea{resize:vertical;line-height:1.5}
 .braindump-actions{display:flex;gap:var(--space-2);justify-content:flex-end}
 .dump-result:empty{display:none}
 
+/* Erfassen (sekundär, einklappbar) */
+.braindump-wrap{display:flex;flex-direction:column;gap:var(--space-3)}
+.dump-trigger{display:inline-flex;align-items:center;gap:var(--space-2);align-self:center;background:var(--color-surface);border:1px solid var(--color-border);color:var(--color-text-secondary);font-family:var(--font-body);font-weight:600;font-size:15px;border-radius:var(--radius-full);padding:0 var(--space-5);min-height:var(--tap-min);cursor:pointer;transition:background var(--dur-fast) var(--ease-standard),color var(--dur-fast)}
+.dump-trigger:hover{color:var(--color-text)}
+.dump-trigger.open{background:var(--color-primary-subtle);color:var(--color-primary);border-color:var(--color-primary)}
+.dump-plus{font-family:var(--font-display);font-weight:800;font-size:20px;line-height:1;display:inline-block;transition:transform var(--dur-base) var(--ease-spring)}
+.dump-trigger.open .dump-plus{transform:rotate(45deg)}
+.braindump-body{display:flex;flex-direction:column;gap:var(--space-3);background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--space-4);box-shadow:var(--shadow-sm);animation:pop var(--dur-base) var(--ease-out)}
+
 /* Hero */
 .hero{display:flex;flex-direction:column;gap:var(--space-5)}
-.quick{display:flex;flex-direction:column;gap:var(--space-3)}
-.quick-group{display:flex;align-items:center;gap:var(--space-2);flex-wrap:wrap}
-.quick-label{font-size:13px;font-weight:600;color:var(--color-text-tertiary);width:42px}
+.hero-prompt{font-family:var(--font-display);font-weight:700;font-size:17px;line-height:1.4;color:var(--color-text);margin:0}
+.quick{display:flex;flex-direction:column;gap:var(--space-4);width:100%;text-align:left}
+.quick-group{display:flex;flex-direction:column;gap:var(--space-2)}
+.quick-q{font-size:14px;font-weight:600;color:var(--color-text-secondary)}
+.pill-row{display:flex;gap:var(--space-2);flex-wrap:wrap}
 .pill{
   min-height:var(--tap-min);padding:0 var(--space-4);border-radius:var(--radius-full);
   background:var(--color-surface-2);border:1px solid var(--color-border);

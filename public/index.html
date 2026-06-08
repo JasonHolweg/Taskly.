@@ -75,40 +75,33 @@
     <!-- Streak auf Eis / Rettung -->
     <div class="ice-banner hidden" id="ice-banner"></div>
 
-    <!-- Brain-Dump -->
-    <section class="card braindump">
-      <h2 class="h3">Kopf leeren</h2>
-      <p class="muted small">Schreib alles rein, was dir durch den Kopf geht — Taskly sortiert es.</p>
-      <textarea id="dump-text" rows="3" placeholder="z.B. Bad putzen, Mama anrufen, Steuerordner sortieren …"></textarea>
-      <div class="braindump-actions">
-        <button class="btn btn-ghost" id="dump-voice" title="Sprechen" hidden>🎙️ Sprechen</button>
-        <button class="btn btn-primary" id="dump-save">Erfassen</button>
-      </div>
-      <p class="dump-result muted small" id="dump-result"></p>
-    </section>
-
-    <!-- Was jetzt? -->
+    <!-- Was jetzt? (Hero, direkt unter der HUD) -->
     <section class="hero">
-      <div class="quick">
-        <div class="quick-group" id="q-time" data-key="time">
-          <span class="quick-label">Zeit</span>
-          <button class="pill" data-val="10">10</button>
-          <button class="pill is-active" data-val="30">30</button>
-          <button class="pill" data-val="60">60 Min</button>
-        </div>
-        <div class="quick-group" id="q-energy" data-key="energy">
-          <span class="quick-label">Akku</span>
-          <button class="pill" data-val="müde">müde</button>
-          <button class="pill is-active" data-val="ok">ok</button>
-          <button class="pill" data-val="voll">voll</button>
-        </div>
-      </div>
 
-      <!-- Startzustand -->
+      <!-- Ruhe-Zustand: Rahmen-Satz + erklärte Regler + Button -->
       <div class="hero-card" id="hero-start">
         <img src="/assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
-        <button class="btn btn-primary btn-hero" id="btn-whatnow">Was jetzt?</button>
-        <p class="muted small">Eine Sache. Kein Stress.</p>
+        <p class="hero-prompt">Sag mir, wie’s gerade steht — ich find die passende Sache für jetzt.</p>
+        <div class="quick">
+          <div class="quick-group" id="q-time" data-key="time">
+            <span class="quick-q">⏱ Wie viel Zeit hast du?</span>
+            <div class="pill-row">
+              <button class="pill" data-val="10">10 Min</button>
+              <button class="pill" data-val="30">30 Min</button>
+              <button class="pill" data-val="60">60 Min</button>
+            </div>
+          </div>
+          <div class="quick-group" id="q-energy" data-key="energy">
+            <span class="quick-q">🔋 Wie viel Akku?</span>
+            <div class="pill-row">
+              <button class="pill" data-val="müde">müde</button>
+              <button class="pill" data-val="ok">ok</button>
+              <button class="pill" data-val="voll">voll</button>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-hero" id="btn-whatnow" disabled>Was jetzt?</button>
+        <p class="muted small" id="hero-hint">Zeit &amp; Akku wählen, dann los.</p>
       </div>
 
       <!-- Pick -->
@@ -130,6 +123,21 @@
         <img src="/assets/img/tanuki/base-tired.png" alt="" class="tanuki tanuki-md tanuki-calm">
         <p id="empty-msg" class="empty-msg">Nichts dringend. Genieß die Pause. 🍵</p>
         <button class="btn btn-ghost" id="empty-again">Nochmal schauen</button>
+      </div>
+    </section>
+
+    <!-- Erfassen (sekundär, standardmäßig eingeklappt) -->
+    <section class="braindump-wrap">
+      <button class="dump-trigger" id="dump-trigger" aria-expanded="false">
+        <span class="dump-plus">+</span><span>Kopf leeren</span>
+      </button>
+      <div class="braindump-body hidden" id="dump-body">
+        <textarea id="dump-text" rows="3" placeholder="z.B. Bad putzen, Mama anrufen, Steuerordner sortieren …"></textarea>
+        <div class="braindump-actions">
+          <button class="btn btn-ghost" id="dump-voice" title="Sprechen" hidden>🎙️ Sprechen</button>
+          <button class="btn btn-primary" id="dump-save">Erfassen</button>
+        </div>
+        <p class="dump-result muted small" id="dump-result"></p>
       </div>
     </section>
   </main>
