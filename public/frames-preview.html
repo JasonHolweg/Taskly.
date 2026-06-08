@@ -1,44 +1,154 @@
 <!doctype html>
 <html lang="de" data-theme="dark">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Frame-Preview</title>
-<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/styles.css?v=20">
 <style>
-  body{padding:24px 0;display:flex;flex-direction:column;gap:8px;align-items:center}
-  .lbl{font-family:var(--font-display);font-weight:800;color:var(--color-text-secondary);max-width:480px;width:100%;padding:0 16px;margin-top:8px}
+  body{padding:20px 0;display:flex;flex-direction:column;gap:10px;align-items:center}
+  .lbl{font-family:var(--font-display);font-weight:800;color:var(--color-text-secondary);max-width:480px;width:100%;padding:0 16px;margin-top:14px;text-transform:uppercase;letter-spacing:.05em;font-size:13px}
   .hero{width:100%;max-width:480px;padding:0 16px}
+  .hero-card{padding:var(--space-5) var(--space-4);min-height:96px;justify-content:center;animation:none}
 </style>
 </head>
 <body>
-  <div class="lbl">default</div>
-  <section class="hero" data-frame="default">
-    <div class="hero-card">
-      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-lg">
-      <p class="hero-prompt">Sag mir, wie’s gerade steht.</p>
-      <button class="btn btn-primary btn-hero">Was jetzt?</button>
-    </div>
-  </section>
-
-  <div class="lbl">premium</div>
+  <div class="lbl">Prestige</div>
   <section class="hero" data-frame="premium">
     <div class="hero-card">
       <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-lg">
-      <p class="hero-prompt">Sag mir, wie’s gerade steht.</p>
-      <button class="btn btn-primary btn-hero">Was jetzt?</button>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Premium</span>
     </div>
   </section>
-
-  <div class="lbl">samurai</div>
+  <section class="hero" data-frame="platin">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Platin</span>
+    </div>
+  </section>
+  <section class="hero" data-frame="gold">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Gold</span>
+    </div>
+  </section>
+  <div class="lbl">Japanisch</div>
   <section class="hero" data-frame="samurai">
     <div class="hero-card">
       <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-      <img src="assets/img/tanuki/samurai-happy.png" alt="" class="tanuki tanuki-lg">
-      <p class="hero-prompt">Sag mir, wie’s gerade steht.</p>
-      <button class="btn btn-primary btn-hero">Was jetzt?</button>
+      <img src="assets/img/tanuki/samurai-happy.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Samurai</span>
+    </div>
+  </section>
+  <section class="hero" data-frame="sakura">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Sakura</span>
+    </div>
+  </section>
+  <section class="hero" data-frame="seigaiha">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Seigaiha</span>
+    </div>
+  </section>
+  <section class="hero" data-frame="zen">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Sumi-e</span>
+    </div>
+  </section>
+  <div class="lbl">Helden</div>
+  <section class="hero" data-frame="held-lila">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Held Lila</span>
+    </div>
+  </section>
+  <section class="hero" data-frame="held-gold">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Held Gold</span>
+    </div>
+  </section>
+  <section class="hero" data-frame="held-gruen">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Held Grün</span>
+    </div>
+  </section>
+  <div class="lbl">Cyberpunk</div>
+  <section class="hero" data-frame="neon">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Neon</span>
+    </div>
+  </section>
+  <section class="hero" data-frame="matrix">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Matrix</span>
+    </div>
+  </section>
+  <section class="hero" data-frame="holo">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Hologramm</span>
+    </div>
+  </section>
+  <div class="lbl">Steampunk</div>
+  <section class="hero" data-frame="messing">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Messing</span>
+    </div>
+  </section>
+  <section class="hero" data-frame="kupfer">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Kupfer</span>
+    </div>
+  </section>
+  <section class="hero" data-frame="uhrwerk">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Uhrwerk</span>
+    </div>
+  </section>
+  <div class="lbl">Blumen</div>
+  <section class="hero" data-frame="rose">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Rose</span>
+    </div>
+  </section>
+  <section class="hero" data-frame="lavendel">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Lavendel</span>
+    </div>
+  </section>
+  <section class="hero" data-frame="wiese">
+    <div class="hero-card">
+      <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/img/tanuki/base-neutral.png" alt="" class="tanuki tanuki-md">
+      <span class="ft-mini" style="font-family:var(--font-display);font-weight:800;font-size:17px">Wiese</span>
     </div>
   </section>
 </body>

@@ -588,25 +588,33 @@ function renderShop() {
   renderGarderobe();
   renderFrames();
 }
+const FRAME_CAT = { basis: 'Standard', prestige: 'Prestige', japan: 'Japanisch', helden: 'Helden', cyberpunk: 'Cyberpunk', steampunk: 'Steampunk', blumen: 'Blumen' };
+function frameTile(f) {
+  let action;
+  if (f.equipped) action = '<span class="ft-state">Aktiv ✓</span>';
+  else if (f.owned) action = `<button class="btn btn-primary ft-btn" data-equip="${f.id}" data-var="${f.variant}">Anlegen</button>`;
+  else action = `<button class="btn btn-primary ft-btn" data-buy="${f.id}" ${SHOP.sparks >= f.cost ? '' : 'disabled'}>${f.cost} ✦</button>`;
+  const tile = document.createElement('div');
+  tile.className = 'frame-tile' + (f.equipped ? ' equipped' : '');
+  tile.innerHTML =
+    `<div class="hero ft-preview" data-frame="${f.variant}">
+       <div class="hero-card">
+         <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+         <span class="ft-mini">${f.name}</span>
+       </div>
+     </div>
+     <div class="ft-meta"><span class="ft-name">${f.name}</span>${action}</div>`;
+  return tile;
+}
 function renderFrames() {
   const wrap = $('#frame-shop'); if (!wrap || !SHOP.frames) return;
   wrap.innerHTML = '';
-  SHOP.frames.forEach(f => {
-    let action;
-    if (f.equipped) action = '<span class="ft-state">Aktiv ✓</span>';
-    else if (f.owned) action = `<button class="btn btn-primary ft-btn" data-equip="${f.id}" data-var="${f.variant}">Anlegen</button>`;
-    else action = `<button class="btn btn-primary ft-btn" data-buy="${f.id}" ${SHOP.sparks >= f.cost ? '' : 'disabled'}>${f.cost} ✦</button>`;
-    const tile = document.createElement('div');
-    tile.className = 'frame-tile' + (f.equipped ? ' equipped' : '');
-    tile.innerHTML =
-      `<div class="hero ft-preview" data-frame="${f.variant}">
-         <div class="hero-card">
-           <div class="frame-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-           <span class="ft-mini">Was jetzt?</span>
-         </div>
-       </div>
-       <div class="ft-meta"><span class="ft-name">${f.name}</span>${action}</div>`;
-    wrap.appendChild(tile);
+  const order = [], byCat = {};
+  SHOP.frames.forEach(f => { (byCat[f.theme] = byCat[f.theme] || (order.push(f.theme), [])).push(f); });
+  order.forEach(theme => {
+    const h = document.createElement('div'); h.className = 'frame-cat'; h.textContent = FRAME_CAT[theme] || theme;
+    wrap.appendChild(h);
+    byCat[theme].forEach(f => wrap.appendChild(frameTile(f)));
   });
   wrap.querySelectorAll('[data-buy]').forEach(b => b.addEventListener('click', () => buyFrame(+b.dataset.buy)));
   wrap.querySelectorAll('[data-equip]').forEach(b => b.addEventListener('click', () => equipFrame(+b.dataset.equip, b.dataset.var)));
