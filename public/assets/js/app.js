@@ -707,11 +707,15 @@ function renderTaskList() {
 function setPills(groupId, val) {
   $$('#' + groupId + ' .pill').forEach(p => p.classList.toggle('is-active', String(p.dataset.val) === String(val)));
 }
+// Vorhandene KI-Schätzung auf 10/30/60 (wie im Home) runden
+function snapTime(m) {
+  return [10, 30, 60].reduce((a, b) => Math.abs(b - m) < Math.abs(a - m) ? b : a);
+}
 function openTaskEdit(t) {
   EDIT_ID = t.id;
   $('#te-title').value = t.title || '';
   $('#te-notes').value = t.notes || '';
-  setPills('te-time', t.time_estimate);
+  setPills('te-time', snapTime(+t.time_estimate || 30));
   setPills('te-energy', t.energy);
   setPills('te-domain', t.domain);
   setPills('te-priority', t.priority);
