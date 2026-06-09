@@ -579,6 +579,10 @@ textarea{resize:vertical;line-height:1.5}
 .plan-meta{font-size:11px;color:var(--color-text-tertiary);flex:0 0 auto}
 
 /* ===== Plan: Wochen-Leiste + Tageskarten (Me+-Stil) ===== */
+.plan-actions{display:flex;align-items:center;gap:var(--space-2)}
+.quick-add{width:44px;height:44px;flex:0 0 auto;border:none;border-radius:var(--radius-full);background:var(--color-primary);color:var(--color-on-primary);font-size:28px;font-weight:600;line-height:1;cursor:pointer;box-shadow:var(--shadow-sm);display:grid;place-items:center;transition:transform var(--dur-fast) var(--ease-standard),background var(--dur-fast)}
+.quick-add:hover{background:var(--color-primary-hover)}
+.quick-add:active{transform:scale(.92)}
 .weekstrip{display:flex;gap:4px;justify-content:space-between;margin:6px 0 4px}
 .wd{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;padding:8px 0 6px;border:none;background:transparent;cursor:pointer;font-family:var(--font-body);border-radius:var(--radius-lg);transition:background var(--dur-fast)}
 .wd-name{font-size:12px;font-weight:700;color:var(--color-text-tertiary)}

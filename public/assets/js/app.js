@@ -200,6 +200,7 @@ function initDump() {
       $('#dump-result').textContent = `${r.count} ${word} erfasst${r.ai_used ? '' : ' (ohne KI)'} ✓`;
       applyFirstRun(true);
       resetHero();
+      if (!$('#view-plan').classList.contains('hidden')) loadWeek();   // Plan offen → neue Aufgaben sofort zeigen
       setTimeout(closeDump, 1000);
     } catch (err) { $('#dump-result').textContent = err.message; }
     finally { btn.disabled = false; btn.textContent = 'Erfassen'; }
@@ -743,6 +744,7 @@ function initPlan() {
     const card = e.target.closest('.dcard[data-task]');
     if (card && !card.classList.contains('done')) openTaskEditById(+card.dataset.task);
   });
+  $('#btn-quickadd').addEventListener('click', openDump);   // schnelles Erfassen via Kopf-leeren-Sheet
   $('#btn-plan').addEventListener('click', async () => {
     const btn = $('#btn-plan'); btn.disabled = true; btn.textContent = 'Plane…';
     try { renderWeek((await api('plan_week.php', 'POST')).days); }
@@ -871,8 +873,9 @@ function openBoxModal(box) {
     ? `<div class="fprev ${c.owned ? 'owned' : ''}" data-rarity="${c.rarity}" title="${c.name}"><div class="hero" data-frame="${c.slug}"><div class="hero-card"></div></div></div>`
     : `<div class="prev ${c.owned ? 'owned' : ''}" data-rarity="${c.rarity}" title="${c.name}"><img src="${poseImg(c)}" alt="${c.name}"></div>`).join('');
   $('#bm-progress').textContent = `🔓 ${box.owned}/${box.total}`;
-  $('#bm-cost').textContent = box.cost;
   const ob = $('#bm-open');
+  // Hinweis: NICHT #bm-cost separat setzen — ob.innerHTML unten ersetzt den Button-
+  // Inhalt (inkl. des bm-cost-Spans), sonst wäre er beim 2. Öffnen null → Crash.
   if (box.complete) { ob.textContent = 'Komplett ✓'; ob.disabled = true; }
   else { ob.innerHTML = `Öffnen · ${box.cost} ✦`; ob.disabled = SHOP.sparks < box.cost; }
   $('#box-modal').classList.remove('hidden');
