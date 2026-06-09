@@ -54,11 +54,13 @@ yarn-error.log*
 *.sublime-project
 *.sublime-workspace
 
-# --- Bild-Assets (nur auf dem Server, nicht ins Repo) ---
+# --- Bild- & Sound-Assets (nur auf dem Server, nicht ins Repo) ---
 /tanuki-raw/
 /pochibukuro-raw/
+/sounds-raw/
 /public/assets/img/tanuki/
 /public/assets/img/pochibukuro/
+/public/assets/sounds/
 
 # --- Sonstiges ---
 Thumbs.db

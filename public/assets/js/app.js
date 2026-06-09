@@ -53,6 +53,56 @@ function initTheme() {
   });
 }
 
+/* ---------- Sound (Tanuki-Stimme + Effekte) ---------- */
+const SOUND = {
+  on: localStorage.getItem('taskly-sound') !== 'off',   // Standard: an
+  els: {},
+  primed: false,
+  list: ['vo-komm', 'vo-eine-sache', 'vo-schoen', 'vo-klein-anfangen', 'vo-hihi', 'vo-kitzeln',
+    'sfx-chest-click', 'sfx-stab', 'sfx-levelup', 'sfx-win'],
+};
+function soundEl(name) {
+  let a = SOUND.els[name];
+  if (!a) { a = new Audio('/assets/sounds/' + name + '.mp3'); a.preload = 'auto'; SOUND.els[name] = a; }
+  return a;
+}
+// iOS: HTMLAudio muss einmal in einer echten Geste „freigeschaltet" werden,
+// damit späteres Abspielen (z.B. nach await beim Level-Up) erlaubt bleibt.
+function primeSounds() {
+  if (SOUND.primed) return; SOUND.primed = true;
+  SOUND.list.forEach(n => {
+    const a = soundEl(n); a.muted = true;
+    const p = a.play();
+    if (p && p.then) p.then(() => { a.pause(); a.currentTime = 0; a.muted = false; }).catch(() => { a.muted = false; });
+    else { try { a.pause(); } catch (_) {} a.muted = false; }
+  });
+}
+function playSound(name) {
+  if (!SOUND.on) return;
+  try { const a = soundEl(name); a.currentTime = 0; const p = a.play(); if (p && p.catch) p.catch(() => {}); } catch (_) {}
+}
+// Genau eine Tanuki-Stimme gleichzeitig (kein Übereinanderreden).
+function playVoice(name) {
+  if (!SOUND.on) return;
+  SOUND.list.forEach(n => {
+    if (n.startsWith('vo-') && SOUND.els[n]) { try { SOUND.els[n].pause(); SOUND.els[n].currentTime = 0; } catch (_) {} }
+  });
+  playSound(name);
+}
+function initSound() {
+  document.addEventListener('pointerdown', primeSounds, { once: true });
+  const btn = $('#sound-toggle');
+  if (!btn) return;
+  const sync = () => { btn.textContent = SOUND.on ? '🔊 Töne an' : '🔇 Töne aus'; btn.setAttribute('aria-pressed', String(SOUND.on)); };
+  sync();
+  btn.addEventListener('click', () => {
+    SOUND.on = !SOUND.on;
+    localStorage.setItem('taskly-sound', SOUND.on ? 'on' : 'off');
+    sync();
+    if (SOUND.on) playVoice('vo-hihi');   // kleine hörbare Bestätigung
+  });
+}
+
 /* ---------- State / Header ---------- */
 function renderProgress(p) {
   if (!p) return;
@@ -353,6 +403,7 @@ function showReward(rw) {
     const d = document.createElement('div');
     d.className = 'reward-badge'; d.textContent = rw.level_message || `Level ${rw.level}! 🎉`;
     extra.appendChild(d);
+    playSound('sfx-levelup');
   }
   // Glücksumschlag (Pochibukuro) — antippen zum Öffnen → Sparks
   const total = (rw.envelopes || []).reduce((s, e) => s + (e.sparks || 0), 0);
@@ -377,6 +428,7 @@ function openEnvelope() {
   $('#env-img').classList.remove('pochi-wiggle'); $('#env-img').classList.add('pochi-pop');
   $('#env-cap').textContent = 'Aufgemacht!';
   const es = $('#env-sparks'); es.textContent = `+${PENDING_SPARKS} ✦`; es.classList.remove('hidden');
+  playSound('sfx-win');
   confetti();
 }
 function confetti() {
@@ -534,22 +586,25 @@ function applyTanuki() {
 // Tanuki-Mimik passend zur gewählten Energie (im Vorschlag-Zustand)
 const MOOD_BY_ENERGY = { 'müde': 'tired', 'mude': 'tired', 'ok': 'neutral', 'voll': 'celebrate' };
 
-// Antippen → kleiner Hüpfer + Spruch (Persönlichkeit, brand.md §4)
+// Antippen → kleiner Hüpfer + Spruch + passende Stimme (Persönlichkeit, brand.md §4).
+// Text und Audio gehören zusammen, damit Bubble und Stimme dasselbe sagen.
 const TANUKI_LINES = [
-  'Komm, das kriegst du. 💪',
-  'Eine Sache nach der anderen.',
-  'Schön, dass du da bist. 🍵',
-  'Kein Stress — Schritt für Schritt.',
-  'Bereit, wenn du’s bist.',
-  'Klein anfangen zählt auch.',
+  { text: 'Komm, das kriegst du. 💪', sound: 'vo-komm' },
+  { text: 'Eine Sache nach der anderen.', sound: 'vo-eine-sache' },
+  { text: 'Schön, dass du da bist. 🍵', sound: 'vo-schoen' },
+  { text: 'Klein anfangen zählt auch.', sound: 'vo-klein-anfangen' },
+  { text: 'Hihi! 😄', sound: 'vo-hihi' },
+  { text: 'Haha, hör auf, mich zu kitzeln! 😆', sound: 'vo-kitzeln' },
 ];
 let _bubbleTimer = null;
 function pokeTanuki() {
   const img = $('#hero-tanuki');
   img.classList.remove('tanuki-poke'); void img.offsetWidth; img.classList.add('tanuki-poke');
+  const line = TANUKI_LINES[Math.floor(Math.random() * TANUKI_LINES.length)];
   const b = $('#tanuki-bubble');
-  b.textContent = TANUKI_LINES[Math.floor(Math.random() * TANUKI_LINES.length)];
+  b.textContent = line.text;
   b.classList.add('show');
+  playVoice(line.sound);
   clearTimeout(_bubbleTimer);
   _bubbleTimer = setTimeout(() => b.classList.remove('show'), 2200);
 }
@@ -770,6 +825,7 @@ function openBox(box) {
   $('#lb-opening').classList.add('hidden');
   $('#lb-reveal').classList.add('hidden');
   $('#lootbox').classList.remove('hidden');
+  playSound('sfx-chest-click');
 }
 async function doOpen() {
   if (!CURRENT_BOX) return;
@@ -783,6 +839,7 @@ async function doOpen() {
     $('#lb-reveal').classList.add('hidden');
     $('#lb-open-img').src = CURRENT_BOX.img_open;
     $('#lb-opening').classList.remove('hidden');
+    playSound('sfx-stab');
     await new Promise(res => setTimeout(res, 850));
     $('#lb-opening').classList.add('hidden');
     revealItem(r);
@@ -811,6 +868,7 @@ function revealItem(r) {
   const again = $('#lb-again');
   again.classList.toggle('hidden', r.complete);
   again.disabled = r.complete || r.sparks < CURRENT_BOX.cost;
+  playSound('sfx-win');
   lbConfetti(r.rarity);
 }
 function initLootbox() {
@@ -990,7 +1048,7 @@ async function boot() {
   } catch (_) { showAuth(); }
 }
 
-initTheme(); initAuth(); initDump(); initQuick(); initHero(); initMore(); initNav(); initLootbox(); initPlan(); initPush(); initTasks(); initCust();
+initTheme(); initSound(); initAuth(); initDump(); initQuick(); initHero(); initMore(); initNav(); initLootbox(); initPlan(); initPush(); initTasks(); initCust();
 boot();
 
 if ('serviceWorker' in navigator) {
