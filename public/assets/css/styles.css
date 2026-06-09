@@ -150,6 +150,23 @@ textarea{resize:vertical;line-height:1.5}
 .braindump-actions{display:flex;gap:var(--space-2);justify-content:flex-end}
 .dump-result:empty{display:none}
 
+/* Voice: animierter Equalizer als Aufnahme-Feedback */
+.voice-btn{display:inline-flex;align-items:center;gap:var(--space-2);transition:color var(--dur-fast) var(--ease-standard)}
+.voice-eq{display:none;align-items:center;gap:3px;height:18px}
+.voice-eq i{width:3px;height:18px;border-radius:2px;background:currentColor;transform:scaleY(.22);transform-origin:center;opacity:.85}
+.voice-btn.is-listening{color:var(--color-primary)}
+.voice-btn.is-listening .voice-eq{display:inline-flex}
+.voice-btn.is-listening .voice-eq i{animation:voiceEq 1.1s var(--ease-standard) infinite}
+.voice-btn.is-listening .voice-eq i:nth-child(2){animation-delay:.18s}
+.voice-btn.is-listening .voice-eq i:nth-child(3){animation-delay:.36s}
+.voice-btn.is-listening .voice-eq i:nth-child(4){animation-delay:.10s}
+.voice-btn.is-listening .voice-eq i:nth-child(5){animation-delay:.28s}
+.voice-btn.is-hearing{color:var(--color-spark)}
+.voice-btn.is-hearing .voice-eq i{animation-duration:.42s}
+@keyframes voiceEq{0%,100%{transform:scaleY(.22)}50%{transform:scaleY(1)}}
+/* Reduced-Motion: Balken statisch sichtbar, Farbe/Label tragen das Feedback */
+@media (prefers-reduced-motion:reduce){.voice-btn.is-listening .voice-eq i{transform:scaleY(.6)}}
+
 /* Erfassen (sekundär, einklappbar) */
 .braindump-wrap{display:flex;flex-direction:column;gap:var(--space-3)}
 .dump-trigger{display:inline-flex;align-items:center;gap:var(--space-2);align-self:center;background:var(--color-surface);border:1px solid var(--color-border);color:var(--color-text-secondary);font-family:var(--font-body);font-weight:600;font-size:15px;border-radius:var(--radius-full);padding:0 var(--space-5);min-height:var(--tap-min);cursor:pointer;transition:background var(--dur-fast) var(--ease-standard),color var(--dur-fast)}

@@ -316,7 +316,10 @@
       <p class="muted small">Schreib alles rein — Tägliches, Wöchentliches, einmalige Aufgaben und Termine. Ich sortiere es.</p>
       <textarea id="dump-text" rows="4" placeholder="z.B. jeden Tag 10 Min lesen, montags Müll raus, diese Woche Steuer sortieren, Freitag 15 Uhr Zahnarzt …"></textarea>
       <div class="braindump-actions">
-        <button class="btn btn-ghost" id="dump-voice" title="Sprechen" hidden>🎙️ Sprechen</button>
+        <button class="btn btn-ghost voice-btn" id="dump-voice" title="Sprechen" hidden>
+          <span class="voice-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+          <span class="voice-label">🎙️ Sprechen</span>
+        </button>
         <button class="btn btn-primary" id="dump-save">Erfassen</button>
       </div>
       <p class="dump-result muted small" id="dump-result"></p>

@@ -133,15 +133,7 @@ function closeDump() {
   $('#dump-sheet').classList.add('hidden');
   $('#dump-text').blur();
 }
-// Mikrofon: Sheet öffnen und – wenn unterstützt – direkt Sprache starten.
-function openDumpVoice() {
-  openDump();
-  const v = $('#dump-voice');
-  if (v && !v.hidden) setTimeout(() => v.click(), 350);
-}
-
 function initDump() {
-  $('#mic-btn').addEventListener('click', openDumpVoice);
   $('#onb-start').addEventListener('click', openDump);
   $('#dump-close').addEventListener('click', closeDump);
   $('#dump-sheet').addEventListener('click', e => { if (e.target.id === 'dump-sheet') closeDump(); });
@@ -165,17 +157,72 @@ function initDump() {
 
   // Voice als Progressive Enhancement (architecture.md §4.0)
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let startVoice = null;
   if (SR) {
     const vbtn = $('#dump-voice'); vbtn.hidden = false;
+    const label = vbtn.querySelector('.voice-label');
     const rec = new SR(); rec.lang = 'de-DE'; rec.interimResults = false;
-    vbtn.addEventListener('click', () => { try { rec.start(); vbtn.textContent = '… hört zu'; } catch (_) {} });
+    let listening = false, audio = null;
+
+    // Sanfter Sinus-Beep als hörbares Start-/Stopp-Signal (iOS-tolerant: fehlschlagen schadet nicht).
+    function ensureAudio() {
+      try {
+        audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+        if (audio.state === 'suspended') audio.resume();
+      } catch (_) {}
+    }
+    function tone(freq, dur) {
+      if (!audio) return;
+      try {
+        const t0 = audio.currentTime, o = audio.createOscillator(), g = audio.createGain();
+        o.type = 'sine'; o.frequency.value = freq;
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.exponentialRampToValueAtTime(0.16, t0 + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+        o.connect(g).connect(audio.destination);
+        o.start(t0); o.stop(t0 + dur + 0.02);
+      } catch (_) {}
+    }
+    function setState(s) { // 'idle' | 'listening' | 'hearing'
+      vbtn.classList.toggle('is-listening', s !== 'idle');
+      vbtn.classList.toggle('is-hearing', s === 'hearing');
+      label.textContent = s === 'hearing' ? 'Ich höre dich …'
+        : s === 'listening' ? 'Hört zu – tippen zum Stoppen'
+        : '🎙️ Sprechen';
+    }
+
+    startVoice = () => {
+      if (listening) return;
+      ensureAudio();                 // im User-Gesten-Kontext entsperren (iOS)
+      try { rec.start(); } catch (_) {}
+    };
+    vbtn.addEventListener('click', () => {
+      if (listening) { try { rec.stop(); } catch (_) {} }
+      else startVoice();
+    });
+
+    rec.onstart = () => { listening = true; setState('listening'); tone(660, 0.12); };
+    rec.onsoundstart = () => setState('hearing');
+    rec.onspeechstart = () => setState('hearing');
+    rec.onspeechend = () => { if (listening) setState('listening'); };
     rec.onresult = e => {
       const t = [...e.results].map(r => r[0].transcript).join(' ');
       const ta = $('#dump-text'); ta.value = (ta.value ? ta.value + ' ' : '') + t;
     };
-    rec.onend = () => { vbtn.textContent = '🎙️ Sprechen'; };
-    rec.onerror = () => { vbtn.textContent = '🎙️ Sprechen'; };
+    rec.onend = () => { if (listening) tone(440, 0.1); listening = false; setState('idle'); };
+    rec.onerror = e => {
+      listening = false; setState('idle');
+      if (e && (e.error === 'not-allowed' || e.error === 'service-not-allowed'))
+        $('#dump-result').textContent = 'Mikrofon ist blockiert – bitte in den Einstellungen erlauben.';
+    };
   }
+
+  // Mikrofon-Button (Hero): Sheet öffnen UND – wenn unterstützt – sofort lauschen,
+  // synchron im selben Klick, damit iOS die Aufnahme-Geste nicht verwirft.
+  $('#mic-btn').addEventListener('click', () => {
+    openDump();
+    if (startVoice) startVoice();
+  });
 }
 
 /* ---------- Quick-Selects ---------- */
