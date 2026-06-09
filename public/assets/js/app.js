@@ -325,15 +325,43 @@ function renderPick(r) {
   const p = r.pick;
   current = p;
   $('#pick-tanuki').src = tanukiFor(MOOD_BY_ENERGY[ctx().energy] || 'neutral');
-  $('#pick-reason').textContent = r.reason || '';
   $('#pick-title').textContent = p.title;
   $('#pick-meta').innerHTML =
     `<span class="chip"><span class="dot" style="background:${DOMAIN_COLOR[p.domain] || 'var(--dom-privat)'}"></span>${p.domain}</span>` +
     `<span class="chip">⏱ ${p.time_estimate} Min</span>` +
     `<span class="chip">🔋 ${p.energy}</span>` +
     (p.base_xp ? `<span class="chip chip-xp">+${p.base_xp} XP</span>` : '');
+  // Begründung: entweder schon da (Altpfad) oder per Tipp-Animation nachladen.
+  if (r.reason != null) {
+    setReason(r.reason);
+  } else {
+    showTyping();
+    loadReason(p.occ_id);
+  }
   $('#hero-empty').classList.add('hidden');
   $('#hero-pick').classList.remove('hidden');
+}
+
+// Tanuki „schreibt" (WhatsApp-Stil) bis die KI-Begründung da ist.
+function showTyping() {
+  const el = $('#pick-reason');
+  el.classList.add('is-typing');
+  el.innerHTML = '<span class="typing" aria-label="Tanuki denkt nach…"><i></i><i></i><i></i></span>';
+}
+function setReason(text) {
+  const el = $('#pick-reason');
+  el.classList.remove('is-typing');
+  el.textContent = text || '';
+  el.classList.remove('reason-in'); void el.offsetWidth; el.classList.add('reason-in');
+}
+async function loadReason(occId) {
+  try {
+    const r = await api('reason.php', 'POST', { occ_id: occId });
+    if (!current || current.occ_id !== occId) return;   // Pick wechselte → Antwort verwerfen
+    setReason(r.reason);
+  } catch (_) {
+    if (current && current.occ_id === occId) setReason('');   // Fehler: still ausblenden
+  }
 }
 
 let current = null;

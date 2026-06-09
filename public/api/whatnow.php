@@ -25,4 +25,4 @@ if (empty($in['keep'])) {
     $_SESSION['recent'] = [];
 }
 
-json_out(pick_response($uid));
+json_out(pick_response($uid, false));

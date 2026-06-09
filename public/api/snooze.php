@@ -29,4 +29,4 @@ $_SESSION['skips'] = array_values(array_diff(
     [$occId]
 ));
 
-json_out(pick_response($uid));
+json_out(pick_response($uid, false));

@@ -420,6 +420,15 @@ textarea{resize:vertical;line-height:1.5}
 }
 .btn-hero{margin:var(--space-2) 0}
 .pick-reason{display:flex;align-items:center;gap:var(--space-2);justify-content:center;color:var(--color-text-secondary);font-size:15px}
+/* Tanuki „schreibt…" — WhatsApp-artige Tipp-Punkte bis die KI-Begründung da ist */
+#pick-reason{min-height:1.3em;display:inline-flex;align-items:center}
+.reason-in{animation:reasonIn .28s var(--ease-standard)}
+@keyframes reasonIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+.typing{display:inline-flex;align-items:center;gap:5px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--color-text-secondary);opacity:.4;animation:typingDot 1.2s var(--ease-standard) infinite}
+.typing i:nth-child(2){animation-delay:.18s}
+.typing i:nth-child(3){animation-delay:.36s}
+@keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-4px);opacity:.9}}
 .pick .display{margin:var(--space-2) 0}
 .pick-meta{display:flex;gap:var(--space-2);flex-wrap:wrap;justify-content:center}
 .chip{font-size:13px;font-weight:600;padding:5px 12px;border-radius:var(--radius-full);background:var(--color-surface-2);border:1px solid var(--color-border);color:var(--color-text-secondary);display:inline-flex;align-items:center;gap:5px}

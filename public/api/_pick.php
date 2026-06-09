@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-function pick_response(int $uid): array
+function pick_response(int $uid, bool $withReason = true): array
 {
     $st = db()->prepare('SELECT household_id FROM users WHERE id = ?');
     $st->execute([$uid]);
@@ -44,6 +44,27 @@ function pick_response(int $uid): array
             'base_xp'       => (int) $pick['base_xp'],
             'due_at'        => $pick['due_at'],
         ],
-        'reason' => smart_reason($pick, $ctx),
+        // Begründung optional: das Frontend holt sie via reason.php nach (Tipp-Animation),
+        // damit die Aufgabe sofort erscheint statt auf Haiku zu warten.
+        'reason' => $withReason ? smart_reason($pick, $ctx) : null,
     ];
+}
+
+/**
+ * Baut die für smart_reason() nötigen Felder einer Occurrence aus der DB nach
+ * (auth-gescoped übers Household). Wird von reason.php genutzt.
+ */
+function pick_for_reason(int $uid, int $occId): ?array
+{
+    $st = db()->prepare(
+        "SELECT t.title, t.type, t.domain, t.time_estimate, t.energy, t.base_xp, t.due_at
+           FROM task_occurrences o
+           JOIN tasks t ON t.id = o.task_id
+           JOIN users u ON u.household_id = t.household_id
+          WHERE o.id = :occ AND u.id = :uid
+          LIMIT 1"
+    );
+    $st->execute([':occ' => $occId, ':uid' => $uid]);
+    $row = $st->fetch();
+    return $row ?: null;
 }

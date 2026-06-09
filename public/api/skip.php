@@ -16,5 +16,5 @@ if (!in_array($occId, $skips, true)) {
 }
 $_SESSION['skips'] = $skips;
 
-// Direkt die nächstbeste vorschlagen.
-json_out(pick_response($uid));
+// Direkt die nächstbeste vorschlagen (Begründung holt das Frontend nach).
+json_out(pick_response($uid, false));
