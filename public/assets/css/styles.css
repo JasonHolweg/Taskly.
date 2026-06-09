@@ -578,6 +578,40 @@ textarea{resize:vertical;line-height:1.5}
 .plan-title{font-size:14px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .plan-meta{font-size:11px;color:var(--color-text-tertiary);flex:0 0 auto}
 
+/* ===== Plan: Wochen-Leiste + Tageskarten (Me+-Stil) ===== */
+.weekstrip{display:flex;gap:4px;justify-content:space-between;margin:6px 0 4px}
+.wd{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;padding:8px 0 6px;border:none;background:transparent;cursor:pointer;font-family:var(--font-body);border-radius:var(--radius-lg);transition:background var(--dur-fast)}
+.wd-name{font-size:12px;font-weight:700;color:var(--color-text-tertiary)}
+.wd-num{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--color-text);border:2px solid transparent;transition:background var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast)}
+.wd.today:not(.sel) .wd-num{border-color:var(--color-primary)}
+.wd.sel .wd-num{background:var(--color-primary);color:var(--color-on-primary);box-shadow:var(--shadow-sm)}
+.wd.sel .wd-name{color:var(--color-primary)}
+.wd-dots{display:flex;gap:3px;height:6px;align-items:center}
+.wd-dots i{width:5px;height:5px;border-radius:50%}
+
+.day-tasks{display:flex;flex-direction:column;gap:var(--space-2);margin-top:var(--space-3)}
+.dsec-title{font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--color-text-secondary);margin:var(--space-3) 2px var(--space-1)}
+.dsec-title:first-child{margin-top:0}
+.dcard{display:flex;align-items:center;gap:var(--space-3);border-radius:var(--radius-lg);padding:13px 14px;border:1px solid transparent;cursor:pointer;text-align:left;width:100%;font-family:var(--font-body);transition:transform var(--dur-fast) var(--ease-standard)}
+.dcard:active{transform:scale(.985)}
+.dcard-ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:24px;flex:0 0 auto;background:color-mix(in srgb,#fff 55%,transparent)}
+[data-theme="dark"] .dcard-ico,:root:not([data-theme="light"]) .dcard-ico{background:color-mix(in srgb,#000 28%,transparent)}
+.dcard-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.dcard-title{font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--color-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dcard-sub{font-size:12px;font-weight:700;color:var(--color-text-secondary)}
+.dcard-check{width:30px;height:30px;border-radius:50%;border:2px solid color-mix(in srgb,var(--color-text-tertiary) 55%,transparent);background:transparent;flex:0 0 auto;display:grid;place-items:center;color:#fff;font-size:17px;cursor:pointer;transition:background var(--dur-fast),border-color var(--dur-fast)}
+.dcard.done{opacity:.62}
+.dcard.done .dcard-title{text-decoration:line-through}
+.dcard.done .dcard-check{background:var(--color-success);border-color:var(--color-success)}
+.day-empty-big{text-align:center;color:var(--color-text-tertiary);font-size:16px;padding:48px 0 32px}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:96px;transform:translate(-50%,16px);z-index:60;
+  background:var(--color-text);color:var(--color-bg);font-weight:700;font-size:14px;
+  padding:12px 20px;border-radius:var(--radius-full);box-shadow:var(--shadow-lg);
+  opacity:0;pointer-events:none;transition:opacity var(--dur-base),transform var(--dur-base) var(--ease-out);max-width:88vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
 /* ===== Streak-Eis-Banner ===== */
 .ice-banner{background:color-mix(in srgb,var(--rar-selten) 14%,var(--color-surface));border:1px solid color-mix(in srgb,var(--rar-selten) 40%,transparent);color:var(--color-text);border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);font-size:14px;line-height:1.45}
 

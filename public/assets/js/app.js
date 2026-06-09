@@ -652,42 +652,96 @@ function initNav() {
     $('#nav-' + v).addEventListener('click', () => showView(v)));
 }
 
-/* ---------- Wochen-Plan ---------- */
+/* ---------- Wochen-Plan (Tag-Auswahl + Karten, Me+-Stil) ---------- */
+const DOMAIN_ICON = { haushalt: '🧹', privat: '🌿', business: '💼', termin: '📅' };
+let WEEK = [], SEL = 0;
+
 function renderWeek(days) {
+  WEEK = days || [];
+  if (SEL >= WEEK.length) SEL = 0;
   const w = $('#week'); w.innerHTML = '';
-  days.forEach(day => {
-    const col = document.createElement('div');
-    col.className = 'day' + (day.is_today ? ' today' : '');
-    const dd = +day.date.slice(8, 10), mm = +day.date.slice(5, 7);
-    const head = `<div class="day-head"><span class="day-wd">${day.weekday}</span>`
-      + `<span class="day-date">${dd}.${mm}.</span>`
-      + (day.is_today ? '<span class="day-badge">heute</span>' : '') + '</div>';
-    let body;
-    if (!day.tasks.length) {
-      body = '<div class="day-empty">frei 🍵</div>';
-    } else {
-      body = day.tasks.map(t => {
-        const time = (t.type === 'termin' && t.fixed_at) ? t.fixed_at.slice(11, 16) + ' · ' : '';
-        const meta = t.type === 'termin' ? 'Termin' : (t.time_estimate + 'm · ' + t.base_xp + ' XP');
-        return `<div class="plan-card${t.done ? ' done' : ''}" data-type="${t.type}" data-task="${t.task_id}">
-            <span class="dom-dot" style="background:${DOMAIN_COLOR[t.domain] || 'var(--dom-privat)'}"></span>
-            <span class="plan-title">${time}${t.title}${t.recurring ? ' 🔁' : ''}</span>
-            <span class="plan-meta">${meta}</span>
-          </div>`;
-      }).join('');
-    }
-    col.innerHTML = head + `<div class="day-body">${body}</div>`;
-    w.appendChild(col);
+  WEEK.forEach((day, i) => {
+    const dd = +day.date.slice(8, 10);
+    const dots = day.tasks.slice(0, 3).map(t =>
+      `<i style="background:${DOMAIN_COLOR[t.domain] || 'var(--dom-privat)'}"></i>`).join('');
+    const btn = document.createElement('button');
+    btn.className = 'wd' + (day.is_today ? ' today' : '') + (i === SEL ? ' sel' : '');
+    btn.dataset.i = i;
+    btn.innerHTML = `<span class="wd-name">${day.weekday}</span><span class="wd-num">${dd}</span><span class="wd-dots">${dots}</span>`;
+    w.appendChild(btn);
   });
+  renderDayTasks();
 }
+
+function selectDay(i) {
+  SEL = i;
+  $$('#week .wd').forEach(b => b.classList.toggle('sel', +b.dataset.i === i));
+  renderDayTasks();
+}
+
+function dayCard(t) {
+  const ico = DOMAIN_ICON[t.domain] || '🌿';
+  let sub;
+  if (t.type === 'termin') sub = t.fixed_at ? `${t.fixed_at.slice(11, 16)} Uhr` : 'Termin';
+  else if (t.recurring)    sub = `Wiederkehrend · +${t.base_xp} XP`;
+  else                     sub = `Jederzeit · +${t.base_xp} XP`;
+  const bg = DOMAIN_COLOR[t.domain] || 'var(--dom-privat)';
+  return `<button class="dcard${t.done ? ' done' : ''}" data-task="${t.task_id}"
+      style="background:color-mix(in srgb,${bg} 15%,var(--color-surface));border-color:color-mix(in srgb,${bg} 30%,transparent)">
+      <span class="dcard-ico">${ico}</span>
+      <span class="dcard-body"><span class="dcard-title">${t.title}${t.recurring ? ' 🔁' : ''}</span><span class="dcard-sub">${sub}</span></span>
+      <span class="dcard-check" data-check="${t.occ_id}">${t.done ? '✓' : ''}</span>
+    </button>`;
+}
+
+function renderDayTasks() {
+  const box = $('#day-tasks'); if (!box) return;
+  const day = WEEK[SEL];
+  if (!day || !day.tasks.length) {
+    box.innerHTML = '<div class="day-empty-big">Nichts geplant — genieß die Pause. 🍵</div>';
+    return;
+  }
+  const termine = day.tasks.filter(t => t.type === 'termin');
+  const rest    = day.tasks.filter(t => t.type !== 'termin');
+  let html = '';
+  if (termine.length) html += '<div class="dsec-title">Termine</div>' + termine.map(dayCard).join('');
+  if (rest.length)    html += '<div class="dsec-title">Aufgaben</div>' + rest.map(dayCard).join('');
+  box.innerHTML = html;
+}
+
 async function loadWeek() {
   try { renderWeek((await api('week.php')).days); loadTasks(); }
   catch (e) { alert(e.message); }
 }
+
+async function completeOcc(occId) {
+  const day = WEEK[SEL], t = day && day.tasks.find(x => x.occ_id === occId);
+  if (!t || t.done) return;
+  try {
+    const r = await api('complete.php', 'POST', { occ_id: occId });
+    if (r.progress) renderProgress(r.progress);
+    const rw = r.rewards || {};
+    showToast(`Erledigt! +${rw.xp || 0} XP${rw.sparks ? ` · +${rw.sparks} ✦` : ''} 🎉`);
+    await loadWeek();
+  } catch (e) { showToast(e.message); }
+}
+
+let _toastTimer = null;
+function showToast(msg) {
+  const el = $('#toast'); if (!el) return;
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(_toastTimer); _toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+}
+
 function initPlan() {
   $('#week').addEventListener('click', e => {
-    const c = e.target.closest('.plan-card[data-task]');
-    if (c) openTaskEditById(+c.dataset.task);
+    const b = e.target.closest('.wd'); if (b) selectDay(+b.dataset.i);
+  });
+  $('#day-tasks').addEventListener('click', e => {
+    const chk = e.target.closest('[data-check]');
+    if (chk) { completeOcc(+chk.dataset.check); return; }
+    const card = e.target.closest('.dcard[data-task]');
+    if (card && !card.classList.contains('done')) openTaskEditById(+card.dataset.task);
   });
   $('#btn-plan').addEventListener('click', async () => {
     const btn = $('#btn-plan'); btn.disabled = true; btn.textContent = 'Plane…';
