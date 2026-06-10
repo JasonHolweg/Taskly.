@@ -103,6 +103,32 @@ function initSound() {
   });
 }
 
+/* ---------- Progressive Freischaltung (journey.md §8) ----------
+   L1–2 nur Kern-Loop · L3 Reise + Tanuki-Hub · L4 Shop/Rahmen/Kisten.
+   Flag aus → exakt v1-Verhalten (alles sichtbar außer Reise). */
+let GATES = { enabled: false, advLevel: 3, shopLevel: 4 };
+function applyGates(level) {
+  const adv  = GATES.enabled && level >= GATES.advLevel;
+  const shop = !GATES.enabled || level >= GATES.shopLevel;
+  $('#nav-journey')?.classList.toggle('hidden', !adv);
+  $('#nav-shop')?.classList.toggle('hidden', GATES.enabled && level < GATES.advLevel);
+  $$('.cust-cat').forEach(b => {
+    if (b.dataset.cat === 'frames' || b.dataset.cat === 'shop') b.classList.toggle('hidden', !shop);
+  });
+}
+
+const fmtKm = km => (+km).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+// Der ruhige Heute-Einzeiler — einziges Reise-Element im Kern (build-Brief §2).
+function updateJourneyLine(j) {
+  const el = $('#journey-line'); if (!el) return;
+  if (j && j.dest_name != null) {
+    el.textContent = `🦝 noch ${fmtKm(j.remaining_km)} km bis ${j.dest_name}`;
+    el.classList.remove('hidden');
+  } else {
+    el.classList.add('hidden');
+  }
+}
+
 /* ---------- State / Header ---------- */
 function renderProgress(p) {
   if (!p) return;
@@ -112,6 +138,7 @@ function renderProgress(p) {
   $('#spark-count').textContent = p.sparks;
   $('#streak-count').textContent = p.streak;
   const flame = $('.streak-flame'); if (flame) flame.textContent = p.frozen ? '🧊' : '🔥';
+  applyGates(+p.level || 1);
 }
 
 function showIce(s) {
@@ -434,6 +461,16 @@ function showReward(rw) {
     extra.appendChild(d);
     playSound('sfx-levelup');
   }
+  // Reise-Hauch (journey.md §8): eine leise Zeile, kein eigenes Spektakel.
+  if (rw.journey && rw.journey.km_added > 0) {
+    const d = document.createElement('div');
+    d.className = 'reward-journey';
+    d.textContent = rw.journey.arrived
+      ? `🦝 Angekommen in ${rw.journey.dest_name}! 🏁`
+      : `🦝 +${fmtKm(rw.journey.km_added)} km · noch ${fmtKm(rw.journey.remaining_km)} km bis ${rw.journey.dest_name}`;
+    extra.appendChild(d);
+    updateJourneyLine(rw.journey.arrived ? null : rw.journey);
+  }
   // Glücksumschlag (Pochibukuro) — antippen zum Öffnen → Sparks
   const total = (rw.envelopes || []).reduce((s, e) => s + (e.sparks || 0), 0);
   const env = $('#reward-envelope');
@@ -640,16 +677,17 @@ function pokeTanuki() {
 
 /* ---------- Views / Nav ---------- */
 function showView(which) {
-  ['today', 'plan', 'shop', 'more'].forEach(v => {
+  ['today', 'plan', 'journey', 'shop', 'more'].forEach(v => {
     $('#view-' + v).classList.toggle('hidden', which !== v);
     $('#nav-' + v).classList.toggle('is-active', which === v);
   });
   if (which === 'shop') loadShop();
   if (which === 'plan') loadWeek();
+  if (which === 'journey') loadJourney();
   if (which === 'more') loadMore();
 }
 function initNav() {
-  ['today', 'plan', 'shop', 'more'].forEach(v =>
+  ['today', 'plan', 'journey', 'shop', 'more'].forEach(v =>
     $('#nav-' + v).addEventListener('click', () => showView(v)));
 }
 
@@ -723,6 +761,7 @@ async function completeOcc(occId) {
     if (r.progress) renderProgress(r.progress);
     const rw = r.rewards || {};
     showToast(`Erledigt! +${rw.xp || 0} XP${rw.sparks ? ` · +${rw.sparks} ✦` : ''} 🎉`);
+    if (rw.journey && rw.journey.km_added > 0) updateJourneyLine(rw.journey.arrived ? null : rw.journey);
     await loadWeek();
   } catch (e) { showToast(e.message); }
 }
@@ -1118,12 +1157,222 @@ function initTasks() {
   });
 }
 
+/* ---------- Tanuki's Adventures (Reise) ---------- */
+let JNY = null;
+const JNY_FEED_ICON = { waypoint: '📍', statue: '🗿', monk: '🚶', hidden: '✨', arrival: '🏁', lootbox: '🎁' };
+// 'xp'-Items heißen bewusst „Antrieb" — sie schieben nur die Reise-Distanz,
+// nie die echten XP (eiserne Regel, journey.md §0/§3).
+const JNY_TYPE = { speed: { ico: '💨', label: 'Tempo' }, loot: { ico: '🍀', label: 'Glück' }, xp: { ico: '✨', label: 'Antrieb' } };
+
+// km hübsch deutsch: 1 Nachkommastelle, Komma.
+function jnyKm(km) {
+  return (+km || 0).toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+}
+function jnyAttr(s) { return String(s == null ? '' : s).replace(/"/g, '&quot;'); }
+
+async function loadJourney() {
+  const msg = $('#journey-msg');
+  try {
+    const s = await api('journey.php');
+    msg.classList.add('hidden');
+    renderJourney(s);
+    jnyHandleEvents(s.new_events || []);
+    // Splash nur beim allerersten Öffnen
+    if (!localStorage.getItem('taskly-journey-seen')) $('#journey-splash').classList.remove('hidden');
+  } catch (e) {
+    // 403 (Level) / 404 (Feature aus) / Netz → freundlicher Hinweis statt leerer View
+    ['journey-active', 'journey-pick', 'jny-gear', 'jny-reveal', 'journey-splash']
+      .forEach(id => $('#' + id).classList.add('hidden'));
+    msg.innerHTML = '<p class="muted">🦝 Die große Reise ist noch nicht offen — mach in Ruhe weiter deine Aufgaben, dein Tanuki packt schon mal den Rucksack.</p>';
+    msg.classList.remove('hidden');
+  }
+}
+
+function renderJourney(s) {
+  JNY = s;
+  const j = s.journey && s.journey.status === 'active' ? s.journey : null;
+  $('#journey-active').classList.toggle('hidden', !j);
+  $('#journey-pick').classList.toggle('hidden', !!j);
+  $('#jny-gear').classList.remove('hidden');
+
+  if (j) {
+    $('#jny-scene').dataset.theme = j.destination;
+    $('#jny-dest').textContent = j.name;
+    $('#jny-remaining').textContent = `noch ${jnyKm(j.remaining_km)} km`;
+    renderJnyPath(j, s.waypoints || []);
+    // Boost-Badge nur bei aktivem Schub
+    const boostOn = j.boost_pct > 0 && j.boost_until && new Date(String(j.boost_until).replace(' ', 'T')) > new Date();
+    const bb = $('#jny-boost');
+    bb.classList.toggle('hidden', !boostOn);
+    if (boostOn) bb.textContent = `🔥 Rückenwind +${j.boost_pct} %`;
+  }
+
+  // Ausdauer: Meter → km
+  const pct = s.stamina_max_m ? Math.max(0, Math.min(1, s.stamina_m / s.stamina_max_m)) : 0;
+  $('#jny-stamina-fill').style.transform = `scaleX(${pct})`;
+  $('#jny-stamina-label').textContent = `${jnyKm(s.stamina_m / 1000)} / ${Math.round((s.stamina_max_m || 0) / 1000)} km`;
+
+  // Boni-Chips
+  const bo = s.bonuses || {};
+  $('#jny-bonuses').innerHTML = ['speed', 'loot', 'xp'].map(k =>
+    `<span class="chip">${JNY_TYPE[k].ico} +${Math.round((bo[k] || 0) * 100)} % ${JNY_TYPE[k].label}</span>`).join('');
+
+  // Verborgene Events
+  const hh = $('#jny-hidden');
+  if (j && s.hidden_events_left > 0) {
+    hh.textContent = s.hidden_events_left === 1
+      ? '❓ 1 verborgenes Event wartet noch auf dieser Strecke.'
+      : `❓ ${s.hidden_events_left} verborgene Events warten noch auf dieser Strecke.`;
+    hh.classList.remove('hidden');
+  } else hh.classList.add('hidden');
+
+  // Feed (letzte Entdeckungen)
+  const rows = (s.feed || []).map(f => {
+    const ico = JNY_FEED_ICON[f.kind] || '✨';
+    const km = f.at_km != null ? `km ${f.at_km}` : '';
+    const extra = f.reward_type === 'sparks' && f.reward_amount ? `+${f.reward_amount} ✦`
+      : f.reward_type === 'item' ? 'Item 🎒'
+      : f.reward_type === 'lootbox' ? 'Kiste 🎁'
+      : f.reward_type === 'distance' && f.reward_amount ? `+${jnyKm(f.reward_amount / 1000)} km` : '';
+    return `<div class="jny-feed-row"><span class="jny-feed-ico">${ico}</span>
+        <span class="jny-feed-label">${f.label}</span>
+        <span class="jny-feed-meta">${[km, extra].filter(Boolean).join(' · ')}</span></div>`;
+  });
+  $('#jny-feed').innerHTML = rows.length ? rows.join('')
+    : '<p class="muted small">Noch nichts entdeckt — die ersten Schritte kommen mit deiner nächsten Aufgabe. 🍃</p>';
+
+  // Ziel-Karten
+  $('#jny-destinations').innerHTML = (s.destinations || []).map(d => {
+    const badge = d.done ? '<span class="jny-dest-badge">✓ besucht</span>' : '';
+    const lock = d.unlocked ? '' : `<span class="jny-dest-lock">🔒 ab Level ${d.unlock_level}</span>`;
+    return `<button class="jny-dest-card${d.unlocked ? '' : ' locked'}" data-dest="${jnyAttr(d.destination)}" data-theme="${jnyAttr(d.destination)}"${d.unlocked ? '' : ' disabled'}>
+        <span class="jny-dest-art" aria-hidden="true"></span>
+        <span class="jny-dest-body">
+          <span class="jny-dest-name">${d.name}</span>
+          ${d.tagline ? `<span class="jny-dest-tag">${d.tagline}</span>` : ''}
+          <span class="jny-dest-meta">${d.total_km} km ${lock} ${badge}</span>
+        </span>
+      </button>`;
+  }).join('');
+
+  // Ausrüstung
+  const items = s.items || [];
+  const eq = items.filter(i => i.equipped).length;
+  $('#jny-gear-count').textContent = `${eq}/${s.equip_slots || 3}`;
+  $('#jny-items-empty').classList.toggle('hidden', items.length > 0);
+  $('#jny-items').innerHTML = items.map(i => {
+    const t = JNY_TYPE[i.type] || { ico: '🎒' };
+    return `<button class="jny-item${i.equipped ? ' equipped' : ''}" data-id="${i.id}" data-rarity="${jnyAttr(i.rarity)}" title="${jnyAttr(i.flavor)}">
+        ${i.equipped ? '<span class="jny-item-eq">●</span>' : ''}
+        <span class="jny-item-ico">${t.ico}</span>
+        <span class="jny-item-name">${i.name}</span>
+        <span class="jny-item-val">+${Math.round((i.value || 0) * 100)} %</span>
+      </button>`;
+  }).join('');
+}
+
+// Fortschritts-Pfad: Linie, Wegpunkt-Knoten, Tanuki-Marker (transform-positioniert)
+function renderJnyPath(j, wps) {
+  const nodes = wps.map(w => {
+    const left = j.total_km ? Math.min(100, w.at_km / j.total_km * 100) : 0;
+    const goal = w.at_km >= j.total_km;
+    const cls = 'jny-node' + (goal ? ' goal' : '') + (w.claimed ? ' claimed' : '');
+    const inner = goal ? '🏁' : (w.claimed ? '✓' : '');
+    return `<span class="${cls}" style="left:${left}%" title="${jnyAttr(w.flavor || w.name)}">${inner}</span>`;
+  }).join('');
+  const done = Math.min(100, Math.max(0, +j.pct || 0));
+  $('#jny-path').innerHTML =
+    `<span class="jny-line"></span><span class="jny-line-done" style="width:${done}%"></span>` +
+    nodes +
+    `<span class="jny-tanuki" style="left:${done}%"><span class="jny-tanuki-bob">🦝</span></span>`;
+}
+
+// Neue Tick-Events: Reveal-Panel für gezogene Items/Kisten, Fanfare bei Ankunft
+function jnyHandleEvents(events) {
+  if (!events || !events.length) return;
+  const rewards = [];
+  let arrived = false;
+  events.forEach(ev => {
+    if (ev.kind === 'arrival') arrived = true;
+    const list = Array.isArray(ev.reward) ? ev.reward : (ev.reward ? [ev.reward] : []);
+    list.forEach(r => rewards.push(r));
+  });
+  if (rewards.length) {
+    const html = rewards.map(r => {
+      if (r.fallback_sparks) {
+        return `<div class="jny-rv-item"><span class="jny-rv-ico">✦</span><div><b>+${r.fallback_sparks} Sparks</b>
+            <span class="jny-rv-flavor">Schon alles gesammelt — dafür klimpert jetzt der Beutel.</span></div></div>`;
+      }
+      if (r.cosmetic) {
+        return `<div class="jny-rv-item" data-rarity="${jnyAttr(r.rarity)}"><span class="jny-rv-ico">🎁</span><div><b>${r.cosmetic.name}</b>
+            <span class="jny-rv-rar">${RAR_LABEL[r.rarity] || r.rarity}</span>
+            <span class="jny-rv-flavor">Frisch aus der Kiste — schau im Tanuki-Tab vorbei.</span></div></div>`;
+      }
+      const t = JNY_TYPE[r.type] || { ico: '🎒' };
+      return `<div class="jny-rv-item" data-rarity="${jnyAttr(r.rarity)}"><span class="jny-rv-ico">${t.ico}</span><div><b>${r.name}</b>
+          <span class="jny-rv-rar">${RAR_LABEL[r.rarity] || r.rarity} · +${Math.round((r.value || 0) * 100)} %</span>
+          ${r.flavor ? `<span class="jny-rv-flavor">${r.flavor}</span>` : ''}</div></div>`;
+    }).join('');
+    const rv = $('#jny-reveal');
+    rv.innerHTML = `<div class="jny-rv-head">Unterwegs gefunden ✨</div>${html}<button class="btn btn-ghost jny-rv-close" id="jny-rv-close">Schön!</button>`;
+    rv.classList.remove('hidden');
+    if (typeof playSound === 'function') playSound('sfx-win');
+  }
+  if (arrived) {
+    if (typeof playSound === 'function') playSound('sfx-levelup');
+    if (typeof confetti === 'function') confetti();
+    showToast('Angekommen! Dein Tanuki ruht sich kurz aus. 🏁');
+  }
+}
+
+function initJourney() {
+  $('#journey-splash-go').addEventListener('click', () => {
+    localStorage.setItem('taskly-journey-seen', '1');
+    $('#journey-splash').classList.add('hidden');
+  });
+  // Reveal-Schließen per Delegation (Button entsteht erst beim Render)
+  $('#jny-reveal').addEventListener('click', e => {
+    if (e.target.closest('.jny-rv-close')) $('#jny-reveal').classList.add('hidden');
+  });
+  // Ziel wählen → Reise startet direkt (kein confirm)
+  $('#jny-destinations').addEventListener('click', async e => {
+    const card = e.target.closest('.jny-dest-card[data-dest]');
+    if (!card || card.classList.contains('locked')) return;
+    card.disabled = true;
+    try {
+      const r = await api('journey.php', 'POST', { action: 'start', destination: card.dataset.dest });
+      renderJourney(r.state);
+      showToast('Die Reise beginnt — gute Pfade! 🦝');
+    } catch (err) { showToast(err.message); card.disabled = false; }
+  });
+  // Item an-/ablegen: kein optimistisches Toggle, Server-State gewinnt
+  $('#jny-items').addEventListener('click', async e => {
+    const tile = e.target.closest('.jny-item[data-id]');
+    if (!tile || tile.classList.contains('is-busy')) return;
+    tile.classList.add('is-busy');
+    const equipped = tile.classList.contains('equipped');
+    try {
+      const r = await api('journey.php', 'POST', { action: equipped ? 'unequip' : 'equip', item_id: +tile.dataset.id });
+      renderJourney(r.state);
+    } catch (err) { showToast(err.message); tile.classList.remove('is-busy'); }
+  });
+}
+
 /* ---------- Boot ---------- */
 async function boot() {
   try {
     const s = await api('state.php');
     if (s.logged_in) {
+      if (s.journey_cfg) {
+        GATES = {
+          enabled: !!s.journey_cfg.enabled,
+          advLevel: +s.journey_cfg.unlock_level || 3,
+          shopLevel: +s.journey_cfg.shop_unlock_level || 4,
+        };
+      }
       renderProgress(s.progress);
+      updateJourneyLine(s.journey);
+      $('#journey-line')?.addEventListener('click', () => showView('journey'));
       showIce(s);
       EQUIPPED = s.equipped || null; applyTanuki();
       applyFrame(s.frame);
@@ -1133,7 +1382,7 @@ async function boot() {
   } catch (_) { showAuth(); }
 }
 
-initTheme(); initSound(); initAuth(); initDump(); initQuick(); initHero(); initMore(); initNav(); initLootbox(); initPlan(); initPush(); initTasks(); initCust();
+initTheme(); initSound(); initAuth(); initDump(); initQuick(); initHero(); initMore(); initNav(); initLootbox(); initPlan(); initPush(); initTasks(); initCust(); initJourney();
 boot();
 
 if ('serviceWorker' in navigator) {

@@ -31,6 +31,15 @@ $rewards = complete_occurrence(
     ['type' => $row['task_type'], 'base_xp' => (int) $row['task_base_xp']]
 );
 
+// Tanuki's Adventures (v2): Ausdauer + Distanz aus echter Erledigung — darf den Kern nie brechen.
+try {
+    $j = journey_on_complete($uid, (int) ($rewards['xp'] ?? 0));
+    if ($j) {
+        $rewards['journey'] = $j;
+    }
+} catch (Throwable $e) { /* bewusst geschluckt */
+}
+
 // Frischer Fortschritt fürs Header-UI
 $p   = get_progress($uid);
 $lvl = level_from_xp((int) $p['xp_total']);

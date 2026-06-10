@@ -2,6 +2,12 @@
 require __DIR__ . '/../../src/bootstrap.php';
 require_method('POST');
 $uid = require_auth();
+
+// v2 (journey.md §8): Shop schaltet erst ab Level 4 frei — nur mit aktivem Feature-Flag.
+if (journey_enabled() && journey_user_level($uid) < journey_cfg()['shop_unlock_level']) {
+    fail('Der Shop schaltet ab Level 4 frei. 🦝', 403);
+}
+
 $pdo = db();
 
 $cosmeticId = (int) (body()['cosmetic_id'] ?? 0);

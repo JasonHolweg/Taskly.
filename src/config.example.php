@@ -69,4 +69,22 @@ return [
         'plan_max_per_day'  => 4,    // max geplante flexible Tasks/Tag
         'time_tolerance'    => 1.2,  // Zeit-Filter-Toleranz
     ],
+
+    // --- Tanuki's Adventures (v2) — Stellschrauben (journey.md §10) ---
+    'journey' => [
+        'enabled'                 => true,   // Feature-Flag: aus = reines v1-Verhalten
+        'unlock_level'            => 3,      // Reise ab Level 3 (§8: progressive Freischaltung)
+        'shop_unlock_level'       => 4,      // Shop ab Level 4 (§8: Sparks stauen sich → Anticipation)
+        'm_per_xp'                => 100,    // 1 XP = 100 m → 40-XP-Task = +4 km Sofort-Schub (§2)
+        'passive_kmh'             => 1.0,    // passive Wandergeschwindigkeit ~1 km/h (§2)
+        'stamina_max_m'           => 12000,  // Ausdauer-Deckel: max 12 km idle zwischen zwei Aufgaben (§2)
+        'stamina_per_task_m'      => 1000,   // +1 km Treibstoff pro erledigter Aufgabe (§2)
+        'equip_slots'             => 3,      // Item-Slots: Setup wählen statt Tabellen-Spiel (§3)
+        'boost_pct'               => 15,     // Reise-Boost +15 % — verdient, kein Echtgeld (§7)
+        'boost_hours'             => 24,     // Boost-Dauer in Stunden (§7)
+        'event_count'             => 3,      // verdeckte Zufalls-Events pro Reise (§5)
+        'event_min_gap_km'        => 5,      // Mindestabstand der Events auf der Strecke
+        'arrival_fallback_sparks' => 120,    // Theme komplett: Gratis-Zug wird zu Sparks (~1 Boxpreis)
+        'item_fallback_sparks'    => 25,     // alle Reise-Items besessen: kleiner Sparks-Trost
+    ],
 ];

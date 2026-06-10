@@ -38,6 +38,7 @@ require __DIR__ . '/lib/planner.php';
 require __DIR__ . '/lib/social.php';
 require __DIR__ . '/lib/push.php';
 require __DIR__ . '/lib/calendar.php';
+require __DIR__ . '/lib/journey.php';
 
 // Session (für simple Familien-Auth, architecture.md §6) — im CLI/Cron nicht nötig.
 if (PHP_SAPI !== 'cli' && session_status() === PHP_SESSION_NONE) {

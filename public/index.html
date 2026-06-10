@@ -154,6 +154,9 @@
       </div>
     </section>
 
+    <!-- Reise: EIN ruhiger Einzeiler, mehr nicht (journey.md §8 — kein Druck, kein Countdown) -->
+    <button class="journey-line hidden" id="journey-line"></button>
+
   </main>
 
   <!-- ===== SHOP ===== -->
@@ -202,6 +205,63 @@
     <h2 class="h3 garderobe-title">Alle Aufgaben</h2>
     <p class="muted small" id="task-empty">Noch keine Aufgaben — leer einmal deinen Kopf. 🦝</p>
     <section id="task-list" class="task-list"></section>
+  </main>
+
+  <!-- ===== REISE — Tanuki's Adventures (v2) ===== -->
+  <main class="content hidden" id="view-journey">
+
+    <!-- Splash (nur beim ersten Öffnen) -->
+    <div class="jny-splash hidden" id="journey-splash">
+      <div class="jny-splash-inner">
+        <div class="jny-splash-tanuki" aria-hidden="true">🦝</div>
+        <h1 class="jny-splash-title">Tanuki's Adventures</h1>
+        <p class="jny-splash-sub">Echte Aufgaben treiben deinen Tanuki an.</p>
+        <button class="btn btn-primary btn-hero" id="journey-splash-go">Los geht's 🦝</button>
+      </div>
+    </div>
+
+    <!-- Freundlicher Hinweis (z.B. noch nicht freigeschaltet) -->
+    <section class="card hidden" id="journey-msg"></section>
+
+    <!-- Belohnungs-/Ankunfts-Reveal -->
+    <section class="jny-reveal hidden" id="jny-reveal"></section>
+
+    <!-- Aktive Reise -->
+    <section class="jny-active hidden" id="journey-active">
+      <div class="jny-hero" id="jny-scene" data-theme="japan">
+        <div class="jny-shimmer" aria-hidden="true"></div>
+        <div class="jny-hero-head">
+          <span class="jny-dest" id="jny-dest">—</span>
+          <span class="jny-remaining" id="jny-remaining">—</span>
+        </div>
+        <div class="jny-boost hidden" id="jny-boost"></div>
+        <div class="jny-path" id="jny-path"></div>
+      </div>
+
+      <div class="jny-stamina-card">
+        <div class="jny-stamina-head"><span>Ausdauer</span><span class="jny-stamina-val" id="jny-stamina-label">—</span></div>
+        <div class="jny-stamina" id="jny-stamina"><span class="jny-stamina-fill" id="jny-stamina-fill"></span></div>
+        <div class="jny-chips" id="jny-bonuses"></div>
+        <p class="muted small jny-hidden-hint hidden" id="jny-hidden"></p>
+      </div>
+
+      <h2 class="h3 garderobe-title">Unterwegs entdeckt</h2>
+      <section class="jny-feed" id="jny-feed"></section>
+    </section>
+
+    <!-- Ziel-Wahl -->
+    <section class="jny-pick hidden" id="journey-pick">
+      <h2 class="h3">Wohin geht die Reise?</h2>
+      <p class="muted small">Such dir ein Ziel aus — dein Tanuki läuft los, sobald du Aufgaben erledigst. Eine Reise nach der anderen.</p>
+      <div class="jny-dests" id="jny-destinations"></div>
+    </section>
+
+    <!-- Ausrüstung -->
+    <section class="jny-gear" id="jny-gear">
+      <h2 class="h3 garderobe-title">Ausrüstung (<span id="jny-gear-count">0/3</span>)</h2>
+      <div class="jny-items" id="jny-items"></div>
+      <p class="muted small hidden" id="jny-items-empty">Items findest du unterwegs — an Wegpunkten und in Events. 🦝</p>
+    </section>
   </main>
 
   <div class="toast" id="toast"></div>
@@ -419,6 +479,13 @@
   <nav class="bottom-nav">
     <button class="nav-item is-active" id="nav-today">Heute</button>
     <button class="nav-item" id="nav-plan">Plan</button>
+    <button class="nav-item hidden" id="nav-journey">
+      <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"></circle>
+        <polygon points="15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5 15.5 8.5"></polygon>
+      </svg>
+      Reise
+    </button>
     <button class="nav-item" id="nav-shop">Tanuki</button>
     <button class="nav-item" id="nav-more">Mehr</button>
   </nav>

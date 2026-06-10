@@ -39,4 +39,21 @@ json_out([
     'frame'     => get_equipped_frame($uid),
     'rescues'   => $p['streak_state'] === 'frozen' ? pending_rescues($uid) : (clear_rescues($uid) ?? []),
     'has_tasks' => $hasTasks,
+    // Tanuki's Adventures (v2): Gate-Infos + ruhiger Heute-Einzeiler.
+    // Bewusst defensiv — die Reise darf den Kern nie brechen (build-Brief §2).
+    'journey_cfg' => (function () {
+        try {
+            $c = journey_cfg();
+            return [
+                'enabled'           => journey_enabled(),
+                'unlock_level'      => (int) $c['unlock_level'],
+                'shop_unlock_level' => (int) $c['shop_unlock_level'],
+            ];
+        } catch (Throwable $e) {
+            return ['enabled' => false, 'unlock_level' => 3, 'shop_unlock_level' => 4];
+        }
+    })(),
+    'journey' => (function () use ($uid) {
+        try { return journey_summary($uid); } catch (Throwable $e) { return null; }
+    })(),
 ]);

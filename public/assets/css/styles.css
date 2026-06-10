@@ -640,3 +640,171 @@ textarea{resize:vertical;line-height:1.5}
 .lb-rescue{min-height:34px;padding:0 var(--space-3);font-size:13px;color:var(--color-celebrate);flex:0 0 auto}
 
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition-duration:.01ms !important}}
+
+/* ===== Tanuki's Adventures (v2) — eigene Welt, journey.md §8 ===== */
+
+/* Nav-Tab „Reise" (Icon + Label, gleiche Höhe wie die anderen) */
+#nav-journey{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+#nav-journey .nav-ico{width:18px;height:18px}
+
+/* --- Themen-Welten: reine CSS-Gradienten + Licht-Punkte (keine Bilder) --- */
+#view-journey [data-theme="japan"]{
+  --jny-grad:linear-gradient(168deg,#2A2670 0%,#5B4490 32%,#A85E8F 62%,#EFA9C5 100%);
+  --jny-glow:rgba(244,166,198,.5);
+  --jny-dots:
+    radial-gradient(circle at 16% 24%, rgba(255,219,235,.9) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 14%, rgba(255,219,235,.75) 0 2px, transparent 3px),
+    radial-gradient(circle at 42% 38%, rgba(255,219,235,.6) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 88% 32%, rgba(255,219,235,.7) 0 2px, transparent 3px),
+    radial-gradient(circle at 28% 64%, rgba(255,255,255,.35) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 60% 56%, rgba(255,219,235,.5) 0 2px, transparent 3px);
+}
+#view-journey [data-theme="drache"]{
+  --jny-grad:linear-gradient(168deg,#1C0E0B 0%,#5C1410 34%,#A6371F 64%,#E8893B 100%);
+  --jny-glow:rgba(245,158,11,.45);
+  --jny-dots:
+    radial-gradient(circle at 18% 76%, rgba(255,176,89,.9) 0 2px, transparent 3px),
+    radial-gradient(circle at 66% 84%, rgba(255,140,66,.8) 0 2px, transparent 3px),
+    radial-gradient(circle at 84% 60%, rgba(255,176,89,.6) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 38% 52%, rgba(255,210,122,.55) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 52% 22%, rgba(255,140,66,.45) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 10% 36%, rgba(255,210,122,.4) 0 1px, transparent 2px);
+}
+#view-journey [data-theme="galaxy"]{
+  --jny-grad:linear-gradient(168deg,#05060F 0%,#16183A 36%,#3A2B86 66%,#6D4BD6 100%);
+  --jny-glow:rgba(34,211,238,.4);
+  --jny-dots:
+    radial-gradient(circle at 14% 20%, rgba(255,255,255,.95) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 78% 12%, rgba(255,255,255,.8) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 56% 34%, rgba(103,232,249,.85) 0 2px, transparent 3px),
+    radial-gradient(circle at 30% 56%, rgba(255,255,255,.6) 0 1px, transparent 2px),
+    radial-gradient(circle at 88% 48%, rgba(240,171,252,.75) 0 2px, transparent 3px),
+    radial-gradient(circle at 44% 78%, rgba(103,232,249,.55) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 68% 66%, rgba(255,255,255,.5) 0 1px, transparent 2px);
+}
+
+/* --- Splash: Indigo → Nacht, Sterne/Sakura als radial-gradients --- */
+.jny-splash{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:var(--space-5);
+  background:linear-gradient(180deg,#1A1740 0%,#2A2670 38%,#413AB8 72%,#0E0C26 100%)}
+.jny-splash::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:
+  radial-gradient(circle at 12% 18%, rgba(255,255,255,.9) 0 1.5px, transparent 2.5px),
+  radial-gradient(circle at 78% 10%, rgba(255,255,255,.75) 0 1.5px, transparent 2.5px),
+  radial-gradient(circle at 55% 28%, rgba(255,255,255,.6) 0 1px, transparent 2px),
+  radial-gradient(circle at 30% 58%, rgba(244,166,198,.8) 0 2px, transparent 3px),
+  radial-gradient(circle at 85% 46%, rgba(244,166,198,.65) 0 2px, transparent 3px),
+  radial-gradient(circle at 64% 76%, rgba(255,255,255,.55) 0 1.5px, transparent 2.5px),
+  radial-gradient(circle at 18% 86%, rgba(244,166,198,.7) 0 2px, transparent 3px)}
+.jny-splash-inner{position:relative;display:flex;flex-direction:column;align-items:center;gap:var(--space-3);
+  text-align:center;max-width:340px;animation:pop var(--dur-slow) var(--ease-spring)}
+.jny-splash-tanuki{font-size:72px;line-height:1;animation:idleBob 3.2s ease-in-out infinite;
+  filter:drop-shadow(0 10px 24px rgba(0,0,0,.4))}
+.jny-splash-title{font-family:var(--font-display);font-weight:800;font-size:34px;line-height:1.15;letter-spacing:-.02em;color:#fff}
+.jny-splash-sub{color:rgba(255,255,255,.82);font-size:16px}
+.jny-splash .btn-hero{margin-top:var(--space-3)}
+
+/* --- Aktive Reise: Themen-Hero --- */
+.jny-active,.jny-pick,.jny-gear{display:flex;flex-direction:column;gap:var(--space-3)}
+.jny-hero{position:relative;overflow:hidden;isolation:isolate;border-radius:var(--radius-2xl);
+  padding:var(--space-5) var(--space-4) var(--space-6);min-height:200px;color:#fff;
+  background:var(--jny-grad);box-shadow:var(--shadow-md);
+  display:flex;flex-direction:column;gap:var(--space-4)}
+.jny-hero::before{content:"";position:absolute;inset:0;background-image:var(--jny-dots);pointer-events:none}
+.jny-hero::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  box-shadow:inset 0 0 52px var(--jny-glow), inset 0 0 8px rgba(255,255,255,.12)}
+.jny-hero>*{position:relative;z-index:1}
+/* dezenter Licht-Schimmer, nur transform/opacity */
+.jny-shimmer{position:absolute;top:-30%;bottom:-30%;left:-55%;width:50%;z-index:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.13),transparent);
+  animation:jnyShimmer 7s var(--ease-standard) infinite}
+@keyframes jnyShimmer{0%{transform:translateX(0) rotate(8deg);opacity:0}12%{opacity:1}55%,100%{transform:translateX(420%) rotate(8deg);opacity:0}}
+.jny-hero-head{display:flex;flex-direction:column;gap:2px}
+.jny-dest{font-family:var(--font-display);font-weight:800;font-size:24px;letter-spacing:-.01em;text-shadow:0 2px 10px rgba(0,0,0,.3)}
+.jny-remaining{font-family:var(--font-display);font-weight:800;font-size:15px;opacity:.92}
+.jny-boost{align-self:flex-start;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.35);
+  color:#fff;font-family:var(--font-display);font-weight:800;font-size:12px;padding:4px 12px;border-radius:var(--radius-full)}
+
+/* Fortschritts-Pfad mit Knoten + Tanuki-Marker */
+.jny-path{position:relative;height:66px;margin:auto 12px 0}
+.jny-line{position:absolute;left:0;right:0;top:50%;height:4px;border-radius:var(--radius-full);
+  background:rgba(255,255,255,.28);transform:translateY(-50%)}
+.jny-line-done{position:absolute;left:0;top:50%;height:4px;border-radius:var(--radius-full);
+  background:rgba(255,255,255,.9);transform:translateY(-50%)}
+.jny-node{position:absolute;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;
+  background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.8);display:grid;place-items:center;
+  font-size:10px;font-weight:800;color:#fff;z-index:2}
+.jny-node.claimed{background:var(--color-success);border-color:var(--color-success)}
+.jny-node.goal{width:30px;height:30px;font-size:15px;background:rgba(255,255,255,.22)}
+.jny-tanuki{position:absolute;top:50%;z-index:3;transform:translate(-50%,-100%);font-size:30px;line-height:1;pointer-events:none;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.35))}
+.jny-tanuki-bob{display:inline-block;animation:idleBob 3.2s ease-in-out infinite}
+
+/* Ausdauer-Karte */
+.jny-stamina-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);
+  padding:var(--space-4);display:flex;flex-direction:column;gap:var(--space-3);box-shadow:var(--shadow-sm)}
+.jny-stamina-head{display:flex;justify-content:space-between;align-items:baseline;font-weight:700;font-size:14px;color:var(--color-text-secondary)}
+.jny-stamina-val{font-family:var(--font-display);font-weight:800;color:var(--color-text)}
+.jny-stamina{height:10px;border-radius:var(--radius-full);background:var(--color-surface-2);overflow:hidden}
+.jny-stamina-fill{display:block;height:100%;width:100%;border-radius:inherit;transform-origin:left center;transform:scaleX(0);
+  background:linear-gradient(90deg,var(--color-spark),var(--color-spark-bright));
+  transition:transform var(--dur-slow) var(--ease-out)}
+.jny-chips{display:flex;gap:var(--space-2);flex-wrap:wrap}
+.jny-hidden-hint{margin-top:-4px}
+
+/* Feed */
+.jny-feed{display:flex;flex-direction:column;gap:var(--space-2)}
+.jny-feed-row{display:flex;align-items:center;gap:var(--space-3);background:var(--color-surface);
+  border:1px solid var(--color-border);border-radius:var(--radius-md);padding:10px 12px}
+.jny-feed-ico{font-size:20px;flex:0 0 auto}
+.jny-feed-label{flex:1;min-width:0;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jny-feed-meta{font-size:12px;color:var(--color-text-tertiary);flex:0 0 auto}
+
+/* Ziel-Wahl: Karten mit Mini-Hero */
+.jny-dests{display:flex;flex-direction:column;gap:var(--space-3)}
+.jny-dest-card{position:relative;display:flex;flex-direction:column;width:100%;text-align:left;padding:0;overflow:hidden;
+  background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);
+  cursor:pointer;font-family:var(--font-body);box-shadow:var(--shadow-sm);
+  transition:transform var(--dur-fast) var(--ease-standard)}
+.jny-dest-card:active{transform:scale(.98)}
+.jny-dest-card.locked{opacity:.55;cursor:default}
+.jny-dest-art{display:block;height:88px;background:var(--jny-grad);position:relative}
+.jny-dest-art::after{content:"";position:absolute;inset:0;background-image:var(--jny-dots)}
+.jny-dest-body{display:flex;flex-direction:column;gap:4px;padding:var(--space-3) var(--space-4) var(--space-4)}
+.jny-dest-name{font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--color-text)}
+.jny-dest-tag{font-size:13px;color:var(--color-text-secondary);line-height:1.4}
+.jny-dest-meta{display:flex;align-items:center;gap:var(--space-2);flex-wrap:wrap;font-size:12px;font-weight:700;color:var(--color-text-tertiary);margin-top:2px}
+.jny-dest-lock{color:var(--color-spark);font-weight:800}
+.jny-dest-badge{color:var(--color-success);font-weight:800}
+
+/* Ausrüstung: Item-Tiles, Rarität über bestehende --rar-Konvention */
+.jny-items{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3)}
+.jny-items:empty{display:none}
+.jny-item{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  min-height:96px;padding:var(--space-3) var(--space-2);text-align:center;cursor:pointer;font-family:var(--font-body);
+  background:var(--color-surface);border-radius:var(--radius-lg);
+  border:2px solid color-mix(in srgb,var(--rar,var(--color-border)) 55%,var(--color-border));
+  transition:transform var(--dur-fast) var(--ease-standard)}
+.jny-item:active{transform:scale(.96)}
+.jny-item.equipped{box-shadow:0 0 0 2px color-mix(in srgb,var(--color-primary) 45%,transparent)}
+.jny-item.is-busy{opacity:.6;pointer-events:none}
+.jny-item-eq{position:absolute;top:6px;right:6px;font-size:10px;font-weight:800;color:var(--color-primary)}
+.jny-item-ico{font-size:26px;line-height:1.2}
+.jny-item-name{font-size:11px;font-weight:700;color:var(--color-text);line-height:1.2}
+.jny-item-val{font-size:11px;font-weight:800;color:var(--rar,var(--color-text-secondary))}
+
+/* Belohnungs-Reveal (festlich, im Reise-Stil) */
+.jny-reveal{position:relative;background:linear-gradient(165deg,var(--indigo-900),var(--indigo-600));
+  border-radius:var(--radius-xl);padding:var(--space-4);color:#fff;display:flex;flex-direction:column;gap:var(--space-3);
+  box-shadow:var(--shadow-md);animation:pop var(--dur-reward) var(--ease-spring)}
+.jny-rv-head{font-family:var(--font-display);font-weight:800;font-size:16px}
+.jny-rv-item{display:flex;gap:var(--space-3);align-items:flex-start;background:rgba(255,255,255,.10);
+  border:1px solid color-mix(in srgb,var(--rar,#FFFFFF) 55%,transparent);border-radius:var(--radius-lg);padding:var(--space-3)}
+.jny-rv-ico{font-size:26px;flex:0 0 auto}
+.jny-rv-item b{font-family:var(--font-display);font-weight:800}
+.jny-rv-rar{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--rar,#fff);margin-top:1px}
+.jny-rv-flavor{display:block;font-size:12px;opacity:.85;margin-top:2px;line-height:1.45}
+.jny-rv-close{align-self:center;color:rgba(255,255,255,.85)}
+
+/* Heute: der eine ruhige Reise-Einzeiler + Reward-Hauch */
+.journey-line{display:block;margin:0 auto;border:none;background:transparent;color:var(--color-text-tertiary);font-family:var(--font-body);font-size:13px;cursor:pointer;padding:6px 14px;border-radius:var(--radius-full);transition:color var(--dur-fast)}
+.journey-line:hover{color:var(--color-text-secondary)}
+.reward-journey{font-size:13px;color:var(--color-text-secondary)}
