@@ -25,11 +25,33 @@ if ($row['status'] === 'done') {
     fail('Schon erledigt.', 409);
 }
 
+// Tanuki's Adventures: equipped Items multiplizieren echte Arbeit (XP/Sparks) —
+// nie aus dem Nichts (journey.md §3). Unter L3 / Flag aus liefert der Helper 0.
+$jb = ['xp' => 0.0, 'sparks' => 0.0];
+try { $jb = journey_real_bonuses($uid); } catch (Throwable $e) { /* Kern nie brechen */
+}
+$baseXp = (int) $row['task_base_xp'];
+if ($jb['xp'] > 0 && $baseXp > 0 && $row['task_type'] !== 'termin') {
+    $baseXp = (int) round($baseXp * (1 + $jb['xp']));
+}
+
 $rewards = complete_occurrence(
     $uid,
     ['id' => (int) $row['id']],
-    ['type' => $row['task_type'], 'base_xp' => (int) $row['task_base_xp']]
+    ['type' => $row['task_type'], 'base_xp' => $baseXp]
 );
+
+// Spark-Bonus-Items: Aufschlag auf die echten Erledigungs-Sparks.
+try {
+    if ($jb['sparks'] > 0 && !empty($rewards['sparks'])) {
+        $extra = (int) round((int) $rewards['sparks'] * $jb['sparks']);
+        if ($extra > 0) {
+            db()->prepare('UPDATE user_progress SET sparks = sparks + ? WHERE user_id = ?')->execute([$extra, $uid]);
+            $rewards['sparks'] = (int) $rewards['sparks'] + $extra;
+        }
+    }
+} catch (Throwable $e) { /* bewusst geschluckt */
+}
 
 // Tanuki's Adventures (v2): Ausdauer + Distanz aus echter Erledigung — darf den Kern nie brechen.
 try {

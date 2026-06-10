@@ -76,18 +76,34 @@ function ensure_tanuki(int $uid): array
 {
     $pdo = db();
     $pdo->prepare('INSERT IGNORE INTO tanuki_profile (user_id) VALUES (?)')->execute([$uid]);
-    $st = $pdo->prepare(
-        'SELECT stamina, stamina_max, speed_bonus, loot_bonus, xp_bonus FROM tanuki_profile WHERE user_id = ?'
-    );
+    // SELECT * + ??-Defaults: robust, auch wenn die Bonus-Spalten-Migration noch fehlt.
+    $st = $pdo->prepare('SELECT * FROM tanuki_profile WHERE user_id = ?');
     $st->execute([$uid]);
-    $t = $st->fetch();
+    $t = $st->fetch() ?: [];
     return [
-        'stamina'     => (int) ($t['stamina'] ?? 0),
-        'stamina_max' => (int) ($t['stamina_max'] ?? journey_cfg()['stamina_max_m']),
-        'speed_bonus' => (float) ($t['speed_bonus'] ?? 0),
-        'loot_bonus'  => (float) ($t['loot_bonus'] ?? 0),
-        'xp_bonus'    => (float) ($t['xp_bonus'] ?? 0),
+        'stamina'       => (int) ($t['stamina'] ?? 0),
+        'stamina_max'   => (int) ($t['stamina_max'] ?? journey_cfg()['stamina_max_m']),
+        'speed_bonus'   => (float) ($t['speed_bonus'] ?? 0),
+        'loot_bonus'    => (float) ($t['loot_bonus'] ?? 0),
+        'xp_bonus'      => (float) ($t['xp_bonus'] ?? 0),
+        'sparks_bonus'  => (float) ($t['sparks_bonus'] ?? 0),
+        'stamina_bonus' => (float) ($t['stamina_bonus'] ?? 0),
     ];
+}
+
+/**
+ * Echte Wirtschafts-Boni aus equipped Items (XP & Sparks) — fürs complete.php.
+ * Multipliziert ausschließlich reale Erledigungen (journey.md §3); unter Level 3
+ * oder bei deaktiviertem Flag immer 0.
+ */
+function journey_real_bonuses(int $uid): array
+{
+    $cfg = journey_cfg();
+    if (!journey_enabled() || journey_user_level($uid) < (int) $cfg['unlock_level']) {
+        return ['xp' => 0.0, 'sparks' => 0.0];
+    }
+    $t = ensure_tanuki($uid);
+    return ['xp' => $t['xp_bonus'], 'sparks' => $t['sparks_bonus']];
 }
 
 /** Aktive Reise des Users (oder null). */
@@ -206,16 +222,18 @@ function journey_on_complete(int $uid, int $xp): ?array
         $st->execute([$uid]);
         $j = $st->fetch() ?: null;
 
-        $tp = $pdo->prepare('SELECT stamina, stamina_max, xp_bonus FROM tanuki_profile WHERE user_id = ? FOR UPDATE');
+        $tp = $pdo->prepare('SELECT * FROM tanuki_profile WHERE user_id = ? FOR UPDATE');
         $tp->execute([$uid]);
         $t = $tp->fetch();
 
         // Ausdauer tanken — nur bei echtem XP (Termine geben 0 XP → 0 Ausdauer).
+        // Ausdauer-Items geben mehr Tank pro Erledigung (multipliziert reale Arbeit).
         $staminaGained = false;
         if ($xp > 0) {
-            $old = max(0, (int) $t['stamina']);
-            $max = (int) ($t['stamina_max'] ?: $cfg['stamina_max_m']);
-            $new = min($old + (int) $cfg['stamina_per_task_m'], $max);
+            $old  = max(0, (int) $t['stamina']);
+            $max  = (int) ($t['stamina_max'] ?: $cfg['stamina_max_m']);
+            $gain = (int) round((int) $cfg['stamina_per_task_m'] * (1 + (float) ($t['stamina_bonus'] ?? 0)));
+            $new  = min($old + $gain, $max);
             if ($new !== $old) {
                 $pdo->prepare('UPDATE tanuki_profile SET stamina = ? WHERE user_id = ?')->execute([$new, $uid]);
                 $staminaGained = true;
@@ -228,10 +246,11 @@ function journey_on_complete(int $uid, int $xp): ?array
             return $staminaGained ? ['km_added' => 0.0, 'stamina_gained' => true] : null;
         }
 
-        // Sofort-Distanz: XP → Meter. xp_bonus wirkt NUR hier (Reise-Distanz),
-        // niemals auf user_progress (journey.md §3 Guardrail).
+        // Sofort-Distanz: XP → Meter. Kein xp_bonus-Faktor mehr: XP-Items boosten
+        // jetzt die ECHTEN XP in complete.php (journey_real_bonuses) — die kommen
+        // hier bereits verstärkt als $xp an. Doppelt zählen wäre falsch.
         $boostF = ((int) $j['boost_active'] === 1) ? ((int) $j['boost_pct']) / 100 : 0.0;
-        $addM   = (int) round($xp * (int) $cfg['m_per_xp'] * (1 + (float) $t['xp_bonus']) * (1 + $boostF));
+        $addM   = (int) round($xp * (int) $cfg['m_per_xp'] * (1 + $boostF));
 
         $capM  = (int) $j['total_km'] * 1000;
         $fromM = (int) $j['distance_m'];
@@ -645,7 +664,11 @@ function journey_equip(int $uid, int $itemId, bool $equip): void
                 tp.loot_bonus  = COALESCE((SELECT SUM(i.value) FROM user_items ui JOIN items i ON i.id = ui.item_id
                                             WHERE ui.user_id = tp.user_id AND ui.equipped = 1 AND i.type = 'loot'), 0),
                 tp.xp_bonus    = COALESCE((SELECT SUM(i.value) FROM user_items ui JOIN items i ON i.id = ui.item_id
-                                            WHERE ui.user_id = tp.user_id AND ui.equipped = 1 AND i.type = 'xp'), 0)
+                                            WHERE ui.user_id = tp.user_id AND ui.equipped = 1 AND i.type = 'xp'), 0),
+                tp.sparks_bonus  = COALESCE((SELECT SUM(i.value) FROM user_items ui JOIN items i ON i.id = ui.item_id
+                                            WHERE ui.user_id = tp.user_id AND ui.equipped = 1 AND i.type = 'sparks'), 0),
+                tp.stamina_bonus = COALESCE((SELECT SUM(i.value) FROM user_items ui JOIN items i ON i.id = ui.item_id
+                                            WHERE ui.user_id = tp.user_id AND ui.equipped = 1 AND i.type = 'stamina'), 0)
               WHERE tp.user_id = ?"
         )->execute([$uid]);
 
@@ -771,7 +794,8 @@ function journey_state(int $uid): array
         'unlocked'           => true,
         'stamina_m'          => $t['stamina'],
         'stamina_max_m'      => $t['stamina_max'],
-        'bonuses'            => ['speed' => $t['speed_bonus'], 'loot' => $t['loot_bonus'], 'xp' => $t['xp_bonus']],
+        'bonuses'            => ['speed' => $t['speed_bonus'], 'loot' => $t['loot_bonus'], 'xp' => $t['xp_bonus'],
+                                 'sparks' => $t['sparks_bonus'], 'stamina' => $t['stamina_bonus']],
         'journey'            => $journeyDto,
         'waypoints'          => $waypoints,
         'feed'               => $feed,

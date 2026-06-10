@@ -1,5 +1,5 @@
 /* Taskly — Service Worker. Offline-Shell (architecture.md §6). */
-const CACHE = 'taskly-v34';
+const CACHE = 'taskly-v35';
 const SHELL = [
   '/',
   '/index.html',
@@ -55,7 +55,20 @@ self.addEventListener('fetch', e => {
   if (request.method !== 'GET' || new URL(request.url).pathname.startsWith('/api/')) {
     return;
   }
-  // Statische Shell: cache-first, mit Netz-Fallback.
+  // Seiten-Navigationen: network-first. Verhindert die Update-Race, bei der
+  // altes HTML aus dem Cache mit frischem JS aus dem Netz gemischt wird
+  // (neue IDs fehlen → JS crasht beim Init → weißer Bildschirm).
+  if (request.mode === 'navigate') {
+    e.respondWith(
+      fetch(request).then(res => {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put('/index.html', copy)).catch(() => {});
+        return res;
+      }).catch(() => caches.match('/index.html'))
+    );
+    return;
+  }
+  // Statische Assets: cache-first, mit Netz-Fallback.
   e.respondWith(
     caches.match(request).then(hit => hit || fetch(request).then(res => {
       const copy = res.clone();

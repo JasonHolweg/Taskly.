@@ -130,22 +130,49 @@ try {
         ok(false, 'kein Item-Wegpunkt in japan gefunden (Seed prüfen)');
     }
 
-    // ---------- T10: Equip + xp_bonus wirkt NUR auf Distanz ----------
-    echo "T10 Items & Guardrail xp_bonus\n";
+    // ---------- T10: Equip + Bonus-Semantik ----------
+    // xp/sparks multiplizieren echte Arbeit via complete.php (journey_real_bonuses);
+    // die ENGINE selbst rechnet Distanz strikt aus dem übergebenen XP (kein Doppel-Faktor).
+    echo "T10 Items & Boni\n";
     $item = $pdo->query("SELECT id, value FROM items WHERE theme = 'japan' AND type = 'xp' ORDER BY value DESC LIMIT 1")->fetch();
     $pdo->prepare('INSERT IGNORE INTO user_items (user_id, item_id) VALUES (?, ?)')->execute([$uid, (int) $item['id']]);
     journey_equip($uid, (int) $item['id'], true);
     $t = ensure_tanuki($uid);
     ok((float) $t['xp_bonus'] > 0, 'xp_bonus-Cache nach Equip > 0 (+' . $t['xp_bonus'] . ')');
+    $rb = journey_real_bonuses($uid);
+    ok(abs($rb['xp'] - (float) $t['xp_bonus']) < 0.001, 'journey_real_bonuses liefert den xp-Bonus fürs complete.php');
     $xpBefore = (int) $pdo->query("SELECT xp_total FROM user_progress WHERE user_id = $uid")->fetchColumn();
     $j = journey_active($uid);
     $dBefore = (int) $j['distance_m'];
     journey_on_complete($uid, 10);
     $xpAfter = (int) $pdo->query("SELECT xp_total FROM user_progress WHERE user_id = $uid")->fetchColumn();
     $j = journey_active($uid);
-    $expected = (int) round(10 * 100 * (1 + (float) $t['xp_bonus']));
-    ok($xpAfter === $xpBefore, 'user_progress.xp_total von der Engine UNBERÜHRT (eiserne Regel §3)');
-    ok(((int) $j['distance_m'] - $dBefore) === $expected, "xp_bonus wirkt nur auf Distanz (+$expected m)");
+    ok($xpAfter === $xpBefore, 'user_progress.xp_total von der ENGINE unberührt (Boni laufen über complete.php)');
+    ok(((int) $j['distance_m'] - $dBefore) === 1000, 'Engine-Distanz exakt XP×100 m — kein Doppel-Zählen des xp-Bonus');
+
+    // Ausdauer-Bonus: mehr Tank pro Erledigung
+    $stItem = $pdo->query("SELECT id, value FROM items WHERE theme = 'japan' AND type = 'stamina' ORDER BY value DESC LIMIT 1")->fetch();
+    if ($stItem) {
+        $pdo->prepare('INSERT IGNORE INTO user_items (user_id, item_id) VALUES (?, ?)')->execute([$uid, (int) $stItem['id']]);
+        journey_equip($uid, (int) $stItem['id'], true);
+        $t = ensure_tanuki($uid);
+        $pdo->prepare('UPDATE tanuki_profile SET stamina = 0 WHERE user_id = ?')->execute([$uid]);
+        journey_on_complete($uid, 1);
+        $t2 = ensure_tanuki($uid);
+        $exp = (int) round(1000 * (1 + (float) $t['stamina_bonus']));
+        ok((int) $t2['stamina'] === $exp, "Ausdauer-Bonus: +$exp m statt 1000 m pro Erledigung");
+    } else {
+        ok(false, 'kein stamina-Item in japan (Migration 2026-06-10_item_types eingespielt?)');
+    }
+    // Spark-Bonus-Item → real_bonuses
+    $spItem = $pdo->query("SELECT id FROM items WHERE theme = 'japan' AND type = 'sparks' LIMIT 1")->fetch();
+    if ($spItem) {
+        $pdo->prepare('INSERT IGNORE INTO user_items (user_id, item_id) VALUES (?, ?)')->execute([$uid, (int) $spItem['id']]);
+        journey_equip($uid, (int) $spItem['id'], true);
+        ok(journey_real_bonuses($uid)['sparks'] > 0, 'sparks-Bonus landet in journey_real_bonuses');
+    } else {
+        ok(false, 'kein sparks-Item in japan (Migration eingespielt?)');
+    }
 
     // ---------- T11: Ankunft → Themen-Box-Gratiszug ----------
     echo "T11 Ankunft\n";

@@ -828,6 +828,7 @@ function openCat(cat) {
   if (cat === 'garderobe') renderGarderobePanel(panel);
   else if (cat === 'frames') renderFramesPanel(panel);
   else if (cat === 'shop') renderShopPanel(panel);
+  else if (cat === 'items') renderItemsPanel(panel);   // echtes Inventar (Tanuki's Adventures)
   else renderPlaceholder(panel, cat);
 }
 function renderGarderobePanel(panel) {
@@ -1163,9 +1164,15 @@ function initTasks() {
 /* ---------- Tanuki's Adventures (Reise) ---------- */
 let JNY = null;
 const JNY_FEED_ICON = { waypoint: '📍', statue: '🗿', monk: '🚶', hidden: '✨', arrival: '🏁', lootbox: '🎁' };
-// 'xp'-Items heißen bewusst „Antrieb" — sie schieben nur die Reise-Distanz,
-// nie die echten XP (eiserne Regel, journey.md §0/§3).
-const JNY_TYPE = { speed: { ico: '💨', label: 'Tempo' }, loot: { ico: '🍀', label: 'Glück' }, xp: { ico: '✨', label: 'Antrieb' } };
+// Item-Typen: xp/sparks/stamina multiplizieren ECHTE Erledigungen (journey.md §3 —
+// nie Fortschritt aus dem Nichts); speed/loot wirken nur in der Reise.
+const JNY_TYPE = {
+  speed:   { ico: '💨', label: 'Tempo' },
+  loot:    { ico: '🍀', label: 'Glück' },
+  xp:      { ico: '✨', label: 'XP' },
+  sparks:  { ico: '✦', label: 'Sparks' },
+  stamina: { ico: '🔋', label: 'Ausdauer' },
+};
 
 // km hübsch deutsch: 1 Nachkommastelle, Komma.
 function jnyKm(km) {
@@ -1193,8 +1200,8 @@ async function loadJourney() {
     }
   } catch (e) {
     // 403 (Level) / 404 (Feature aus) / Netz → freundlicher Hinweis statt leerer View
-    ['journey-active', 'journey-pick', 'jny-gear', 'jny-reveal', 'journey-splash']
-      .forEach(id => $('#' + id).classList.add('hidden'));
+    ['journey-active', 'journey-pick', 'jny-reveal', 'journey-splash']
+      .forEach(id => $('#' + id)?.classList.add('hidden'));
     msg.innerHTML = '<p class="muted">🦝 Die große Reise ist noch nicht offen — mach in Ruhe weiter deine Aufgaben, dein Tanuki packt schon mal den Rucksack.</p>';
     msg.classList.remove('hidden');
   }
@@ -1205,7 +1212,6 @@ function renderJourney(s) {
   const j = s.journey && s.journey.status === 'active' ? s.journey : null;
   $('#journey-active').classList.toggle('hidden', !j);
   $('#journey-pick').classList.toggle('hidden', !!j);
-  $('#jny-gear').classList.remove('hidden');
 
   if (j) {
     $('#jny-scene').dataset.theme = j.destination;
@@ -1224,10 +1230,12 @@ function renderJourney(s) {
   $('#jny-stamina-fill').style.transform = `scaleX(${pct})`;
   $('#jny-stamina-label').textContent = `${jnyKm(s.stamina_m / 1000)} / ${Math.round((s.stamina_max_m || 0) / 1000)} km`;
 
-  // Boni-Chips
+  // Boni-Chips: nur aktive Boni zeigen; ohne Items ein sanfter Wegweiser zum Hub.
   const bo = s.bonuses || {};
-  $('#jny-bonuses').innerHTML = ['speed', 'loot', 'xp'].map(k =>
-    `<span class="chip">${JNY_TYPE[k].ico} +${Math.round((bo[k] || 0) * 100)} % ${JNY_TYPE[k].label}</span>`).join('');
+  const chips = ['speed', 'loot', 'xp', 'sparks', 'stamina'].filter(k => (bo[k] || 0) > 0).map(k =>
+    `<span class="chip">${JNY_TYPE[k].ico} +${Math.round(bo[k] * 100)} % ${JNY_TYPE[k].label}</span>`).join('');
+  $('#jny-bonuses').innerHTML = chips
+    || '<span class="chip">🎒 Items ausrüsten: Tanuki-Tab → Items</span>';
 
   // Verborgene Events
   const hh = $('#jny-hidden');
@@ -1267,24 +1275,54 @@ function renderJourney(s) {
       </button>`;
   }).join('');
 
-  // Ausrüstung
+  // (Ausrüstung lebt jetzt im Tanuki-Hub → renderItemsPanel)
+}
+
+/* --- Item-Kacheln: geteilt zwischen Tanuki-Hub und Reise-Daten --- */
+function jnyItemTile(i) {
+  const t = JNY_TYPE[i.type] || { ico: '🎒', label: '' };
+  // Echtes Icon, Emoji nur als Fallback solange ein Bild fehlt.
+  const ico = i.asset_ref
+    ? `<img src="/assets/img/${jnyAttr(i.asset_ref)}" alt="" loading="lazy" onerror="this.outerHTML='${t.ico}'">`
+    : t.ico;
+  return `<button class="jny-item${i.equipped ? ' equipped' : ''}" data-id="${i.id}" data-rarity="${jnyAttr(i.rarity)}" title="${jnyAttr(i.flavor)}">
+      ${i.equipped ? '<span class="jny-item-eq">●</span>' : ''}
+      <span class="jny-item-ico">${ico}</span>
+      <span class="jny-item-name">${i.name}</span>
+      <span class="jny-item-val">+${Math.round((i.value || 0) * 100)} % ${t.label}</span>
+    </button>`;
+}
+function renderItemsInto(box, s) {
   const items = s.items || [];
   const eq = items.filter(i => i.equipped).length;
-  $('#jny-gear-count').textContent = `${eq}/${s.equip_slots || 3}`;
-  $('#jny-items-empty').classList.toggle('hidden', items.length > 0);
-  $('#jny-items').innerHTML = items.map(i => {
-    const t = JNY_TYPE[i.type] || { ico: '🎒' };
-    // Echtes Icon, Emoji nur als Fallback solange ein Bild fehlt.
-    const ico = i.asset_ref
-      ? `<img src="/assets/img/${jnyAttr(i.asset_ref)}" alt="" loading="lazy" onerror="this.outerHTML='${t.ico}'">`
-      : t.ico;
-    return `<button class="jny-item${i.equipped ? ' equipped' : ''}" data-id="${i.id}" data-rarity="${jnyAttr(i.rarity)}" title="${jnyAttr(i.flavor)}">
-        ${i.equipped ? '<span class="jny-item-eq">●</span>' : ''}
-        <span class="jny-item-ico">${ico}</span>
-        <span class="jny-item-name">${i.name}</span>
-        <span class="jny-item-val">+${Math.round((i.value || 0) * 100)} %</span>
-      </button>`;
-  }).join('');
+  box.innerHTML = `<h2 class="h3 garderobe-title">Ausrüstung (${eq}/${s.equip_slots || 3})</h2>`
+    + (items.length
+      ? `<div class="jny-items hub-items">${items.map(jnyItemTile).join('')}</div>`
+      : '<p class="muted small">Noch keine Items — du findest sie auf Reisen, an Wegpunkten und in Events. 🦝</p>');
+}
+// Tanuki-Hub → Kategorie „Items": echtes Inventar mit Equip (3 Slots).
+async function renderItemsPanel(panel) {
+  panel.innerHTML = `<p class="muted small">Items geben Boni: 💨 Tempo · 🍀 Glück · ✨ XP · ✦ Sparks · 🔋 Ausdauer. Drei Slots — wähl dein Setup.</p>
+    <div id="hub-items"><p class="muted small">Lade…</p></div>`;
+  const box = panel.querySelector('#hub-items');
+  try {
+    const s = await api('journey.php');
+    JNY = s;
+    renderItemsInto(box, s);
+    box.addEventListener('click', async e => {
+      const tile = e.target.closest('.jny-item[data-id]');
+      if (!tile || tile.classList.contains('is-busy')) return;
+      tile.classList.add('is-busy');
+      const equipped = tile.classList.contains('equipped');
+      try {
+        const r = await api('journey.php', 'POST', { action: equipped ? 'unequip' : 'equip', item_id: +tile.dataset.id });
+        JNY = r.state;
+        renderItemsInto(box, r.state);
+      } catch (err) { showToast(err.message); tile.classList.remove('is-busy'); }
+    });
+  } catch (_) {
+    box.innerHTML = `<p class="muted small">🦝 Items schalten ab Level 3 mit Tanuki's Adventures frei.</p>`;
+  }
 }
 
 // Fortschritts-Pfad: Linie, Wegpunkt-Knoten, Tanuki-Marker (transform-positioniert)
@@ -1414,9 +1452,10 @@ function initJourney() {
     $('#journey-splash').classList.add('hidden');
   });
   // Vollbild-Karte: Hero antippen öffnet, ✕ / Tap auf die Karte schließt, ESC auch.
-  $('#jny-scene').addEventListener('click', openJnyMap);
-  $('#jny-map-close').addEventListener('click', closeJnyMap);
-  $('#jny-map').addEventListener('click', e => {
+  // ?.-Guards: beim SW-Update kann kurz altes HTML mit neuem JS laufen — darf nie crashen.
+  $('#jny-scene')?.addEventListener('click', openJnyMap);
+  $('#jny-map-close')?.addEventListener('click', closeJnyMap);
+  $('#jny-map')?.addEventListener('click', e => {
     if (e.target.id === 'jny-map' || e.target.id === 'jny-map-bg' || e.target.id === 'jny-map-markers') closeJnyMap();
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeJnyMap(); });
@@ -1435,17 +1474,7 @@ function initJourney() {
       showToast('Die Reise beginnt — gute Pfade! 🦝');
     } catch (err) { showToast(err.message); card.disabled = false; }
   });
-  // Item an-/ablegen: kein optimistisches Toggle, Server-State gewinnt
-  $('#jny-items').addEventListener('click', async e => {
-    const tile = e.target.closest('.jny-item[data-id]');
-    if (!tile || tile.classList.contains('is-busy')) return;
-    tile.classList.add('is-busy');
-    const equipped = tile.classList.contains('equipped');
-    try {
-      const r = await api('journey.php', 'POST', { action: equipped ? 'unequip' : 'equip', item_id: +tile.dataset.id });
-      renderJourney(r.state);
-    } catch (err) { showToast(err.message); tile.classList.remove('is-busy'); }
-  });
+  // (Item-Equip lebt jetzt im Tanuki-Hub → renderItemsPanel)
 }
 
 /* ---------- Boot ---------- */
