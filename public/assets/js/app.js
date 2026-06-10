@@ -647,6 +647,9 @@ function applyTanuki() {
   const pick = $('#pick-tanuki'); if (pick) pick.src = tanukiFor('neutral');
   const empty = $('#hero-empty .tanuki'); if (empty) empty.src = tanukiFor('tired');
   const rt = $('#reward-tanuki'); if (rt) rt.src = tanukiFor('celebrate');
+  // Reise: Skin-Wechsel sofort übernehmen (Marker-Pose setzt renderJourney beim nächsten Render).
+  const js = $('#jny-splash-img'); if (js) js.src = tanukiFor('happy');
+  const jm = $('.jny-tanuki-img'); if (jm) jm.src = tanukiFor('happy');
 }
 
 // Tanuki-Mimik passend zur gewählten Energie (im Vorschlag-Zustand)
@@ -1177,8 +1180,11 @@ async function loadJourney() {
     msg.classList.add('hidden');
     renderJourney(s);
     jnyHandleEvents(s.new_events || []);
-    // Splash nur beim allerersten Öffnen
-    if (!localStorage.getItem('taskly-journey-seen')) $('#journey-splash').classList.remove('hidden');
+    // Splash nur beim allerersten Öffnen — mit dem ausgerüsteten Skin, nicht dem Basis-Tanuki
+    if (!localStorage.getItem('taskly-journey-seen')) {
+      const si = $('#jny-splash-img'); if (si) si.src = tanukiFor('happy');
+      $('#journey-splash').classList.remove('hidden');
+    }
   } catch (e) {
     // 403 (Level) / 404 (Feature aus) / Netz → freundlicher Hinweis statt leerer View
     ['journey-active', 'journey-pick', 'jny-gear', 'jny-reveal', 'journey-splash']
@@ -1281,10 +1287,15 @@ function renderJnyPath(j, wps) {
     return `<span class="${cls}" style="left:${left}%" title="${jnyAttr(w.flavor || w.name)}">${inner}</span>`;
   }).join('');
   const done = Math.min(100, Math.max(0, +j.pct || 0));
+  // Echter Tanuki statt Emoji: ausgerüsteter Skin (tanukiFor) + Stimmung —
+  // unterwegs = happy, Ausdauer leer = müde (Rast), angekommen = celebrate.
+  const resting = !JNY || (+JNY.stamina_m || 0) <= 0;
+  const pose = (done >= 100 || j.status === 'done') ? 'celebrate' : (resting ? 'tired' : 'happy');
+  const hint = pose === 'celebrate' ? 'Angekommen!' : (resting ? 'Macht Rast — eine Aufgabe gibt neue Ausdauer.' : 'Unterwegs!');
   $('#jny-path').innerHTML =
     `<span class="jny-line"></span><span class="jny-line-done" style="width:${done}%"></span>` +
     nodes +
-    `<span class="jny-tanuki" style="left:${done}%"><span class="jny-tanuki-bob">🦝</span></span>`;
+    `<span class="jny-tanuki" style="left:${done}%" title="${jnyAttr(hint)}"><img class="jny-tanuki-bob jny-tanuki-img" src="${tanukiFor(pose)}" alt=""></span>`;
 }
 
 // Neue Tick-Events: Reveal-Panel für gezogene Items/Kisten, Fanfare bei Ankunft
