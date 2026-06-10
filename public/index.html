@@ -220,6 +220,15 @@
       </div>
     </div>
 
+    <!-- Vollbild-Karte: 9:16-Artwork + Route, Position & nächster Wegpunkt -->
+    <div class="jny-map hidden" id="jny-map">
+      <div class="jny-map-bg" id="jny-map-bg" aria-hidden="true"></div>
+      <svg class="jny-map-route" id="jny-map-route" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div class="jny-map-markers" id="jny-map-markers"></div>
+      <button class="icon-btn jny-map-close" id="jny-map-close" aria-label="Karte schließen">✕</button>
+      <div class="jny-map-info" id="jny-map-info"></div>
+    </div>
+
     <!-- Freundlicher Hinweis (z.B. noch nicht freigeschaltet) -->
     <section class="card hidden" id="journey-msg"></section>
 
@@ -228,7 +237,7 @@
 
     <!-- Aktive Reise -->
     <section class="jny-active hidden" id="journey-active">
-      <div class="jny-hero" id="jny-scene" data-theme="japan">
+      <div class="jny-hero" id="jny-scene" data-theme="japan" role="button" title="Karte ansehen">
         <div class="jny-shimmer" aria-hidden="true"></div>
         <div class="jny-hero-head">
           <span class="jny-dest" id="jny-dest">—</span>
@@ -236,6 +245,7 @@
         </div>
         <div class="jny-boost hidden" id="jny-boost"></div>
         <div class="jny-path" id="jny-path"></div>
+        <span class="jny-map-hint" aria-hidden="true">🗺️ Karte ansehen</span>
       </div>
 
       <div class="jny-stamina-card">

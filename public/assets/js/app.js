@@ -1349,11 +1349,77 @@ function jnyHandleEvents(events) {
   }
 }
 
+/* ---------- Vollbild-Karte: 9:16-Artwork + Route, Position, nächster Wegpunkt ----------
+   Die gemalten Karten führen unten (Start) nach oben (Ziel). Die Route ist eine
+   stilisierte S-Kurve in Prozent-Koordinaten — Wegpunkte, Tanuki und SVG-Linie
+   nutzen dieselbe Formel und liegen damit immer exakt aufeinander. */
+const JNY_RW = {
+  sparks:  { ico: '✦',  label: 'Sparks' },
+  lootbox: { ico: '🎁', label: 'Themen-Kiste' },
+  item:    { ico: '🎒', label: 'Item' },
+};
+function jnyMapXY(t) {
+  return { x: 50 + 26 * Math.sin(t * Math.PI * 2.1 + 0.4), y: 88 - t * 78 };
+}
+function openJnyMap() {
+  if (!JNY || !JNY.journey) return;
+  const j = JNY.journey, wps = JNY.waypoints || [], total = +j.total_km || 1;
+  $('#jny-map-bg').style.backgroundImage = `url('/assets/img/journey/${jnyAttr(j.destination)}-map.jpg')`;
+
+  // Route als gestrichelte Linie (gleiche Kurve wie die Marker)
+  const pts = [];
+  for (let t = 0; t <= 1.001; t += 0.02) { const p = jnyMapXY(Math.min(t, 1)); pts.push(`${p.x.toFixed(2)},${p.y.toFixed(2)}`); }
+  $('#jny-map-route').innerHTML =
+    `<polyline points="${pts.join(' ')}" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="3"
+       stroke-dasharray="7 7" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`;
+
+  // Wegpunkte + Tanuki-Marker
+  const curKm = j.distance_m / 1000, curT = Math.min(1, curKm / total);
+  const next = wps.find(w => !w.claimed);
+  const marks = wps.map(w => {
+    const t = Math.min(1, w.at_km / total), p = jnyMapXY(t);
+    const goal = w.at_km >= total;
+    const cls = (w.claimed ? ' claimed' : '') + (next && w.at_km === next.at_km ? ' next' : '') + (goal ? ' goal' : '');
+    const ico = goal ? '🏁' : (w.claimed ? '✓' : (JNY_RW[w.reward_type] || { ico: '•' }).ico);
+    return `<div class="jny-map-wp${cls}" style="left:${p.x.toFixed(1)}%;top:${p.y.toFixed(1)}%" data-side="${p.x > 50 ? 'left' : 'right'}">
+        <span class="jny-map-dot">${ico}</span>
+        <span class="jny-map-label">${w.name}<small>km ${w.at_km}${w.claimed ? ' · geschafft' : ''}</small></span>
+      </div>`;
+  }).join('');
+  const yp = jnyMapXY(curT);
+  const pose = (JNY.stamina_m > 0) ? 'happy' : 'tired';
+  $('#jny-map-markers').innerHTML = marks +
+    `<div class="jny-map-you" style="left:${yp.x.toFixed(1)}%;top:${yp.y.toFixed(1)}%">
+       <img src="${tanukiFor(pose)}" alt="Dein Tanuki"><span>Du · km ${jnyKm(curKm)}</span>
+     </div>`;
+
+  // Info unten: was kommt als Nächstes?
+  const info = $('#jny-map-info');
+  const hidden = (+JNY.hidden_events_left > 0)
+    ? `<span class="jny-map-secret">✨ ${JNY.hidden_events_left} verborgene${+JNY.hidden_events_left === 1 ? 's' : ''} Event${+JNY.hidden_events_left === 1 ? '' : 's'} irgendwo auf der Strecke …</span>` : '';
+  if (next) {
+    const rw = JNY_RW[next.reward_type] || { ico: '•', label: '' };
+    info.innerHTML = `<b>Als Nächstes: ${next.name}</b>
+      <span>${rw.ico} ${rw.label} · noch ${jnyKm(Math.max(0, next.at_km - curKm))} km</span>${hidden}`;
+  } else {
+    info.innerHTML = `<b>Angekommen! 🏁</b><span>Schau im Reise-Tab, was du gefunden hast.</span>`;
+  }
+  $('#jny-map').classList.remove('hidden');
+}
+function closeJnyMap() { $('#jny-map')?.classList.add('hidden'); }
+
 function initJourney() {
   $('#journey-splash-go').addEventListener('click', () => {
     localStorage.setItem('taskly-journey-seen', '1');
     $('#journey-splash').classList.add('hidden');
   });
+  // Vollbild-Karte: Hero antippen öffnet, ✕ / Tap auf die Karte schließt, ESC auch.
+  $('#jny-scene').addEventListener('click', openJnyMap);
+  $('#jny-map-close').addEventListener('click', closeJnyMap);
+  $('#jny-map').addEventListener('click', e => {
+    if (e.target.id === 'jny-map' || e.target.id === 'jny-map-bg' || e.target.id === 'jny-map-markers') closeJnyMap();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeJnyMap(); });
   // Reveal-Schließen per Delegation (Button entsteht erst beim Render)
   $('#jny-reveal').addEventListener('click', e => {
     if (e.target.closest('.jny-rv-close')) $('#jny-reveal').classList.add('hidden');
