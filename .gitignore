@@ -62,6 +62,7 @@ yarn-error.log*
 /public/assets/img/tanuki/
 /public/assets/img/pochibukuro/
 /public/assets/img/items/
+/public/assets/img/journey/
 /public/assets/sounds/
 
 # --- Secrets ---

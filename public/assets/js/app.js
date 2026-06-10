@@ -1182,8 +1182,14 @@ async function loadJourney() {
     jnyHandleEvents(s.new_events || []);
     // Splash nur beim allerersten Öffnen — mit dem ausgerüsteten Skin, nicht dem Basis-Tanuki
     if (!localStorage.getItem('taskly-journey-seen')) {
+      const sp = $('#journey-splash');
       const si = $('#jny-splash-img'); if (si) si.src = tanukiFor('happy');
-      $('#journey-splash').classList.remove('hidden');
+      // Recraft-Splash-Artwork (Theme der aktiven Reise, sonst Japan); Fallback = Gradient+PNG.
+      const theme = (s.journey && s.journey.destination) || 'japan';
+      const art = new Image();
+      art.onload = () => { sp.style.setProperty('--splash-art', `url('${art.src}')`); sp.classList.add('has-art'); };
+      art.src = '/assets/img/journey/' + theme + '-splash.jpg';
+      sp.classList.remove('hidden');
     }
   } catch (e) {
     // 403 (Level) / 404 (Feature aus) / Netz → freundlicher Hinweis statt leerer View

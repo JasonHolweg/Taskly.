@@ -1,0 +1,44 @@
+[
+  {
+    "out": "items-raw/_scenes/japan-map.png",
+    "prompt": "painterly JRPG world map illustration, vertical 9:16, a winding path from a cozy village at the bottom through a pink sakura forest, an abandoned mountain shrine with red torii gates, a hidden treasure spot, a lantern-lit temple town, a misty dragon mountain pass, ending at the grand city of Kyoto with pagodas at the top, warm pastel palette, soft watercolor texture, gentle morning light, no text",
+    "size": "1024x1820",
+    "style": "digital_illustration",
+    "remove_bg": false
+  },
+  {
+    "out": "items-raw/_scenes/drache-map.png",
+    "prompt": "painterly JRPG world map illustration, vertical 9:16, a winding mountain trail from rocky foothills at the bottom through a sparkling crystal grotto, glowing ember paths between lava streams, an ancient treasure chamber entrance, an echoing cave mouth, a glowing ridge, ending at a majestic dragon mountain summit with a friendly dragon silhouette curled around the peak at the top, warm ember and amber palette with deep teal shadows, soft painterly texture, no text",
+    "size": "1024x1820",
+    "style": "digital_illustration",
+    "remove_bg": false
+  },
+  {
+    "out": "items-raw/_scenes/galaxy-map.png",
+    "prompt": "painterly JRPG space map illustration, vertical 9:16, a glowing dotted travel route from a small launch platform at the bottom past a friendly space station, through a violet nebula field, past a drifting cargo crate, through a neon-lit asteroid belt, across a comet tail bridge, ending at a grand starport city with neon signs and docked ships at the top, deep indigo space with warm pastel nebula colors, soft painterly texture, twinkling stars, absolutely no text, no letters, no words, no typography, no labels, no captions, pure scenery only",
+    "size": "1024x1820",
+    "style": "digital_illustration",
+    "remove_bg": false
+  },
+  {
+    "out": "items-raw/_scenes/japan-splash.png",
+    "prompt": "charming painterly splash illustration, a cute round tanuki with a small travel bundle on a stick standing at the start of a sakura-lined road, Mount Fuji and red torii gate in the distance, falling cherry blossom petals, warm golden-hour light, JRPG storybook style, inviting sense of adventure, no text",
+    "size": "1024x1820",
+    "style": "digital_illustration",
+    "remove_bg": false
+  },
+  {
+    "out": "items-raw/_scenes/drache-splash.png",
+    "prompt": "charming painterly splash illustration, a cute round tanuki with a tiny backpack looking up bravely at a towering dragon mountain with glowing lava veins, a friendly dragon eye peeking from a cave, sparks and embers floating in the air, warm dramatic light, JRPG storybook style, adventurous but cozy mood, no text",
+    "size": "1024x1820",
+    "style": "digital_illustration",
+    "remove_bg": false
+  },
+  {
+    "out": "items-raw/_scenes/galaxy-splash.png",
+    "prompt": "charming painterly splash illustration, a cute round tanuki in a tiny astronaut suit floating in front of a small rocket, gazing at a glittering neon starport in the distance, violet nebula and shooting stars in the background, deep indigo palette with warm neon accents, JRPG storybook style, wonder and excitement, no text",
+    "size": "1024x1820",
+    "style": "digital_illustration",
+    "remove_bg": false
+  }
+]

@@ -237,6 +237,26 @@ def cmd_process(args):
     print(f'{n} Icons → {args.dst} (max {args.size}px)')
 
 
+def cmd_process_scenes(args):
+    """Szenen (Karten/Splash) → JPEG fürs Web (keine Transparenz nötig, viel kleiner)."""
+    from PIL import Image
+    src_root = os.path.join(ROOT, args.src)
+    dst_root = os.path.join(ROOT, args.dst)
+    os.makedirs(dst_root, exist_ok=True)
+    n = 0
+    for f in sorted(os.listdir(src_root)):
+        if not f.endswith('.png'):
+            continue
+        img = Image.open(os.path.join(src_root, f)).convert('RGB')
+        w, h = img.size
+        if w > args.width:
+            img = img.resize((args.width, round(h * args.width / w)), Image.LANCZOS)
+        out = os.path.join(dst_root, f[:-4] + '.jpg')
+        img.save(out, 'JPEG', quality=args.quality, optimize=True, progressive=True)
+        n += 1
+    print(f'{n} Szenen → {args.dst} (Breite {args.width}px, JPEG q{args.quality})')
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest='cmd', required=True)
@@ -259,6 +279,12 @@ def main():
     pr.add_argument('--dst', default='public/assets/img/items')
     pr.add_argument('--size', type=int, default=256)
     pr.set_defaults(fn=cmd_process)
+    ps = sub.add_parser('process-scenes')
+    ps.add_argument('--src', default='items-raw/_scenes')
+    ps.add_argument('--dst', default='public/assets/img/journey')
+    ps.add_argument('--width', type=int, default=768)
+    ps.add_argument('--quality', type=int, default=82)
+    ps.set_defaults(fn=cmd_process_scenes)
     args = p.parse_args()
     args.fn(args)
 

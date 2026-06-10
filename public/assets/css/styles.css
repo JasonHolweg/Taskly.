@@ -647,8 +647,9 @@ textarea{resize:vertical;line-height:1.5}
 #nav-journey{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
 #nav-journey .nav-ico{width:18px;height:18px}
 
-/* --- Themen-Welten: reine CSS-Gradienten + Licht-Punkte (keine Bilder) --- */
+/* --- Themen-Welten: Recraft-Artwork über CSS-Gradient (Gradient = Fallback, falls Bild fehlt) --- */
 #view-journey [data-theme="japan"]{
+  --jny-art:url('/assets/img/journey/japan-map.jpg');
   --jny-grad:linear-gradient(168deg,#2A2670 0%,#5B4490 32%,#A85E8F 62%,#EFA9C5 100%);
   --jny-glow:rgba(244,166,198,.5);
   --jny-dots:
@@ -660,6 +661,7 @@ textarea{resize:vertical;line-height:1.5}
     radial-gradient(circle at 60% 56%, rgba(255,219,235,.5) 0 2px, transparent 3px);
 }
 #view-journey [data-theme="drache"]{
+  --jny-art:url('/assets/img/journey/drache-map.jpg');
   --jny-grad:linear-gradient(168deg,#1C0E0B 0%,#5C1410 34%,#A6371F 64%,#E8893B 100%);
   --jny-glow:rgba(245,158,11,.45);
   --jny-dots:
@@ -671,6 +673,7 @@ textarea{resize:vertical;line-height:1.5}
     radial-gradient(circle at 10% 36%, rgba(255,210,122,.4) 0 1px, transparent 2px);
 }
 #view-journey [data-theme="galaxy"]{
+  --jny-art:url('/assets/img/journey/galaxy-map.jpg');
   --jny-grad:linear-gradient(168deg,#05060F 0%,#16183A 36%,#3A2B86 66%,#6D4BD6 100%);
   --jny-glow:rgba(34,211,238,.4);
   --jny-dots:
@@ -701,12 +704,23 @@ textarea{resize:vertical;line-height:1.5}
 .jny-splash-title{font-family:var(--font-display);font-weight:800;font-size:34px;line-height:1.15;letter-spacing:-.02em;color:#fff}
 .jny-splash-sub{color:rgba(255,255,255,.82);font-size:16px}
 .jny-splash .btn-hero{margin-top:var(--space-3)}
+/* Splash mit Recraft-Artwork: gemaltes Bild übernimmt (eigener Tanuki im Art → PNG aus) */
+.jny-splash.has-art{background-image:linear-gradient(rgba(10,8,22,.18) 0%, rgba(10,8,22,.30) 55%, rgba(10,8,22,.66) 100%), var(--splash-art);
+  background-size:cover;background-position:center top}
+.jny-splash.has-art::before{opacity:.3}
+.jny-splash.has-art .jny-splash-tanuki{display:none}
+.jny-splash.has-art .jny-splash-inner{justify-content:flex-end;padding-bottom:6vh;min-height:70vh}
+.jny-splash.has-art .jny-splash-title{text-shadow:0 4px 18px rgba(0,0,0,.6)}
+.jny-splash.has-art .jny-splash-sub{color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.65)}
 
 /* --- Aktive Reise: Themen-Hero --- */
 .jny-active,.jny-pick,.jny-gear{display:flex;flex-direction:column;gap:var(--space-3)}
 .jny-hero{position:relative;overflow:hidden;isolation:isolate;border-radius:var(--radius-2xl);
   padding:var(--space-5) var(--space-4) var(--space-6);min-height:200px;color:#fff;
-  background:var(--jny-grad);box-shadow:var(--shadow-md);
+  /* Ebenen: Lesbarkeits-Scrim → Recraft-Karte → Themen-Gradient (Fallback) */
+  background-image:linear-gradient(rgba(12,9,26,.22), rgba(12,9,26,.46)),
+    var(--jny-art, linear-gradient(transparent, transparent)), var(--jny-grad);
+  background-size:cover;background-position:center 30%;box-shadow:var(--shadow-md);
   display:flex;flex-direction:column;gap:var(--space-4)}
 .jny-hero::before{content:"";position:absolute;inset:0;background-image:var(--jny-dots);pointer-events:none}
 .jny-hero::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
@@ -767,7 +781,10 @@ textarea{resize:vertical;line-height:1.5}
   transition:transform var(--dur-fast) var(--ease-standard)}
 .jny-dest-card:active{transform:scale(.98)}
 .jny-dest-card.locked{opacity:.55;cursor:default}
-.jny-dest-art{display:block;height:88px;background:var(--jny-grad);position:relative}
+.jny-dest-art{display:block;height:112px;position:relative;
+  background-image:linear-gradient(rgba(10,8,20,.08), rgba(10,8,20,.30)),
+    var(--jny-art, linear-gradient(transparent, transparent)), var(--jny-grad);
+  background-size:cover;background-position:center 24%}
 .jny-dest-art::after{content:"";position:absolute;inset:0;background-image:var(--jny-dots)}
 .jny-dest-body{display:flex;flex-direction:column;gap:4px;padding:var(--space-3) var(--space-4) var(--space-4)}
 .jny-dest-name{font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--color-text)}
