@@ -1,0 +1,13 @@
+{
+  "tanuki": {
+    "style_id": "87893036-be0e-4a67-8ff0-e5fb661b9333",
+    "base": "digital_illustration",
+    "refs": [
+      "base-happy.png",
+      "base-celebrate.png",
+      "kimono-happy.png",
+      "samurai-happy.png",
+      "astronaut-happy.png"
+    ]
+  }
+}

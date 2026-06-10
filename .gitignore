@@ -58,9 +58,14 @@ yarn-error.log*
 /tanuki-raw/
 /pochibukuro-raw/
 /sounds-raw/
+/items-raw/
 /public/assets/img/tanuki/
 /public/assets/img/pochibukuro/
+/public/assets/img/items/
 /public/assets/sounds/
+
+# --- Secrets ---
+/.recraft_key
 
 # --- Sonstiges ---
 Thumbs.db

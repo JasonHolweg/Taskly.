@@ -1,0 +1,338 @@
+[
+  {
+    "out": "items-raw/japan/geta-sandalen.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a pair of traditional Japanese wooden geta sandals with red straps, light natural wood",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/japan/onigiri.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a smiling rice ball onigiri wrapped with a glossy nori seaweed strip",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/japan/tabi-socken.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a pair of white Japanese split-toe tabi socks, soft fabric folds",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/japan/sturmfaecher.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, an open Japanese folding fan with a swirling wind pattern, indigo and white, small gust lines around it",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/japan/wolkenschuhe-des-tengu.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a pair of mystical one-tooth tengu geta sandals standing on a tiny fluffy cloud, golden glow, legendary aura",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/japan/gluecksmuenze.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a golden five-yen coin with a hole in the center, tied with a small red ribbon",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/japan/sakura-haarnadel.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, an elegant kanzashi hairpin with dangling pink cherry blossom petals",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/japan/omamori-amulett.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a small red and gold Japanese omamori lucky charm pouch with a knotted cord",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/japan/torii-anhaenger.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a miniature vermilion torii gate pendant on a cord, epic purple sparkle",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/japan/maneki-neko.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a cute white maneki-neko lucky cat figurine with raised paw and gold bell collar",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/japan/tanuki-gluecksstatue.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a small smiling stone tanuki statue with straw hat, winking, radiant golden legendary glow",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/japan/fuurin-windspiel.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a glass Japanese furin wind chime with a short paper strip, light blue, tiny sound sparkles",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/japan/daruma-figur.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a round red daruma doll with one eye painted, friendly determined face",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/japan/ema-taefelchen.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a wooden ema wish plaque with red string and a small painted sakura motif",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/japan/kalligrafie-pinsel.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a calligraphy brush with bamboo handle and a graceful black ink swirl, epic shimmer",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/japan/fuji-talisman.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a glowing amulet shaped like Mount Fuji with snow cap, sunrise gradient, legendary golden rays",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/feuerstein.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a rough grey flint stone with a tiny warm flame flickering on top",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/schuppenstiefel.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a pair of sturdy boots plated with small copper dragon scales",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/windschwingen-umhang.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a flowing teal cloak with wing-shaped shoulder pieces, fluttering in the wind",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/glutschweif-sporen.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a pair of riding spurs trailing glowing ember sparks, epic orange glow",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/drachenflug-schwingen.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a pair of majestic crimson dragon wings with golden membrane, legendary fiery aura",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/kupferschuppe.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a single shiny copper dragon scale with soft reflections",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/schuppenamulett.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, an amulet made of a blue dragon scale set in a silver frame on a leather cord",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/goldschuppe.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a gleaming golden dragon scale with star-shaped sparkles",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/drachenkrallen-talisman.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a curved obsidian dragon claw wrapped in gold wire on a necklace, epic purple shimmer",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/hortkrone-des-drachenkoenigs.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, an ornate golden crown studded with rubies and tiny dragon wing ornaments, legendary radiant glow",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/lavaperle.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a smooth dark pearl with glowing orange lava cracks",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/gluehende-asche.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a small heap of soft grey ash with warm glowing embers inside",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/drachenei-splitter.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a fragment of a speckled dragon egg shell with a faint magical spark inside",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/glutkern.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a fist-sized glowing ember core, orange-red heart of a fire, gentle heat haze",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/drachenzahn.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a large ivory dragon tooth with a golden cap, epic gleam",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/drache/drachenherz.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a crystalline heart pulsing with inner fire, ruby red with golden veins, legendary aura",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/schubduese.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a small chrome rocket thruster nozzle with a gentle blue flame",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/astro-helm.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a rounded white astronaut helmet with teal visor sized for a small animal",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/ionentriebwerk.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a sleek ion engine module with glowing blue energy rings",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/pulsar-antenne.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a slim silver antenna topped with a pulsing star emitting rhythmic light waves, epic glow",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/plasma-booster.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a compact booster engine with swirling magenta plasma trails, epic energy",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/warpkern.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a levitating cube-shaped warp core folding space around it, deep violet with golden light streaks, legendary aura",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/sternenstaub-beutel.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a small velvet pouch overflowing with glittering pastel stardust",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/holo-wuerfel.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a translucent holographic cube projecting a tiny glowing treasure map",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/sternenkarte.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, an unrolled star chart scroll with constellations and a glowing X mark",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/asteroiden-magnet.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a horseshoe magnet in neon colors attracting tiny floating gold asteroids, epic shimmer",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/nebelherz.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a heart-shaped swirl of violet and pink nebula gas with a bright core, legendary radiance",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/mondkiesel.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a small round moon pebble with tiny craters and a soft silver glow",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/satelliten-anhaenger.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a cute mini satellite charm with solar panels on a chain, blinking light",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/kometensplitter.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a jagged ice-blue comet shard with a sparkling trailing tail",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/neon-datenkristall.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a hexagonal data crystal glowing with neon cyan circuit patterns, epic light",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/galaxy/supernova-fragment.png",
+    "prompt": "cute chibi game item icon, soft 3D render, transparent background, warm pastel palette, subtle outline, a blazing star fragment radiating golden and magenta light rays, legendary explosion aura",
+    "size": "1024x1024",
+    "style": "digital_illustration",
+    "remove_bg": true
+  }
+]

@@ -1268,9 +1268,13 @@ function renderJourney(s) {
   $('#jny-items-empty').classList.toggle('hidden', items.length > 0);
   $('#jny-items').innerHTML = items.map(i => {
     const t = JNY_TYPE[i.type] || { ico: '🎒' };
+    // Echtes Icon, Emoji nur als Fallback solange ein Bild fehlt.
+    const ico = i.asset_ref
+      ? `<img src="/assets/img/${jnyAttr(i.asset_ref)}" alt="" loading="lazy" onerror="this.outerHTML='${t.ico}'">`
+      : t.ico;
     return `<button class="jny-item${i.equipped ? ' equipped' : ''}" data-id="${i.id}" data-rarity="${jnyAttr(i.rarity)}" title="${jnyAttr(i.flavor)}">
         ${i.equipped ? '<span class="jny-item-eq">●</span>' : ''}
-        <span class="jny-item-ico">${t.ico}</span>
+        <span class="jny-item-ico">${ico}</span>
         <span class="jny-item-name">${i.name}</span>
         <span class="jny-item-val">+${Math.round((i.value || 0) * 100)} %</span>
       </button>`;
@@ -1320,7 +1324,10 @@ function jnyHandleEvents(events) {
             <span class="jny-rv-flavor">Frisch aus der Kiste — schau im Tanuki-Tab vorbei.</span></div></div>`;
       }
       const t = JNY_TYPE[r.type] || { ico: '🎒' };
-      return `<div class="jny-rv-item" data-rarity="${jnyAttr(r.rarity)}"><span class="jny-rv-ico">${t.ico}</span><div><b>${r.name}</b>
+      const ico = r.asset_ref
+        ? `<img src="/assets/img/${jnyAttr(r.asset_ref)}" alt="" onerror="this.outerHTML='${t.ico}'">`
+        : t.ico;
+      return `<div class="jny-rv-item" data-rarity="${jnyAttr(r.rarity)}"><span class="jny-rv-ico">${ico}</span><div><b>${r.name}</b>
           <span class="jny-rv-rar">${RAR_LABEL[r.rarity] || r.rarity} · +${Math.round((r.value || 0) * 100)} %</span>
           ${r.flavor ? `<span class="jny-rv-flavor">${r.flavor}</span>` : ''}</div></div>`;
     }).join('');

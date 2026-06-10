@@ -1,0 +1,24 @@
+[
+  {
+    "_kommentar": "Tanuki-Skin-Vorlage: pro Outfit 3 Posen (happy/celebrate/sad) — wie die bestehenden Garderoben-Skins. style_id kommt aus tools/recraft_styles.json (Custom Style 'tanuki', trainiert auf base-happy/base-celebrate/kimono/samurai/astronaut). Workflow: Prompts anpassen → python3 tools/recraft_gen.py generate --manifest tools/manifest_tanuki_beispiel.json → Ergebnisse aus items-raw/_tanuki/ in tanuki-raw/ übernehmen → bestehende PIL+rsync-Pipeline + cosmetics-Seed (meta.poses) wie gehabt.",
+    "out": "items-raw/_tanuki/zauberer-happy.png",
+    "prompt": "cute chibi tanuki raccoon mascot wearing a starry wizard robe and pointed wizard hat, full body, standing facing viewer, one paw raised waving happily, big sparkling eyes, open happy smile, striped tail, soft 3D render, transparent background",
+    "size": "1024x1024",
+    "style_id": "87893036-be0e-4a67-8ff0-e5fb661b9333",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/_tanuki/zauberer-celebrate.png",
+    "prompt": "cute chibi tanuki raccoon mascot wearing a starry wizard robe and pointed wizard hat, full body, both arms raised in joyful celebration, eyes closed in delight, big open smile, tiny confetti and sparkles around, striped tail, soft 3D render, transparent background",
+    "size": "1024x1024",
+    "style_id": "87893036-be0e-4a67-8ff0-e5fb661b9333",
+    "remove_bg": true
+  },
+  {
+    "out": "items-raw/_tanuki/zauberer-sad.png",
+    "prompt": "cute chibi tanuki raccoon mascot wearing a starry wizard robe and slightly drooping wizard hat, full body, standing facing viewer, ears and shoulders drooping, big teary puppy eyes, small pouting mouth, striped tail hanging low, soft 3D render, transparent background",
+    "size": "1024x1024",
+    "style_id": "87893036-be0e-4a67-8ff0-e5fb661b9333",
+    "remove_bg": true
+  }
+]
