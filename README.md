@@ -36,6 +36,7 @@ Löst **Initiierung & Choice-Paralyse**, nicht Tracking. Statt To-do-Wand sagt s
 - **Kalender-Sync** (Export): abonnierbarer iCal-Feed `/cal/<token>.ics`.
 - **Konto:** Name/E-Mail/Passwort ändern.
 - **PWA · Dark Mode** (folgt System) · **Onboarding** · **Heute = max. einfach** (Tageszeit-Gruß, sofort klickbarer CTA, Mikro-Button für Kopf-leeren, Zeit/Akku hinter „Anpassen").
+- **Tanuki's Adventures (v2, live):** Tab „Reise" — Journeys (Kyoto/Drachenberg/Sternenhafen), Wegpunkte/Events/48 themen-treue Items (3 Equip-Slots: Tempo/Glück/Antrieb). **Eiserne Regel erzwungen:** Distanz nur aus erledigten Aufgaben (1 XP = 100 m) + aufgaben-verdienter Ausdauer (1 km/h passiv, max 12 km); Engine deterministisch in PHP (`src/lib/journey.php`), kein LLM. Gates: Reise+Hub ab **L3**, Shop/Kisten ab **L4**; Feature-Flag `journey.enabled`; Ankunft = Gratis-Zug aus Themen-Box. Guardrail-Tests: `php bin/test_journey.php` (Server). Item-/Karten-Art fehlt noch → Prompts in `journey_assets.md`.
 
 ## Stack & Infrastruktur
 - **Server:** `root@178.104.95.146` (Ubuntu 24.04, Apache 2.4, **PHP 8.3**, MySQL 8). Viele andere Sites laufen hier — vorsichtig.
